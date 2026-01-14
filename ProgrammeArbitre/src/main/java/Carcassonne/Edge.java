@@ -1,7 +1,7 @@
 package Carcassonne;
 
 public interface Edge {
-    public boolean hasRoad();
+    public boolean canConnectTo(EdgeNoRoad edge);
 
-    public boolean canConnectTo();
+    public boolean canConnectTo(EdgeWithRoad edge);
 }
