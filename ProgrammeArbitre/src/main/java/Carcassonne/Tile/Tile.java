@@ -37,7 +37,18 @@ public class Tile {
         };
     }
 
-    public boolean canConnectTo(Tile tile, Direction placement){
-        return this.getEdge(placement).canConnectTo(tile.getEdge(placement.oppositeDirection()));
+    public boolean canConnectTo(Tile other, Direction placement){
+        if (this.direction == other.getDirection()){
+            return this.getEdge(placement).canConnectTo(other.getEdge(placement.oppositeDirection()));
+        }
+        else if (this.direction == other.getDirection().rotateLeft()){
+            return this.getEdge(placement).canConnectTo(other.getEdge(placement.rotateRight()));
+        }
+        else if (this.direction == other.getDirection().rotateRight()){
+            return this.getEdge(placement).canConnectTo(other.getEdge(placement.rotateLeft()));
+        }
+        else {
+            return this.getEdge(placement).canConnectTo(other.getEdge(placement));
+        }
     }
 }
