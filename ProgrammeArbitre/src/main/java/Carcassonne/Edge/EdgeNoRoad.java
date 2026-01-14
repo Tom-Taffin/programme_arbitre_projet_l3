@@ -1,4 +1,4 @@
-package Carcassonne;
+package Carcassonne.Edge;
 
 public class EdgeNoRoad implements Edge {
     private Zone zone;

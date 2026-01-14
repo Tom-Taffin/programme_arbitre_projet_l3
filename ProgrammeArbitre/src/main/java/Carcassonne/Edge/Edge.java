@@ -1,4 +1,4 @@
-package Carcassonne;
+package Carcassonne.Edge;
 
 public interface Edge {
     public boolean canConnectTo(EdgeNoRoad edge);
