@@ -38,6 +38,6 @@ public class Tile {
     }
 
     public boolean canConnectTo(Tile tile, Direction placement){
-        return this.getEdge(placement) == tile.getEdge(placement.oppositeDirection());
+        return this.getEdge(placement).canConnectTo(tile.getEdge(placement.oppositeDirection()));
     }
 }
