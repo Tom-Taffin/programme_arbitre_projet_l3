@@ -15,19 +15,16 @@ public class Tile {
         this.leftEdge = leftEdge;
     }
 
-    public Edge getTopEdge() {
-        return topEdge;
-    }
-
-    public Edge getRightEdge() {
-        return rightEdge;
-    }
-
-    public Edge getBottomEdge() {
-        return bottomEdge;
-    }
-
-    public Edge getLeftEdge() {
-        return leftEdge;
+    public Edge getEdge(Direction direction) {
+        switch (direction) {
+            case Direction.TOP:
+                return topEdge;
+            case Direction.RIGHT:
+                return rightEdge;
+            case Direction.BOTTOM:
+                return bottomEdge;
+            default:
+                return leftEdge;
+        }
     }
 }
