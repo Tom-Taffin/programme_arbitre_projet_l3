@@ -11,4 +11,22 @@ public enum Direction {
             default -> RIGHT;
         };
     }
+
+    public Direction rotateLeft(){
+        return switch (this) {
+            case Direction.TOP -> LEFT;
+            case Direction.RIGHT -> TOP;
+            case Direction.BOTTOM -> RIGHT;
+            default -> BOTTOM;
+        };
+    }
+
+    public Direction rotateRight(){
+        return switch (this) {
+            case Direction.TOP -> RIGHT;
+            case Direction.RIGHT -> BOTTOM;
+            case Direction.BOTTOM -> LEFT;
+            default -> TOP;
+        };
+    }
 }
