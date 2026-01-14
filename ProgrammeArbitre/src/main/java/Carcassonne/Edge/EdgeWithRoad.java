@@ -17,11 +17,13 @@ public class EdgeWithRoad implements Edge {
         return zone2;
     }
 
-    public boolean canConnectTo(EdgeWithRoad edge){
-        return this.zone1 == edge.zone2 && this.zone2 == edge.zone1;
+    @Override
+    public boolean canConnectTo(Edge other) {
+        return other.accept(new EdgeWithRoadVisitor(this));
     }
 
-    public boolean canConnectTo(EdgeNoRoad edge){
-        return false;
+    @Override
+    public boolean accept(EdgeVisitor visitor) {
+        return visitor.visit(this);
     }
 }

@@ -11,11 +11,13 @@ public class EdgeNoRoad implements Edge {
         return zone;
     }
 
-    public boolean canConnectTo(EdgeWithRoad edge){
-        return false;
+    @Override
+    public boolean canConnectTo(Edge other) {
+        return other.accept(new EdgeNoRoadVisitor(this));
     }
 
-    public boolean canConnectTo(EdgeNoRoad edge){
-        return edge.getZone() == this.zone;
+    @Override
+    public boolean accept(EdgeVisitor visitor) {
+        return visitor.visit(this);
     }
 }
