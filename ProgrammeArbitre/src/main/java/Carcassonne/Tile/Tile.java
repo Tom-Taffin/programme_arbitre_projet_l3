@@ -36,4 +36,8 @@ public class Tile {
             default -> leftEdge;
         };
     }
+
+    public boolean canConnectTo(Tile tile, Direction placement){
+        return this.getEdge(placement) == tile.getEdge(placement.oppositeDirection());
+    }
 }
