@@ -7,6 +7,5 @@ public class TileTest {
     @Test
     public void testTile(){
         assertTrue(true);
-
     }
 }
