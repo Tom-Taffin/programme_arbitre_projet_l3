@@ -43,4 +43,12 @@ public class EdgeTest {
 
         assertFalse(edgeWithRoad.canConnectTo(noRoadEdge));
     }
+
+    @Test
+    public void testEdgeNoRoadConnectEdgeWithRoad(){
+        Edge edgeWithRoad = new EdgeWithRoad(Zone.FIELD, Zone.FIELD);
+        Edge noRoadEdge = new EdgeNoRoad(Zone.FIELD);
+
+        assertFalse(noRoadEdge.canConnectTo(edgeWithRoad));
+    }
 }
