@@ -9,15 +9,15 @@ public class Tile {
     private Edge leftEdge;
 
     private Direction direction;
-    // Direction where the top Edge of the tile is.
-    // By default, it's on top.
+    // Direction where the TOP Edge of the tile is.
+    // By default, it's on NORTH.
 
     public Tile(Edge topEdge, Edge rightEdge, Edge bottomEdge, Edge leftEdge) {
         this.topEdge = topEdge;
         this.rightEdge = rightEdge;
         this.bottomEdge = bottomEdge;
         this.leftEdge = leftEdge;
-        this.direction = Direction.TOP;
+        this.direction = Direction.NORTH;
     }
 
     public Direction getDirection() {
@@ -28,8 +28,8 @@ public class Tile {
         this.direction = direction;
     }
 
-    public Edge getEdge(Direction direction) {
-        switch (direction) {
+    public Edge getEdge(Location location) {
+        switch (location) {
             case TOP:
                 return topEdge;
             case RIGHT:
@@ -41,18 +41,18 @@ public class Tile {
         }
     }
 
-    public boolean canConnectTo(Tile other, Direction placement){
+    public boolean canConnectTo(Tile other, Location location){
         if (this.direction == other.getDirection()){
-            return this.getEdge(placement).canConnectTo(other.getEdge(placement.oppositeDirection()));
+            return this.getEdge(location).canConnectTo(other.getEdge(location.toOpposite()));
         }
         else if (this.direction == other.getDirection().rotateLeft()){
-            return this.getEdge(placement).canConnectTo(other.getEdge(placement.rotateRight()));
+            return this.getEdge(location).canConnectTo(other.getEdge(location.toRigth()));
         }
         else if (this.direction == other.getDirection().rotateRight()){
-            return this.getEdge(placement).canConnectTo(other.getEdge(placement.rotateLeft()));
+            return this.getEdge(location).canConnectTo(other.getEdge(location.toLeft()));
         }
         else {
-            return this.getEdge(placement).canConnectTo(other.getEdge(placement));
+            return this.getEdge(location).canConnectTo(other.getEdge(location));
         }
     }
 }

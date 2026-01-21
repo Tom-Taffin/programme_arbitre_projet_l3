@@ -1,44 +1,44 @@
 package Carcassonne.Tile;
 
 public enum Direction {
-    TOP, RIGHT, BOTTOM, LEFT;
+    NORTH, SOUTH, WEST, EAST;
 
-    public Direction oppositeDirection(){
+    public Direction rotateHalf(){
         switch (this) {
-            case TOP:
-                return Direction.BOTTOM;
-            case RIGHT:
-                return Direction.LEFT;
-            case BOTTOM:
-                return Direction.TOP;
+            case NORTH:
+                return Direction.SOUTH;
+            case EAST:
+                return Direction.WEST;
+            case SOUTH:
+                return Direction.NORTH;
             default:
-                return Direction.RIGHT;
+                return Direction.EAST;
         }
     }
 
     public Direction rotateLeft(){
         switch (this) {
-            case TOP:
-                return Direction.LEFT;
-            case RIGHT:
-                return Direction.TOP;
-            case BOTTOM:
-                return Direction.RIGHT;
+            case NORTH:
+                return Direction.WEST;
+            case EAST:
+                return Direction.NORTH;
+            case SOUTH:
+                return Direction.EAST;
             default:
-                return Direction.BOTTOM;
+                return Direction.SOUTH;
         }
     }
 
     public Direction rotateRight(){
         switch (this) {
-            case TOP:
-                return Direction.RIGHT;
-            case RIGHT:
-                return Direction.BOTTOM;
-            case BOTTOM:
-                return Direction.LEFT;
+            case NORTH:
+                return Direction.EAST;
+            case EAST:
+                return Direction.SOUTH;
+            case SOUTH:
+                return Direction.WEST;
             default:
-                return Direction.TOP;
+                return Direction.NORTH;
         }
     }
 }
