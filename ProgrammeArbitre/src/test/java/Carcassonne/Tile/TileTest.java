@@ -42,4 +42,15 @@ public class TileTest {
 
         assertFalse(tile1.canConnectTo(tile2, Location.RIGHT));
     }
+
+    @Test
+    public void testConnectTwoIncompatibleTilesWithAndWithoutRoad(){
+        Tile tile1 = new Tile(new EdgeWithRoad(Zone.FIELD, Zone.FIELD), new EdgeWithRoad(Zone.FIELD, Zone.CITY),
+                new EdgeWithRoad(Zone.FIELD, Zone.FIELD), new EdgeWithRoad(Zone.FIELD, Zone.FIELD));
+
+        Tile tile2 = new Tile(new EdgeWithRoad(Zone.FIELD, Zone.FIELD), new EdgeNoRoad(Zone.FIELD),
+                new EdgeWithRoad(Zone.FIELD, Zone.FIELD), new EdgeWithRoad(Zone.FIELD, Zone.FIELD));
+
+        assertFalse(tile1.canConnectTo(tile2, Location.LEFT));
+    }
 }
