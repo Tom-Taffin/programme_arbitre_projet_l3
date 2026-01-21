@@ -1,6 +1,7 @@
 package Carcassonne.Tile;
 
 public enum Direction {
+    /* Represents the direction of the tile. */
     NORTH, SOUTH, WEST, EAST;
 
     public Direction rotateHalf(){
