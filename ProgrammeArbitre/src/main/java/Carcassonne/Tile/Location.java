@@ -1,8 +1,12 @@
 package Carcassonne.Tile;
 
 public enum Location {
+    /* Represents the location of the edge */
     TOP, RIGHT, BOTTOM, LEFT;
 
+    /**
+     * @return the opposite location
+     */
     public Location toOpposite(){
         switch (this) {
             case TOP:
@@ -16,6 +20,9 @@ public enum Location {
         }
     }
 
+    /**
+     * @return the next location in a counter-clockwise direction
+     */
     public Location toLeft(){
         switch (this) {
             case TOP:
@@ -29,6 +36,9 @@ public enum Location {
         }
     }
 
+    /**
+     * @return the next location in a clockwise direction
+     */
     public Location toRigth(){
         switch (this) {
             case TOP:
