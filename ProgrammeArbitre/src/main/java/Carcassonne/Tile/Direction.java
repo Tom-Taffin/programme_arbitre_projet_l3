@@ -4,29 +4,41 @@ public enum Direction {
     TOP, RIGHT, BOTTOM, LEFT;
 
     public Direction oppositeDirection(){
-        return switch (this) {
-            case Direction.TOP -> BOTTOM;
-            case Direction.RIGHT -> LEFT;
-            case Direction.BOTTOM -> TOP;
-            default -> RIGHT;
-        };
+        switch (this) {
+            case TOP:
+                return Direction.BOTTOM;
+            case RIGHT:
+                return Direction.LEFT;
+            case BOTTOM:
+                return Direction.TOP;
+            default:
+                return Direction.RIGHT;
+        }
     }
 
     public Direction rotateLeft(){
-        return switch (this) {
-            case Direction.TOP -> LEFT;
-            case Direction.RIGHT -> TOP;
-            case Direction.BOTTOM -> RIGHT;
-            default -> BOTTOM;
-        };
+        switch (this) {
+            case TOP:
+                return Direction.LEFT;
+            case RIGHT:
+                return Direction.TOP;
+            case BOTTOM:
+                return Direction.RIGHT;
+            default:
+                return Direction.BOTTOM;
+        }
     }
 
     public Direction rotateRight(){
-        return switch (this) {
-            case Direction.TOP -> RIGHT;
-            case Direction.RIGHT -> BOTTOM;
-            case Direction.BOTTOM -> LEFT;
-            default -> TOP;
-        };
+        switch (this) {
+            case TOP:
+                return Direction.RIGHT;
+            case RIGHT:
+                return Direction.BOTTOM;
+            case BOTTOM:
+                return Direction.LEFT;
+            default:
+                return Direction.TOP;
+        }
     }
 }

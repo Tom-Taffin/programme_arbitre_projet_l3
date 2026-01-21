@@ -29,12 +29,16 @@ public class Tile {
     }
 
     public Edge getEdge(Direction direction) {
-        return switch (direction) {
-            case Direction.TOP -> topEdge;
-            case Direction.RIGHT -> rightEdge;
-            case Direction.BOTTOM -> bottomEdge;
-            default -> leftEdge;
-        };
+        switch (direction) {
+            case TOP:
+                return topEdge;
+            case RIGHT:
+                return rightEdge;
+            case BOTTOM:
+                return bottomEdge;
+            default:
+                return leftEdge;
+        }
     }
 
     public boolean canConnectTo(Tile other, Direction placement){
