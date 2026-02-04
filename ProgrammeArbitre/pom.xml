@@ -33,7 +33,11 @@
 
     <dependencies>
         <!-- Dependencies -->
-
+        <dependency>
+            <groupId>l3s6.projet.star</groupId>
+            <artifactId>game-elements</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
 
         <!-- Testing dependencies-->
         <dependency>
