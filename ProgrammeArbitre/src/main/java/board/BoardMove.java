@@ -24,7 +24,7 @@ public class BoardMove {
         }
 
         if (board.hasTile(coordinates.downCoordinates())){
-            Tile downTile = board.getTileAt(coordinates.upCoordinates());
+            Tile downTile = board.getTileAt(coordinates.downCoordinates());
 
             if (!downTile.isCompatibleWith(tile, Direction.TOP)){
                 throw new ImpossibleBoardMove("Down tile not compatible!");
@@ -32,7 +32,7 @@ public class BoardMove {
         }
 
         if (board.hasTile(coordinates.leftCoordinates())){
-            Tile leftTile = board.getTileAt(coordinates.upCoordinates());
+            Tile leftTile = board.getTileAt(coordinates.leftCoordinates());
 
             if (!leftTile.isCompatibleWith(tile, Direction.RIGHT)){
                 throw new ImpossibleBoardMove("Left tile not compatible!");

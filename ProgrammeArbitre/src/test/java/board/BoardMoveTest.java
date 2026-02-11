@@ -11,18 +11,51 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BoardMoveTest {
-
     @Test
     public void testBoardMoveUpperTileNotCompatible() throws ImpossibleBoardMove {
-        /**
         Board board = new Board();
+        Tile tile1 = new Tile(new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)));
+        Tile tile2 = new Tile(new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.CITY)), new EdgeNoRoad(new Zone(Topology.FIELD)));
+        Coordinates origin = new Coordinates(0, 0);
 
-        board.putTileAt(new Tile(new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD))), new Coordinates(0, 0));
+        board.putTileAt(tile1, origin);
 
-        assertTrue(board.hasTile(new Coordinates(0, 0)));
+        assertThrows(ImpossibleBoardMove.class, () -> {BoardMove.placeTile(board, tile2, new Coordinates(0, 0).upCoordinates()); });
+    }
 
-        assertThrows(ImpossibleBoardMove.class, () -> {BoardMove.placeTile(board, new Tile(new EdgeNoRoad(new Zone(Topology.CITY)), new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD))),
-                                                        new Coordinates(0, 0).downCoordinates()); });
-*/
+    @Test
+    public void testBoardMoveLeftTileNotCompatible() throws ImpossibleBoardMove {
+        Board board = new Board();
+        Tile tile1 = new Tile(new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)));
+        Tile tile2 = new Tile(new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.CITY)), new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)));
+        Coordinates origin = new Coordinates(0, 0);
+
+        board.putTileAt(tile1, origin);
+
+        assertThrows(ImpossibleBoardMove.class, () -> {BoardMove.placeTile(board, tile2, new Coordinates(0, 0).leftCoordinates()); });
+    }
+
+    @Test
+    public void testBoardMoveRightTileNotCompatible() throws ImpossibleBoardMove {
+        Board board = new Board();
+        Tile tile1 = new Tile(new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)));
+        Tile tile2 = new Tile(new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.CITY)));
+        Coordinates origin = new Coordinates(0, 0);
+
+        board.putTileAt(tile1, origin);
+
+        assertThrows(ImpossibleBoardMove.class, () -> {BoardMove.placeTile(board, tile2, new Coordinates(0, 0).rightCoordinates()); });
+    }
+
+    @Test
+    public void testBoardMoveLowerTileNotCompatible() throws ImpossibleBoardMove {
+        Board board = new Board();
+        Tile tile1 = new Tile(new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)));
+        Tile tile2 = new Tile(new EdgeNoRoad(new Zone(Topology.CITY)), new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)));
+        Coordinates origin = new Coordinates(0, 0);
+
+        board.putTileAt(tile1, origin);
+
+        assertThrows(ImpossibleBoardMove.class, () -> {BoardMove.placeTile(board, tile2, new Coordinates(0, 0).downCoordinates()); });
     }
 }
