@@ -1,0 +1,122 @@
+[
+  {
+    "image": "A",
+    "representation": "f1-f1-f1r2f1-f1:A",
+    "number": 2
+  },
+  {
+    "image": "B",
+    "representation": "f1-f1-f1-f1:A",
+    "number": 4
+  },
+  {
+    "image": "C",
+    "representation": "C1-C1-C1-C1",
+    "number": 1
+  },
+  {
+    "image": "D",
+    "representation": "c1-f2r3f4-f4-f4r3f2",
+    "number": 4
+  },
+  {
+    "image": "E",
+    "representation": "c1-f2-f2-f2",
+    "number": 5
+  },
+  {
+    "image": "F",
+    "representation": "f1-C2-f3-C2",
+    "number": 2
+  },
+  {
+    "image": "G",
+    "representation": "f1-c2-f3-c2",
+    "number": 1
+  },
+  {
+    "image": "H",
+    "representation": "c1-f2-c3-f2",
+    "number": 3
+  },
+  {
+    "image": "I",
+    "representation": "c1-f2-f2-c3",
+    "number": 2
+  },
+  {
+    "image": "J",
+    "representation": "c1-f2r3f4-f4r3f2-f2",
+    "number": 3
+  },
+  {
+    "image": "K",
+    "representation": "c1-f2-f2r3f4-f4r3f2",
+    "number": 3
+  },
+  {
+    "image": "L",
+    "representation": "c1-f2r3f4-f4r5f6-f6r7f2",
+    "number": 3
+  },
+  {
+    "image": "M",
+    "representation": "C1-C1-f2-f2",
+    "number": 2
+  },
+  {
+    "image": "N",
+    "representation": "c1-c1-f2-f2",
+    "number": 3
+  },
+  {
+    "image": "O",
+    "representation": "C1-f2r3f4-f4r3f2-C1",
+    "number": 2
+  },
+  {
+    "image": "P",
+    "representation": "c1-f2r3f4-f4r3f2-c1",
+    "number": 3
+  },
+  {
+    "image": "Q",
+    "representation": "C1-C1-f2-C1",
+    "number": 1
+  },
+  {
+    "image": "R",
+    "representation": "c1-c1-f2-c1",
+    "number": 3
+  },
+  {
+    "image": "S",
+    "representation": "C1-C1-f2r3f4-C1",
+    "number": 2
+  },
+  {
+    "image": "T",
+    "representation": "c1-c1-f2r3f4-c1",
+    "number": 1
+  },
+  {
+    "image": "U",
+    "representation": "f1r2f3-f3-f3r2f1-f1",
+    "number": 8
+  },
+  {
+    "image": "V",
+    "representation": "f1-f1-f1r2f3-f3r2f1",
+    "number": 9
+  },
+  {
+    "image": "W",
+    "representation": "f1-f1r2f3-f3r4f5-f5r6f1",
+    "number": 4
+  },
+  {
+    "image": "X",
+    "representation": "f1r2f3-f3r4f5-f5r6f7-f7r8f1",
+    "number": 1
+  }
+]
