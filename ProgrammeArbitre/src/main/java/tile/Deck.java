@@ -45,15 +45,19 @@ public class Deck {
     /**
      * @return the representation of the tile on top of the tiles.
      */
-    public String drawTile(){
+    public String drawTile() throws EmptyDeckException{
+        if (isEmpty()){
+            throw new EmptyDeckException("Tried to draw a tile but the deck is empty.");
+        }
+
         return this.tiles.remove(0);
     }
 
     /**
-     * @return true if the tiles is not empty.
+     * @return true if the deck is empty.
      */
-    public boolean hasTiles(){
-        return !this.tiles.isEmpty();
+    public boolean isEmpty(){
+        return this.tiles.isEmpty();
     }
 
     /**
