@@ -1,9 +1,5 @@
 package tile;
 
-import l3s6.projet.star.game.edge.EdgeNoRoad;
-import l3s6.projet.star.game.edge.Topology;
-import l3s6.projet.star.game.edge.Zone;
-import l3s6.projet.star.game.tile.Tile;
 import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.Test;
 
@@ -18,21 +14,17 @@ public class DeckTest {
         String field = "f1-f1-f1-f1";
         String city = "c1-c1-c1-c1";
         int amountFields = 4;
-        int amountTiles = 7;
-
-        int amount = 0;
+        int amountCities = 3;
 
         while(deck.hasTiles()){
-            if(amount < amountFields){
-                assertEquals(field, deck.getNextTile());
+            if(field.equals(deck.drawTile())){
+                amountFields --;
             } else {
-                assertEquals(city, deck.getNextTile());
+                amountCities --;
             }
 
-            amount += 1;
-
         }
-
-        assertEquals(amountTiles, amount);
+        assertEquals(0, amountFields);
+        assertEquals(0, amountCities);
     }
 }

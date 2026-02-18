@@ -1,31 +1,25 @@
 package tile;
 
-import l3s6.projet.star.game.tile.Tile;
-
-import l3s6.projet.star.game.tile.TileBuilder;
-import l3s6.projet.star.game.tile.WrongTileSyntaxException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Scanner;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Deck {
-    private final ArrayList<String> deck;
+    private final ArrayList<String> tiles;
     protected String jsonPath;
 
     public Deck(String path) throws IOException, ParseException {
         this.jsonPath = path;
-        this.deck = new ArrayList<>();
+        this.tiles = new ArrayList<>();
         initializeDeck();
+        shuffle();
     }
 
     /**
@@ -43,24 +37,29 @@ public class Deck {
             long amount = (Long) tileJSON.get("number");
 
             for(int i = 0; i < amount; i++){
-                deck.add(representation);
+                tiles.add(representation);
             }
         }
     }
 
     /**
-     * Returns the tile on top of the deck.
-     * @return the tile on top of the deck.
+     * @return the representation of the tile on top of the tiles.
      */
-    public String getNextTile(){
-        return this.deck.remove(0);
+    public String drawTile(){
+        return this.tiles.remove(0);
     }
 
     /**
-     * Returns true if there are tiles in the deck, i.e. if it is not empty.
-     * @return true if the deck is not empty.
+     * @return true if the tiles is not empty.
      */
     public boolean hasTiles(){
-        return !this.deck.isEmpty();
+        return !this.tiles.isEmpty();
+    }
+
+    /**
+     * Shuffles the tiles.
+     */
+    public void shuffle(){
+        Collections.shuffle(this.tiles);
     }
 }
