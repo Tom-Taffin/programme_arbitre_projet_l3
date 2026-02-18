@@ -17,11 +17,13 @@ public class DeckTest {
         Deck deck = new MockDeck();
         String field = "f1-f1-f1-f1";
         String city = "c1-c1-c1-c1";
+        int amountFields = 4;
+        int amountTiles = 7;
 
         int amount = 0;
 
         while(deck.hasTiles()){
-            if(amount < 4){
+            if(amount < amountFields){
                 assertEquals(field, deck.getNextTile());
             } else {
                 assertEquals(city, deck.getNextTile());
@@ -31,6 +33,6 @@ public class DeckTest {
 
         }
 
-        assertEquals(7, amount);
+        assertEquals(amountTiles, amount);
     }
 }

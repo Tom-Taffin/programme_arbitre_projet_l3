@@ -20,11 +20,12 @@ import java.util.ArrayList;
 
 public class Deck {
     private final ArrayList<String> deck;
-    protected String JSON_PATH = "src/main/java/tile/tiles.json";
+    protected String jsonPath;
 
-    public Deck() {
+    public Deck(String path) throws IOException, ParseException {
+        this.jsonPath = path;
         this.deck = new ArrayList<>();
-        //initializeDeck();
+        initializeDeck();
     }
 
     /**
@@ -33,7 +34,7 @@ public class Deck {
     protected void initializeDeck() throws IOException, ParseException {
         JSONParser parser = new JSONParser();
 
-        JSONArray array = (JSONArray) parser.parse(new FileReader(JSON_PATH));
+        JSONArray array = (JSONArray) parser.parse(new FileReader(jsonPath));
 
         for (Object o : array) {
             JSONObject tileJSON = (JSONObject) o;

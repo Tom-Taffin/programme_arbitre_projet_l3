@@ -6,7 +6,6 @@ import java.io.IOException;
 
 public class MockDeck extends Deck{
     public MockDeck() throws IOException, ParseException {
-        JSON_PATH = "src/test/java/tile/tilesMock.json";
-        initializeDeck();
+        super( "src/test/java/tile/tilesMock.json");
     }
 }
