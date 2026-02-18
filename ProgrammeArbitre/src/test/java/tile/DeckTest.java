@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DeckTest {
     @Test
     public void testDataInitialisation() throws IOException, ParseException, EmptyDeckException {
-        Deck deck = new MockDeck();
+        Deck deck = new Deck("src/test/java/tile/tilesMock.json");
         String field = "f1-f1-f1-f1";
         String city = "c1-c1-c1-c1";
         int amountFields = 4;
