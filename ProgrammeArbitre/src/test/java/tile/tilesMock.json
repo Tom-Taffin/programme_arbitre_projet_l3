@@ -1,27 +1,12 @@
 [
   {
     "image": "B",
-    "representation": "f1-f1-f1-f1:A",
+    "representation": "f1-f1-f1-f1",
     "number": 4
   },
   {
-    "image": "M",
-    "representation": "C1-C1-f2-f2",
-    "number": 2
-  },
-  {
-    "image": "N",
-    "representation": "c1-c1-f2-f2",
-    "number": 3
-  },
-  {
-    "image": "Q",
-    "representation": "C1-C1-f2-C1",
-    "number": 1
-  },
-  {
     "image": "R",
-    "representation": "c1-c1-f2-c1",
+    "representation": "c1-c1-c1-c1",
     "number": 3
   }
 ]
