@@ -31,6 +31,13 @@
         <surefire.tree-reporter>1.2.1</surefire.tree-reporter>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>gitlab-maven</id>
+            <url>https://gitlab.com/api/v4/projects/ID_DU_PROJET_DEPENDANCE/packages/maven</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <!-- Dependencies -->
         <dependency>

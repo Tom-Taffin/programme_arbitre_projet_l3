@@ -1,7 +1,7 @@
 variables:
   MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
 
-image: maven:3.9.9-eclipse-temurin-17
+image: maven:3.9.9-eclipse-temurin-11
 
 stages:
   - build
@@ -18,9 +18,9 @@ before_script:
 build:
   stage: build
   script:
-    - mvn -B -DskipTests clean package
+    - mvn -B -DskipTests clean package -s settings.xml
 
 test:
   stage: test
   script:
-    - mvn -B test
+    - mvn -B test -s settings.xml
