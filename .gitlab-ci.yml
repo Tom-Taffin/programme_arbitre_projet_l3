@@ -13,7 +13,6 @@ cache:
 
 before_script:
   - echo "Using Maven"
-  - mvn -version
 
 build:
   stage: build
