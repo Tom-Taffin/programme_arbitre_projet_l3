@@ -5,7 +5,11 @@ import l3s6.projet.star.interaction.network.AdminClient;
 import player.Player;
 
 public class OfferTile {
-/**    public static boolean checkIfTileCanBePlaced(Tile tile, Board board){
+
+/**
+ * /**
+ * Returns true if the given tile can be placed on the board. Checks tile with all neighboring empty tiles on the board, with all orientations.
+   public static boolean checkIfTileCanBePlaced(Tile tile, Board board){
         if (board.getOutsideFrontierTiles()){
             return true;
         }
@@ -21,6 +25,9 @@ public class OfferTile {
         return false;
     }*/
 
+    /**
+     * Gives the literal representation of a given tile to the given player with OFFER command.
+     */
     public static void offerTile(Tile tile, Player player, AdminClient adminClient) {
         adminClient.offer(player.getName(), tile.toString());
     }
