@@ -7,42 +7,18 @@ import l3s6.projet.star.game.tile.Tile;
 
 public class BoardMove {
     public static void placeTile(Board board, Tile tile, Coordinates coordinates) throws ImpossibleBoardMove{
-        if (board.hasTile(coordinates.upCoordinates())){
-            Tile upperTile = board.getTileAt(coordinates.upCoordinates());
-
-            if (!tile.isCompatibleWith(upperTile, Direction.TOP)){
-                throw new ImpossibleBoardMove("Upper tile not compatible!");
-            }
-        }
-
-        if (board.hasTile(coordinates.rightCoordinates())){
-            Tile rigthTile = board.getTileAt(coordinates.rightCoordinates());
-
-            if (!rigthTile.isCompatibleWith(tile, Direction.LEFT)){
-                throw new ImpossibleBoardMove("Right tile not compatible!");
-            }
-        }
-
-        if (board.hasTile(coordinates.downCoordinates())){
-            Tile downTile = board.getTileAt(coordinates.downCoordinates());
-
-            if (!downTile.isCompatibleWith(tile, Direction.TOP)){
-                throw new ImpossibleBoardMove("Down tile not compatible!");
-            }
-        }
-
-        if (board.hasTile(coordinates.leftCoordinates())){
-            Tile leftTile = board.getTileAt(coordinates.leftCoordinates());
-
-            if (!leftTile.isCompatibleWith(tile, Direction.RIGHT)){
-                throw new ImpossibleBoardMove("Left tile not compatible!");
-            }
+        if (!BoardMove.checkIfTileCanBePlaced(board, tile, coordinates)){
+            throw new ImpossibleBoardMove("Tile not compatible!");
         }
 
         board.putTileAt(tile, coordinates);
     }
 
     public static boolean checkIfTileCanBePlaced(Board board, Tile tile, Coordinates coordinates){
+        if (board.hasTile(coordinates)){
+            return false;
+        }
+
         if (board.hasTile(coordinates.upCoordinates())){
             Tile upperTile = board.getTileAt(coordinates.upCoordinates());
 

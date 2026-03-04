@@ -34,7 +34,7 @@ public class BoardMoveTest {
         board.putTileAt(tile1, origin);
 
         assertFalse(BoardMove.checkIfTileCanBePlaced(board, tile2, origin.leftCoordinates()));
-        assertThrows(ImpossibleBoardMove.class, () -> {BoardMove.placeTile(board, tile2, new Coordinates(0, 0).leftCoordinates()); });
+        assertThrows(ImpossibleBoardMove.class, () -> {BoardMove.placeTile(board, tile2, origin.leftCoordinates()); });
     }
 
     @Test
@@ -47,7 +47,7 @@ public class BoardMoveTest {
         board.putTileAt(tile1, origin);
 
         assertFalse(BoardMove.checkIfTileCanBePlaced(board, tile2, origin.rightCoordinates()));
-        assertThrows(ImpossibleBoardMove.class, () -> {BoardMove.placeTile(board, tile2, new Coordinates(0, 0).rightCoordinates()); });
+        assertThrows(ImpossibleBoardMove.class, () -> {BoardMove.placeTile(board, tile2, origin.rightCoordinates()); });
     }
 
     @Test
@@ -60,7 +60,7 @@ public class BoardMoveTest {
         board.putTileAt(tile1, origin);
 
         assertFalse(BoardMove.checkIfTileCanBePlaced(board, tile2, origin.downCoordinates()));
-        assertThrows(ImpossibleBoardMove.class, () -> {BoardMove.placeTile(board, tile2, new Coordinates(0, 0).downCoordinates()); });
+        assertThrows(ImpossibleBoardMove.class, () -> {BoardMove.placeTile(board, tile2, origin.downCoordinates()); });
     }
 
     @Test
@@ -77,5 +77,21 @@ public class BoardMoveTest {
         BoardMove.placeTile(board, tile2, origin.upCoordinates());
 
         assertEquals(tile2, board.getTileAt(origin.upCoordinates()));
+    }
+
+    @Test
+    public void testBoardMoveAlreadyHasATileAtCoordinates() throws ImpossibleBoardMove {
+        Board board = new Board();
+        Tile tile1 = new Tile(new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)));
+        Tile tile2 = new Tile(new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)));
+        Coordinates origin = new Coordinates(0, 0);
+
+        board.putTileAt(tile1, origin);
+
+        assertFalse(BoardMove.checkIfTileCanBePlaced(board, tile2, origin));
+
+        BoardMove.placeTile(board, tile2, origin.upCoordinates());
+
+        assertThrows(ImpossibleBoardMove.class, () -> {BoardMove.placeTile(board, tile2, origin); });
     }
 }
