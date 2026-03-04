@@ -41,4 +41,40 @@ public class BoardMove {
 
         board.putTileAt(tile, coordinates);
     }
+
+    public static boolean checkIfTileCanBePlaced(Board board, Tile tile, Coordinates coordinates){
+        if (board.hasTile(coordinates.upCoordinates())){
+            Tile upperTile = board.getTileAt(coordinates.upCoordinates());
+
+            if (!tile.isCompatibleWith(upperTile, Direction.TOP)){
+                return false;
+            }
+        }
+
+        if (board.hasTile(coordinates.rightCoordinates())){
+            Tile rigthTile = board.getTileAt(coordinates.rightCoordinates());
+
+            if (!rigthTile.isCompatibleWith(tile, Direction.LEFT)){
+                return false;
+            }
+        }
+
+        if (board.hasTile(coordinates.downCoordinates())){
+            Tile downTile = board.getTileAt(coordinates.downCoordinates());
+
+            if (!downTile.isCompatibleWith(tile, Direction.TOP)){
+                return false;
+            }
+        }
+
+        if (board.hasTile(coordinates.leftCoordinates())){
+            Tile leftTile = board.getTileAt(coordinates.leftCoordinates());
+
+            if (!leftTile.isCompatibleWith(tile, Direction.RIGHT)){
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
