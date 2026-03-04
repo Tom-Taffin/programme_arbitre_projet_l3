@@ -17,21 +17,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class OfferTileTest {/**
     @Test
-    public void testCheckIfTileCanBePlacedOnEmptyBoard() throws IOException, ParseException {
-        Deck deck = new Deck("src/test/java/tile/tilesMock.json");
+    public void testCheckIfTileCanBePlacedOnEmptyBoard() {
         Tile tile = new Tile(new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)));
-        OfferTile offerTile = new OfferTile(deck);
         Board board = new Board();
 
         assertTrue(offerTile.checkIfTileCanBePlaced(tile, board));
     }
 
     @Test
-    public void testCheckIfCompatibleTileCanBePlaced() throws IOException, ParseException {
-        Deck deck = new Deck("src/test/java/tile1/tilesMock.json");
+    public void testCheckIfCompatibleTileCanBePlaced() {
         Tile tile1 = new Tile(new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.CITY)), new EdgeNoRoad(new Zone(Topology.CITY)));
         Tile tile2 = new Tile(new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.CITY)), new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.CITY)));
-        OfferTile offerTile = new OfferTile(deck);
         Board board = new Board();
         Coordinates coordinates = new Coordinates(0, 0);
 
@@ -41,11 +37,9 @@ public class OfferTileTest {/**
     }
 
     @Test
-    public void testCheckIfCompatibleTileCanBePlacedByRotating() throws IOException, ParseException {
-        Deck deck = new Deck("src/test/java/tile1/tilesMock.json");
+    public void testCheckIfCompatibleTileCanBePlacedByRotating() {
         Tile tile1 = new Tile(new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.CITY)), new EdgeNoRoad(new Zone(Topology.FIELD)));
         Tile tile2 = new Tile(new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.CITY)), new EdgeNoRoad(new Zone(Topology.CITY)), new EdgeNoRoad(new Zone(Topology.CITY)));
-        OfferTile offerTile = new OfferTile(deck);
         Board board = new Board();
         Coordinates coordinates = new Coordinates(0, 0);
 
@@ -55,11 +49,9 @@ public class OfferTileTest {/**
     }
 
     @Test
-    public void testCheckIfIncompatibleTileCanBePlaced() throws IOException, ParseException {
-        Deck deck = new Deck("src/test/java/tile1/tilesMock.json");
+    public void testCheckIfIncompatibleTileCanBePlaced() {
         Tile tile1 = new Tile(new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)));
         Tile tile2 = new Tile(new EdgeNoRoad(new Zone(Topology.CITY)), new EdgeNoRoad(new Zone(Topology.CITY)), new EdgeNoRoad(new Zone(Topology.CITY)), new EdgeNoRoad(new Zone(Topology.CITY)));
-        OfferTile offerTile = new OfferTile(deck);
         Board board = new Board();
         Coordinates coordinates = new Coordinates(0, 0);
 
