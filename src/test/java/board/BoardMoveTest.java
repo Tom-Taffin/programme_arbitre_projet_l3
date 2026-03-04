@@ -20,7 +20,8 @@ public class BoardMoveTest {
 
         board.putTileAt(tile1, origin);
 
-        assertThrows(ImpossibleBoardMove.class, () -> {BoardMove.placeTile(board, tile2, new Coordinates(0, 0).upCoordinates()); });
+        assertFalse(BoardMove.checkIfTileCanBePlaced(board, tile2, origin.upCoordinates()));
+        assertThrows(ImpossibleBoardMove.class, () -> {BoardMove.placeTile(board, tile2, origin.upCoordinates()); });
     }
 
     @Test
@@ -32,6 +33,7 @@ public class BoardMoveTest {
 
         board.putTileAt(tile1, origin);
 
+        assertFalse(BoardMove.checkIfTileCanBePlaced(board, tile2, origin.leftCoordinates()));
         assertThrows(ImpossibleBoardMove.class, () -> {BoardMove.placeTile(board, tile2, new Coordinates(0, 0).leftCoordinates()); });
     }
 
@@ -44,6 +46,7 @@ public class BoardMoveTest {
 
         board.putTileAt(tile1, origin);
 
+        assertFalse(BoardMove.checkIfTileCanBePlaced(board, tile2, origin.rightCoordinates()));
         assertThrows(ImpossibleBoardMove.class, () -> {BoardMove.placeTile(board, tile2, new Coordinates(0, 0).rightCoordinates()); });
     }
 
@@ -56,6 +59,23 @@ public class BoardMoveTest {
 
         board.putTileAt(tile1, origin);
 
+        assertFalse(BoardMove.checkIfTileCanBePlaced(board, tile2, origin.downCoordinates()));
         assertThrows(ImpossibleBoardMove.class, () -> {BoardMove.placeTile(board, tile2, new Coordinates(0, 0).downCoordinates()); });
+    }
+
+    @Test
+    public void testBoardMoveLowerUpperTileCompatible() throws ImpossibleBoardMove {
+        Board board = new Board();
+        Tile tile1 = new Tile(new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)));
+        Tile tile2 = new Tile(new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)), new EdgeNoRoad(new Zone(Topology.FIELD)));
+        Coordinates origin = new Coordinates(0, 0);
+
+        board.putTileAt(tile1, origin);
+
+        assertTrue(BoardMove.checkIfTileCanBePlaced(board, tile2, origin.upCoordinates()));
+
+        BoardMove.placeTile(board, tile2, origin.upCoordinates());
+
+        assertEquals(tile2, board.getTileAt(origin.upCoordinates()));
     }
 }
