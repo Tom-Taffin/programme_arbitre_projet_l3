@@ -2,7 +2,6 @@ package board;
 
 import l3s6.projet.star.game.board.Board;
 import l3s6.projet.star.game.board.Coordinates;
-import l3s6.projet.star.game.tile.Orientation;
 import l3s6.projet.star.game.tile.Tile;
 import tile.Deck;
 import tile.EmptyDeckException;
@@ -14,11 +13,15 @@ public class OfferTile {
         this.deck = deck;
     }
 
-    public String offerTile() throws EmptyDeckException {
+    public String drawTile() throws EmptyDeckException {
         return deck.drawTile();
     }
-/**
-    public boolean checkIfTileCanBePlaced(Tile tile, Board board){
+
+/**    public boolean checkIfTileCanBePlaced(Tile tile, Board board){
+        if (board.getOutsideFrontierTiles()){
+            return true;
+        }
+
         for(Coordinates coord: board.getOutsideFrontierTiles()){
             for (int i=0; i < 4; i++){
                 if(BoardMove.checkIfTileCanBePlaced(board, tile, coord)){
