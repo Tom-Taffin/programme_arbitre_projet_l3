@@ -3,6 +3,9 @@ package board;
 import l3s6.projet.star.game.board.Board;
 import l3s6.projet.star.game.board.Coordinates;
 import l3s6.projet.star.game.tile.Tile;
+import l3s6.projet.star.interaction.command.OfferCommand;
+import l3s6.projet.star.interaction.network.AdminClient;
+import player.Player;
 import tile.Deck;
 import tile.EmptyDeckException;
 
@@ -32,4 +35,8 @@ public class OfferTile {
         }
         return false;
     }*/
+
+    public void offerTile(Tile tile, Player player, AdminClient adminClient) {
+        adminClient.offer(player.getName(), tile.toString());
+    }
 }
