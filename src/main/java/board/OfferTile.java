@@ -1,19 +1,17 @@
 package board;
 
+import l3s6.projet.star.game.board.Board;
+import l3s6.projet.star.game.board.Coordinates;
 import l3s6.projet.star.game.tile.Tile;
 import l3s6.projet.star.interaction.network.AdminClient;
 import player.Player;
 
 public class OfferTile {
 
-/**
- * /**
+ /**
  * Returns true if the given tile can be placed on the board. Checks tile with all neighboring empty tiles on the board, with all orientations.
+ */
    public static boolean checkIfTileCanBePlaced(Tile tile, Board board){
-        if (board.getOutsideFrontierTiles()){
-            return true;
-        }
-
         for(Coordinates coord: board.getOutsideFrontierTiles()){
             for (int i=0; i < 4; i++){
                 if(BoardMove.checkIfTileCanBePlaced(board, tile, coord)){
@@ -23,7 +21,7 @@ public class OfferTile {
             }
         }
         return false;
-    }*/
+    }
 
     /**
      * Gives the literal representation of a given tile to the given player with OFFER command.
