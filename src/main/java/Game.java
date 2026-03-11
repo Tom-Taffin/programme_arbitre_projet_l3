@@ -95,7 +95,7 @@ public class Game {
 
     /**
      * Part of the turn where the player places a meeple, if he has one, on the tile.
-     * If the zone already has a meeple, blames the player.
+     * Blames the player if the zone already has a meeple.
      */
     private void meepleMove(Tile tile){
         if (!this.currentPlayer.hasMeeples()){
