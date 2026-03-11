@@ -1,5 +1,8 @@
+import board.BoardMove;
+import board.ImpossibleBoardMove;
 import board.OfferTile;
 import l3s6.projet.star.game.board.Board;
+import l3s6.projet.star.game.board.Coordinates;
 import l3s6.projet.star.game.meeple.Meeple;
 import l3s6.projet.star.game.tile.Direction;
 import l3s6.projet.star.game.tile.Tile;
@@ -46,21 +49,42 @@ public class Game {
     }
 
     private void playTurn() throws EmptyDeckException, WrongTileSyntaxException {
+        Tile tile = tileMove();
+        meepleMove(tile);
+
+        // Voir si une zone se finit
+        // Update les scores et rendre les meeples si c'est le cas
+    }
+
+    /**
+     * Part of the turn where we offer a tile to the player, and he gives an answer about where to place it.
+     * Checks if the tile can be placed, draws a new one if it can't.
+     * Updates the board.
+     * Blames the player if the position is wrong.
+     */
+    private Tile tileMove() throws EmptyDeckException, WrongTileSyntaxException {
         Tile tile = new TileBuilder().build(this.deck.drawTile());
 
         while (!OfferTile.checkIfTileCanBePlaced(tile, this.board)){
             tile = new TileBuilder().build(this.deck.drawTile());
         }
 
-        //OfferTile.offerTile(tile, player, new AdminClient()); ToDo: Communiquer correctement avec le joueur
+        //OfferTile.offerTile(tile, player, new AdminClient()); ToDo: Communiquer correctement avec le joueur et récupérer sa réponse dans coord
 
-        // Voir si les coordonnées données par le joueur sont correctes
-        // Update le plateau si c'est bon
+        Coordinates coordinates = null;
 
-        // Voir si les coordonées pour le meeple données par le joueur sont correctes
-        // Update le plateau si c'est bon
-        // Voir si une zone se finit
-        // Update les scores et rendre les meeples si c'est le cas
+        if (BoardMove.checkIfTileCanBePlaced(this.board, tile, coordinates)){
+            currentPlayer.blame();
+            return null;
+        }
+        try {
+            BoardMove.placeTile(this.board, tile, coordinates);
+        } catch (ImpossibleBoardMove e) {
+            throw new RuntimeException(e);
+            // Should not occur as we test it just before
+        }
+
+        return tile;
     }
 
     /**
@@ -75,6 +99,10 @@ public class Game {
         Direction direction = Direction.TOP;
         int part = 0;
 
+        // ToDo: Check if the position given by the player is correct
         Meeple meeple = new Meeple(tile.getZoneAt(direction, part));
+
+        meeples.put(meeple, currentPlayer);
+        currentPlayer.decrementMeepleCount();
     }
 }
