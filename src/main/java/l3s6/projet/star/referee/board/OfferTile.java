@@ -1,10 +1,10 @@
-package board;
+package l3s6.projet.star.referee.board;
 
 import l3s6.projet.star.game.board.Board;
 import l3s6.projet.star.game.board.Coordinates;
 import l3s6.projet.star.game.tile.Tile;
 import l3s6.projet.star.interaction.network.AdminClient;
-import player.Player;
+import l3s6.projet.star.referee.player.Player;
 
 public class OfferTile {
 

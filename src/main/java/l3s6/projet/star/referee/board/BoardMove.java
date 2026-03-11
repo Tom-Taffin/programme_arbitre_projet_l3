@@ -1,4 +1,4 @@
-package board;
+package l3s6.projet.star.referee.board;
 
 import l3s6.projet.star.game.board.Board;
 import l3s6.projet.star.game.board.Coordinates;

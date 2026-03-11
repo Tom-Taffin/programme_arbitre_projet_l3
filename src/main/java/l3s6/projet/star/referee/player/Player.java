@@ -1,4 +1,4 @@
-package player;
+package l3s6.projet.star.referee.player;
 
 public class Player {
     private final String name;

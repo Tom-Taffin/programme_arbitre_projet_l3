@@ -1,4 +1,4 @@
-package tile;
+package l3s6.projet.star.referee.tile;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
