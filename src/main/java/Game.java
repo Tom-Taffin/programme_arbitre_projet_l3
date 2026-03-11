@@ -33,6 +33,9 @@ public class Game {
         this.meeples = new HashMap<>();
     }
 
+    /**
+     * Initializes all the players: Waits for their connection and sets their score to 0.
+     */
     private void initializePlayers(){
         //ToDo: Attendre la connection de tout les joueurs et les mettre dans players
     }
@@ -48,6 +51,9 @@ public class Game {
         }
     }
 
+    /**
+     * Plays a turn for the current player.
+     */
     private void playTurn() throws EmptyDeckException, WrongTileSyntaxException {
         Tile tile = tileMove();
         meepleMove(tile);
@@ -89,6 +95,7 @@ public class Game {
 
     /**
      * Part of the turn where the player places a meeple, if he has one, on the tile.
+     * If the zone already has a meeple, blames the player.
      */
     private void meepleMove(Tile tile){
         if (!this.currentPlayer.hasMeeples()){
