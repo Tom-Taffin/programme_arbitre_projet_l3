@@ -10,7 +10,7 @@ public class Player {
         this.name = name;
         this.score = 0;
         this.nbBlames = 0;
-        this.nbMeeples = 8;
+        this.nbMeeples = 7;
     }
 
     public int getScore() {
@@ -38,5 +38,9 @@ public class Player {
         if (this.nbMeeples < 0) {
             this.nbMeeples = 0;
         }
+    }
+
+    public boolean hasMeeples(){
+        return this.nbMeeples > 0;
     }
 }
