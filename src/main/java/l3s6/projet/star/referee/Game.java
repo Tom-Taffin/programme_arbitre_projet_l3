@@ -1,5 +1,6 @@
 package l3s6.projet.star.referee;
 
+import l3s6.projet.star.game.edge.Zone;
 import l3s6.projet.star.referee.board.BoardMove;
 import l3s6.projet.star.referee.board.ImpossibleBoardMove;
 import l3s6.projet.star.referee.board.OfferTile;
@@ -98,6 +99,7 @@ public class Game {
     /**
      * Part of the turn where the player places a meeple, if he has one, on the tile.
      * Blames the player if the zone already has a meeple.
+     * @param tile the tiles that was placed by the player
      */
     private void meepleMove(Tile tile){
         if (!this.currentPlayer.hasMeeples()){
@@ -113,5 +115,18 @@ public class Game {
 
         meeples.put(meeple, currentPlayer);
         currentPlayer.decrementMeepleCount();
+    }
+
+    /**
+     * If the tile finishes a zone, updates scores and gives back meeples.
+     * Otherwise, does nothing.
+     * @param tile the tiles that was placed by the player
+     */
+    private void moveConsequences(Tile tile){
+        // ToDo: Check si la tuile finish des zones.
+
+        // ToDo: Update les scores
+
+        // ToDo: Rendre les meeples
     }
 }
