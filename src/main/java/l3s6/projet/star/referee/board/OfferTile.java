@@ -22,11 +22,4 @@ public class OfferTile {
         }
         return false;
     }
-
-    /**
-     * Gives the literal representation of a given tile to the given player with OFFER command.
-     */
-    public static void offerTile(Tile tile, Player player, AdminClient adminClient) {
-        adminClient.offer(player.getName(), tile.toString());
-    }
 }

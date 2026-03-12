@@ -1,6 +1,6 @@
 package l3s6.projet.star.referee;
 
-import l3s6.projet.star.game.edge.Zone;
+import l3s6.projet.star.interaction.command.InvalidArgumentNumberException;
 import l3s6.projet.star.referee.board.BoardMove;
 import l3s6.projet.star.referee.board.ImpossibleBoardMove;
 import l3s6.projet.star.referee.board.OfferTile;
@@ -17,6 +17,7 @@ import l3s6.projet.star.referee.tile.Deck;
 import l3s6.projet.star.referee.tile.EmptyDeckException;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,9 +28,12 @@ public class Game {
     private Deck deck;
     private Board board;
     private final Map<Meeple, Player> meeples;
+    private final RefereeView refereeView;
+    private final int MAX_NUMBER_OF_BLAMES = 5;
 
-    public Game(String path) throws IOException, ParseException {
+    public Game(String path) throws IOException, ParseException, URISyntaxException, InterruptedException {
         initializePlayers();
+        this.refereeView = new RefereeView("0", 0, "0");
         this.board = new Board();
         this.deck = new Deck(path);
         this.currentPlayer = players.get(0);
@@ -48,7 +52,7 @@ public class Game {
             try {
                 playTurn();
                 currentPlayer = players.get((players.indexOf(currentPlayer) + 1)% players.size());
-            } catch (EmptyDeckException e) {
+            } catch (EmptyDeckException | InvalidArgumentNumberException e) {
                 break;
             }
         }
@@ -57,7 +61,7 @@ public class Game {
     /**
      * Plays a turn for the current player.
      */
-    private void playTurn() throws EmptyDeckException, WrongTileSyntaxException {
+    private void playTurn() throws EmptyDeckException, WrongTileSyntaxException, InvalidArgumentNumberException {
         Tile tile = tileMove();
         meepleMove(tile);
 
@@ -71,19 +75,25 @@ public class Game {
      * Updates the board.
      * Blames the player if the position is wrong.
      */
-    private Tile tileMove() throws EmptyDeckException, WrongTileSyntaxException {
+    private Tile tileMove() throws EmptyDeckException, WrongTileSyntaxException, InvalidArgumentNumberException {
         Tile tile = new TileBuilder().build(this.deck.drawTile());
 
         while (!OfferTile.checkIfTileCanBePlaced(tile, this.board)){
             tile = new TileBuilder().build(this.deck.drawTile());
         }
 
-        //OfferTile.offerTile(tile, player, new AdminClient()); ToDo: Communiquer correctement avec le joueur et récupérer sa réponse dans coord
+        refereeView.send("OFFERS", currentPlayer.getID(), tile.toString());
 
+
+        // ToDo: Récupérer réponse du joueur dans coordinates
         Coordinates coordinates = null;
 
         if (BoardMove.checkIfTileCanBePlaced(this.board, tile, coordinates)){
             currentPlayer.blame();
+            refereeView.send("BLAMES", currentPlayer.getID(), "illegal-");
+            if (currentPlayer.getNumberOfBlames() > MAX_NUMBER_OF_BLAMES){
+                refereeView.send("EXPELS", currentPlayer.getID());
+            }
             return null;
         }
         try {
