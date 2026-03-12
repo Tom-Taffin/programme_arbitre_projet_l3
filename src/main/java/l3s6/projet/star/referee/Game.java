@@ -28,12 +28,9 @@ public class Game {
     private Deck deck;
     private Board board;
     private final Map<Meeple, Player> meeples;
-    private final RefereeView refereeView;
-    private final int MAX_NUMBER_OF_BLAMES = 5;
 
     public Game(String path) throws IOException, ParseException, URISyntaxException, InterruptedException {
         initializePlayers();
-        this.refereeView = new RefereeView("0", 0, "0");
         this.board = new Board();
         this.deck = new Deck(path);
         this.currentPlayer = players.get(0);
@@ -70,19 +67,27 @@ public class Game {
     }
 
     /**
-     * Part of the turn where we offer a tile to the player, and he gives an answer about where to place it.
-     * Checks if the tile can be placed, draws a new one if it can't.
-     * Updates the board.
-     * Blames the player if the position is wrong.
+     * Draws tile from the deck, if it can't be placed, draws another one.
+     * Throws exception if deck is empty.
      */
-    private Tile tileMove() throws EmptyDeckException, WrongTileSyntaxException, InvalidArgumentNumberException {
+    public Tile drawTile() throws EmptyDeckException, WrongTileSyntaxException {
         Tile tile = new TileBuilder().build(this.deck.drawTile());
 
         while (!OfferTile.checkIfTileCanBePlaced(tile, this.board)){
             tile = new TileBuilder().build(this.deck.drawTile());
         }
 
-        refereeView.send("OFFERS", currentPlayer.getID(), tile.toString());
+        return tile;
+    }
+
+    /**
+     * Part of the turn where we offer a tile to the player, and he gives an answer about where to place it.
+     * Checks if the tile can be placed, draws a new one if it can't.
+     * Updates the board.
+     * Blames the player if the position is wrong.
+     */
+    private Tile tileMove() throws EmptyDeckException, WrongTileSyntaxException, InvalidArgumentNumberException {
+
 
 
         // ToDo: Récupérer réponse du joueur dans coordinates
@@ -138,5 +143,17 @@ public class Game {
         // ToDo: Update les scores
 
         // ToDo: Rendre les meeples
+    }
+
+    /**
+     * Returns the winning player i.e. the player with most points.
+     * If there is only one player left, he is returned.
+     */
+    public Player winner() {
+        return currentPlayer;
+    }
+
+    public Player getCurrentPlayer() {
+        return currentPlayer;
     }
 }
