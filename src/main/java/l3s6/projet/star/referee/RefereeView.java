@@ -1,33 +1,52 @@
 package l3s6.projet.star.referee;
 
+import l3s6.projet.star.game.board.Coordinates;
 import l3s6.projet.star.game.tile.Tile;
+import l3s6.projet.star.game.tile.TileBuilder;
 import l3s6.projet.star.game.tile.WrongTileSyntaxException;
 import l3s6.projet.star.interaction.command.InvalidArgumentNumberException;
 import l3s6.projet.star.interaction.role.Role;
 import l3s6.projet.star.interaction.view.AdminView;
+import l3s6.projet.star.referee.board.ImpossibleBoardMove;
 import l3s6.projet.star.referee.player.Player;
 import l3s6.projet.star.referee.tile.EmptyDeckException;
 import org.json.simple.parser.ParseException;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Objects;
 
 public class RefereeView extends AdminView {
     private Game game;
     private final int MAX_NUMBER_OF_BLAMES = 5;
 
+    private boolean isWaitingForPlaceCommandFromPlayer;
+
     public RefereeView(String ipAddress, int port, String id, String path) throws URISyntaxException, InterruptedException, IOException, ParseException {
         super(ipAddress, port, id);
         this.game = new Game(path);
+
+        this.isWaitingForPlaceCommandFromPlayer = false;
     }
 
     /**
-     * Starts the game. Sends the appropriate starting message to everybody.
+     * Initializes all the players: Waits for their connection and sets their score to 0.
+     */
+    private void initializePlayers(){
+        //ToDo: Attendre la connection de tout les joueurs et les mettre dans players
+    }
+
+    /**
+     * Sends a COLLECTS and COLORS message to each player.
+     * Adds each player to the game then starts it.
      */
     public void startGame(){
         try {
             send("STARTS");
+            for(Player player: this.game.getPlayers()){
+                send("COLLECTS", player.getID(), 8);
+                send("COLORS"); // A faire
+            }
         } catch (InvalidArgumentNumberException e) {
             throw new RuntimeException(e);
         }
@@ -36,17 +55,98 @@ public class RefereeView extends AdminView {
     }
 
     /**
-     * Draws tile from deck and offers it to the player. If there are no more cards the game is finished.
+     * Draws tile from deck and offers it to the player. If there are no more cards the game ends.
      */
     private void offerTile(){
         try {
             Tile tile = game.drawTile();
             send("OFFERS", game.getCurrentPlayer().getID(), tile.toString());
+            isWaitingForPlaceCommandFromPlayer = true;
         } catch (EmptyDeckException | WrongTileSyntaxException e) {
             endsGame();
         } catch (InvalidArgumentNumberException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Check if PLACES command is correctly used.
+     * Updates the board and informs other players if the move is correct, blames player otherwise.
+     */
+    @Override
+    public void updateOnPlace(String id, String player, String tileString, int x, int y) {
+        if(!this.isWaitingForPlaceCommandFromPlayer){
+            return;
+        }
+
+        if (!this.roleManager.isRole(id, Role.PLAYER) ){
+            return;
+        }
+
+        if (!Objects.equals(id, player)){
+            //BLamer le joueur
+            return;
+        }
+
+        try {
+            this.game.placeTile(new TileBuilder().build(tileString), new Coordinates(x, y));
+            send("PLACES", player, tileString, x, y);
+            this.isWaitingForPlaceCommandFromPlayer = false;
+            countPoints();
+        } catch (WrongTileSyntaxException e) {
+            //Blame le joueur
+        } catch (ImpossibleBoardMove e) {
+            // Blamer le joueur
+        } catch (InvalidArgumentNumberException e) {
+            // Blame le joueur
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Check if PLACES command is correctly used.
+     * Updates the board and informs other players if the move is correct, blames player otherwise.
+     */
+    @Override
+    public void updateOnPlaceWithMeeple(String id, String player, String tileString, int x, int y, String meeple_type, String meeple_position) {
+        if(!this.isWaitingForPlaceCommandFromPlayer){
+            return;
+        }
+
+        if (!this.roleManager.isRole(id, Role.PLAYER) ){
+            return;
+        }
+
+        if (!Objects.equals(id, player)){
+            //BLamer le joueur
+            return;
+        }
+
+        try {
+            Tile tile = new TileBuilder().build(tileString);
+            this.game.placeTile(tile, new Coordinates(x, y));
+            this.game.placeMeeple(tile, meeple_type, meeple_position);
+            send("PLACES", player, tileString, x, y, meeple_type, meeple_position);
+            this.isWaitingForPlaceCommandFromPlayer = false;
+            countPoints();
+        } catch (WrongTileSyntaxException e) {
+            //Blame le joueur
+        } catch (ImpossibleBoardMove e) {
+            // Blamer le joueur
+        } catch (InvalidArgumentNumberException e) {
+            // Blame le joueur
+            throw new RuntimeException(e);
+        } catch (ImpossibleMeepleMoveException e) {
+            // Blame le joueur
+        }
+    }
+
+    /**
+     * Counts points for each player when a zone is finished.
+     * If no zone is finished, nothing happens.
+     */
+    private void countPoints(){
+
     }
 
     /**
@@ -61,7 +161,7 @@ public class RefereeView extends AdminView {
     }
 
     /**
-     * Blames the player with a reason. If the player exceeds max number of blames, he is expelled.
+     * Blames the player, gives him a reason. If the player exceeds max number of blames, he is expelled.
      */
     public void blame(Player player, String reason){
         player.blame();
@@ -76,17 +176,6 @@ public class RefereeView extends AdminView {
             } catch (InvalidArgumentNumberException e) {
                 throw new RuntimeException(e);
             }
-        }
-    }
-
-    @Override
-    public void updateOnPlace(String id, String idPrime, String tile, int x, int y) {
-        if (!this.roleManager.isRole(id, Role.PLAYER) ){
-            return;
-        }
-
-        if (id != idPrime){
-            //BLamer le joueur
         }
     }
 }

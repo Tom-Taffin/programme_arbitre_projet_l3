@@ -1,13 +1,13 @@
 package l3s6.projet.star.referee;
 
-import l3s6.projet.star.interaction.command.InvalidArgumentNumberException;
+import l3s6.projet.star.game.edge.Zone;
+import l3s6.projet.star.game.tile.Direction;
 import l3s6.projet.star.referee.board.BoardMove;
 import l3s6.projet.star.referee.board.ImpossibleBoardMove;
 import l3s6.projet.star.referee.board.OfferTile;
 import l3s6.projet.star.game.board.Board;
 import l3s6.projet.star.game.board.Coordinates;
 import l3s6.projet.star.game.meeple.Meeple;
-import l3s6.projet.star.game.tile.Direction;
 import l3s6.projet.star.game.tile.Tile;
 import l3s6.projet.star.game.tile.TileBuilder;
 import l3s6.projet.star.game.tile.WrongTileSyntaxException;
@@ -17,53 +17,29 @@ import l3s6.projet.star.referee.tile.Deck;
 import l3s6.projet.star.referee.tile.EmptyDeckException;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class Game {
     private final ArrayList<Player> players = new ArrayList<>();
     private Player currentPlayer;
-    private Deck deck;
-    private Board board;
-    private final Map<Meeple, Player> meeples;
+    private final Deck deck;
+    private final Board board;
+    private final Set<Meeple> meeples;
 
-    public Game(String path) throws IOException, ParseException, URISyntaxException, InterruptedException {
-        initializePlayers();
+    public Game(String path) throws IOException, ParseException {
         this.board = new Board();
         this.deck = new Deck(path);
-        this.currentPlayer = players.get(0);
-        this.meeples = new HashMap<>();
+        this.meeples = new HashSet<>();
     }
 
     /**
      * Initializes all the players: Waits for their connection and sets their score to 0.
      */
-    private void initializePlayers(){
-        //ToDo: Attendre la connection de tout les joueurs et les mettre dans players
-    }
-
-    public void playGame() throws WrongTileSyntaxException {
-        while(!this.deck.isEmpty()){
-            try {
-                playTurn();
-                currentPlayer = players.get((players.indexOf(currentPlayer) + 1)% players.size());
-            } catch (EmptyDeckException | InvalidArgumentNumberException e) {
-                break;
-            }
-        }
-    }
-
-    /**
-     * Plays a turn for the current player.
-     */
-    private void playTurn() throws EmptyDeckException, WrongTileSyntaxException, InvalidArgumentNumberException {
-        Tile tile = tileMove();
-        meepleMove(tile);
-
-        // Voir si une zone se finit
-        // Update les scores et rendre les meeples si c'est le cas
+    public void addPlayer(Player player){
+        this.players.add(player);
     }
 
     /**
@@ -76,60 +52,76 @@ public class Game {
         while (!OfferTile.checkIfTileCanBePlaced(tile, this.board)){
             tile = new TileBuilder().build(this.deck.drawTile());
         }
-
         return tile;
     }
 
     /**
-     * Part of the turn where we offer a tile to the player, and he gives an answer about where to place it.
-     * Checks if the tile can be placed, draws a new one if it can't.
-     * Updates the board.
-     * Blames the player if the position is wrong.
+     * Puts the tile on the board at the given coordinates.
      */
-    private Tile tileMove() throws EmptyDeckException, WrongTileSyntaxException, InvalidArgumentNumberException {
-
-
-
-        // ToDo: Récupérer réponse du joueur dans coordinates
-        Coordinates coordinates = null;
-
-        if (BoardMove.checkIfTileCanBePlaced(this.board, tile, coordinates)){
-            currentPlayer.blame();
-            refereeView.send("BLAMES", currentPlayer.getID(), "illegal-");
-            if (currentPlayer.getNumberOfBlames() > MAX_NUMBER_OF_BLAMES){
-                refereeView.send("EXPELS", currentPlayer.getID());
-            }
-            return null;
-        }
-        try {
-            BoardMove.placeTile(this.board, tile, coordinates);
-        } catch (ImpossibleBoardMove e) {
-            throw new RuntimeException(e);
-            // Should not occur as we test it just before
-        }
-
-        return tile;
+    public void placeTile(Tile tile, Coordinates coordinates) throws ImpossibleBoardMove {
+        BoardMove.placeTile(this.board, tile, coordinates);
     }
 
     /**
-     * Part of the turn where the player places a meeple, if he has one, on the tile.
-     * Blames the player if the zone already has a meeple.
-     * @param tile the tiles that was placed by the player
+     * Places a meeple on the tile.
      */
-    private void meepleMove(Tile tile){
+    public void placeMeeple(Tile tile, String type, String position) throws ImpossibleMeepleMoveException {
         if (!this.currentPlayer.hasMeeples()){
-            return;
+            throw new ImpossibleMeepleMoveException("Player doesn't have any meeple.");
         }
 
-        // ToDo: Récupérer la réponse du joueur concernant là où il veut placer le meeple, et la placer dans les variables direction et part.
-        Direction direction = Direction.TOP;
-        int part = 0;
+        Zone zone = getZoneByPosition(tile, position);
 
-        // ToDo: Check if the position given by the player is correct
-        Meeple meeple = new Meeple(tile.getZoneAt(direction, part));
+        Meeple meeple = new Meeple(zone, currentPlayer.getColor());
 
-        meeples.put(meeple, currentPlayer);
+        meeples.add(meeple);
         currentPlayer.decrementMeepleCount();
+    }
+
+    private Zone getZoneByPosition(Tile tile, String position) throws ImpossibleMeepleMoveException {
+        String tileStr = tile.toString();
+
+        String withoutOrientation = tileStr.substring(1);
+
+        String[] edgeParts = withoutOrientation.split("-");
+
+        Direction[] directions = {Direction.TOP, Direction.RIGHT, Direction.BOTTOM, Direction.LEFT};
+
+        for (int edgeIndex = 0; edgeIndex < edgeParts.length; edgeIndex++) {
+            String edgePart = edgeParts[edgeIndex];
+            List<Zone> zones = tile.getZones(directions[edgeIndex]);
+
+            List<String> labels = parseZoneLabels(edgePart);
+
+            if (labels.size() != zones.size()) {
+                continue;
+            }
+
+            for (int i = 0; i < labels.size(); i++) {
+                if (labels.get(i).equals(position)) {
+                    return zones.get(i);
+                }
+            }
+        }
+
+        throw new ImpossibleMeepleMoveException("Zone position '" + position + "' does not exist on this tile.");
+    }
+
+    /**
+     * Separates an edge into each zone.
+     */
+    private List<String> parseZoneLabels(String edgePart) {
+        List<String> labels = new ArrayList<>();
+        int i = 0;
+        while (i < edgePart.length()) {
+            int j = i + 1;
+            while (j < edgePart.length() && Character.isDigit(edgePart.charAt(j))) {
+                j++;
+            }
+            labels.add(edgePart.substring(i, j));
+            i = j;
+        }
+        return labels;
     }
 
     /**
@@ -155,5 +147,9 @@ public class Game {
 
     public Player getCurrentPlayer() {
         return currentPlayer;
+    }
+
+    public ArrayList<Player> getPlayers() {
+        return players;
     }
 }
