@@ -152,4 +152,78 @@ public class Game {
     public ArrayList<Player> getPlayers() {
         return players;
     }
+
+    /**
+     * wait players connections and initialize the players.
+     */
+    public void initializePlayers() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'initializePlayers'");
+    }
+
+    /**
+     * choice randomly the first player
+     */
+    public void initializeFirstPlayer() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'initializeFirstPlayer'");
+    }
+
+    /**
+     * is finshed if the deck is empty or if there is only one player.
+     */
+    public boolean isFinished() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'isFinished'");
+    }
+
+    /**
+     * draw a tile, checks which one can be placed and offers it to the current player.
+     */
+    public void offerTile() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'offerTile'");
+    }
+
+    public void changeCurrentPlayer() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'changeCurrentPlayer'");
+    }
+
+    /**
+     * wait player move x secondes, check it. 
+     * If no response or wrong response or other player response send blame.
+     * If player ban, remove player in players
+     * @return false if the current player is ban
+     */
+    public Boolean checkPlayerMove() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'checkPlayerMove'");
+    }
+
+    /**
+     * send the current player move to all the player
+     */
+    public void sendMove() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'sendMove'");
+    }
+
+    /**
+     * place the tile on the board, 
+     * place the meeple on the tile,
+     * check closed zones, 
+     * give back meeple to players 
+     * and send score and meeple informations
+     */
+    public void playMove() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'playMove'");
+    }
+
+    public void sendWinner() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'sendWinner'");
+    }
+
 }
