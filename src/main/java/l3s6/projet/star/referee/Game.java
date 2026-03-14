@@ -1,6 +1,7 @@
 package l3s6.projet.star.referee;
 
 import l3s6.projet.star.game.edge.Zone;
+import l3s6.projet.star.game.meeple.Color;
 import l3s6.projet.star.game.tile.Direction;
 import l3s6.projet.star.referee.board.BoardMove;
 import l3s6.projet.star.referee.board.ImpossibleBoardMove;
@@ -17,10 +18,7 @@ import l3s6.projet.star.referee.tile.Deck;
 import l3s6.projet.star.referee.tile.EmptyDeckException;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Game {
     private final ArrayList<Player> players = new ArrayList<>();
@@ -66,6 +64,7 @@ public class Game {
 
     /**
      * Puts the tile on the board at the given coordinates.
+     * Throws ImpossibleBoardMove if the move is impossible
      */
     public void placeTile(Tile tile, Coordinates coordinates) throws ImpossibleBoardMove {
         BoardMove.placeTile(this.board, tile, coordinates);
@@ -73,13 +72,26 @@ public class Game {
 
     /**
      * Places a meeple on the tile.
+     * Throws ImpossibleBoardMove if the move is impossible
      */
     public void placeMeeple(Tile tile, String type, String position) throws ImpossibleMeepleMoveException {
         if (!this.currentPlayer.hasMeeples()){
             throw new ImpossibleMeepleMoveException("Player doesn't have any meeple.");
         }
 
+        if (!type.equals("regular")){
+            throw new ImpossibleMeepleMoveException("Meeple Type is not regular");
+        }
+
         Zone zone = getZoneByPosition(tile, position);
+
+        Set<Zone> connectedZones = zone.getAllBoardConnectingZones();
+
+        for (Meeple meeple: this.meeples){
+            if (connectedZones.contains(meeple.getZone())){
+                throw new ImpossibleMeepleMoveException("Zone already has a meeple!");
+            }
+        }
 
         Meeple meeple = new Meeple(zone, currentPlayer.getColor());
 
@@ -134,16 +146,33 @@ public class Game {
     }
 
     /**
-     * If the tile finishes a zone, updates scores and gives back meeples.
+     * If a zone is finished, updates scores and gives back meeples.
      * Otherwise, does nothing.
-     * @param tile the tiles that was placed by the player
      */
-    private void moveConsequences(Tile tile){
-        // ToDo: Check si la tuile finish des zones.
+    public void countPoints(Tile tile){
+        Direction[] directions = {Direction.TOP, Direction.RIGHT, Direction.BOTTOM, Direction.LEFT};
 
-        // ToDo: Update les scores
+        for(Direction direction: directions){
+            for(Zone zone: tile.getZones(direction)){
+                if (zone.isFinished()){
+                    Map<Color, Integer> meeples = this.meeplesOnZone(zone);
+                    // ToDo Compter les points en fonction de la zone
+                }
+            }
+        }
+    }
 
-        // ToDo: Rendre les meeples
+    private Map<Color, Integer> meeplesOnZone(Zone zone){
+        Set<Zone> connectedZones = zone.getConnectingZones();
+        HashMap<Color, Integer> meeples = new HashMap<>();
+
+        for (Meeple meeple: this.meeples){
+            if (connectedZones.contains(meeple.getZone())){
+                meeples.put(meeple.getColor() ,meeples.getOrDefault(meeple.getColor(), 0));
+            }
+        }
+
+        return meeples;
     }
 
     /**

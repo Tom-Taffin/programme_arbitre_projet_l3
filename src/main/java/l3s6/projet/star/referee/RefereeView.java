@@ -94,10 +94,11 @@ public class RefereeView extends AdminView {
         }
 
         try {
-            this.game.placeTile(new TileBuilder().build(tileString), new Coordinates(x, y));
+            Tile tile = new TileBuilder().build(tileString);
+            this.game.placeTile(tile, new Coordinates(x, y));
             send("PLACES", player, tileString, x, y);
             this.isWaitingForPlaceCommandFromPlayer = false;
-            countPoints();
+            countPoints(tile);
         } catch (WrongTileSyntaxException e) {
             //Blame le joueur
         } catch (ImpossibleBoardMove e) {
@@ -135,7 +136,7 @@ public class RefereeView extends AdminView {
             this.game.placeMeeple(tile, meeple_type, meeple_position);
             send("PLACES", player, tileString, x, y, meeple_type, meeple_position);
             this.isWaitingForPlaceCommandFromPlayer = false;
-            countPoints();
+            countPoints(tile);
         } catch (WrongTileSyntaxException e) {
             //Blame le joueur
         } catch (ImpossibleBoardMove e) {
@@ -152,7 +153,7 @@ public class RefereeView extends AdminView {
      * Counts points for each player when a zone is finished.
      * If no zone is finished, nothing happens.
      */
-    private void countPoints(){
+    private void countPoints(Tile tile){
 
     }
 
