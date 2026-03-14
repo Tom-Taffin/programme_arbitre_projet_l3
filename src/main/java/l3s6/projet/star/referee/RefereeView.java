@@ -1,6 +1,7 @@
 package l3s6.projet.star.referee;
 
 import l3s6.projet.star.game.board.Coordinates;
+import l3s6.projet.star.game.meeple.Color;
 import l3s6.projet.star.game.tile.Tile;
 import l3s6.projet.star.game.tile.TileBuilder;
 import l3s6.projet.star.game.tile.WrongTileSyntaxException;
@@ -15,10 +16,11 @@ import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Objects;
 
 public class RefereeView extends AdminView {
-    private Game game;
+    private final Game game;
     private final int MAX_NUMBER_OF_BLAMES = 5;
 
     private boolean isWaitingForPlaceCommandFromPlayer;
@@ -33,8 +35,8 @@ public class RefereeView extends AdminView {
     /**
      * Initializes all the players: Waits for their connection and sets their score to 0.
      */
-    private void initializePlayers(){
-        //ToDo: Attendre la connection de tout les joueurs et les mettre dans players
+    private void initializePlayer(String ID){
+        this.game.addPlayer(new Player(ID, Color.RED, this.game.getNbMeeplesPerPlayer()));
     }
 
     /**
@@ -45,13 +47,14 @@ public class RefereeView extends AdminView {
         try {
             send("STARTS");
             for(Player player: this.game.getPlayers()){
-                send("COLLECTS", player.getID(), 8);
-                send("COLORS"); // A faire
+                send("COLLECTS", player.getID(), this.game.getNbMeeplesPerPlayer());
+                send("COLORS", player.getID(), player.getColor());
             }
         } catch (InvalidArgumentNumberException e) {
             throw new RuntimeException(e);
         }
 
+        this.game.setStartingPlayer(this.game.getPlayers().get(0));
         offerTile();
     }
 
@@ -71,8 +74,10 @@ public class RefereeView extends AdminView {
     }
 
     /**
-     * Check if PLACES command is correctly used.
-     * Updates the board and informs other players if the move is correct, blames player otherwise.
+     * Checks if the received tile placement is correct, then updates the board and informs other players.
+     * Blames the player otherwise.
+     * Must be called when waiting for PLACES command from current player
+     * Ensures it is correctly used and the right person is calling it.
      */
     @Override
     public void updateOnPlace(String id, String player, String tileString, int x, int y) {
@@ -90,10 +95,11 @@ public class RefereeView extends AdminView {
         }
 
         try {
-            this.game.placeTile(new TileBuilder().build(tileString), new Coordinates(x, y));
+            Tile tile = new TileBuilder().build(tileString);
+            this.game.placeTile(tile, new Coordinates(x, y));
             send("PLACES", player, tileString, x, y);
             this.isWaitingForPlaceCommandFromPlayer = false;
-            countPoints();
+            countPoints(tile);
         } catch (WrongTileSyntaxException e) {
             //Blame le joueur
         } catch (ImpossibleBoardMove e) {
@@ -105,8 +111,10 @@ public class RefereeView extends AdminView {
     }
 
     /**
-     * Check if PLACES command is correctly used.
-     * Updates the board and informs other players if the move is correct, blames player otherwise.
+     * Checks if the received tile and meeple placement are correct, then updates the board and informs other players.
+     * Blames the player otherwise.
+     * Must be called when waiting for PLACES command from current player
+     * Ensures it is correctly used and the right person is calling it.
      */
     @Override
     public void updateOnPlaceWithMeeple(String id, String player, String tileString, int x, int y, String meeple_type, String meeple_position) {
@@ -129,7 +137,7 @@ public class RefereeView extends AdminView {
             this.game.placeMeeple(tile, meeple_type, meeple_position);
             send("PLACES", player, tileString, x, y, meeple_type, meeple_position);
             this.isWaitingForPlaceCommandFromPlayer = false;
-            countPoints();
+            countPoints(tile);
         } catch (WrongTileSyntaxException e) {
             //Blame le joueur
         } catch (ImpossibleBoardMove e) {
@@ -146,7 +154,7 @@ public class RefereeView extends AdminView {
      * Counts points for each player when a zone is finished.
      * If no zone is finished, nothing happens.
      */
-    private void countPoints(){
+    private void countPoints(Tile tile){
 
     }
 
