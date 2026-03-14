@@ -28,11 +28,17 @@ public class Game {
     private final Deck deck;
     private final Board board;
     private final Set<Meeple> meeples;
+    private final int MAX_NUMBER_OF_BLAMES = 5;
+    private final int NB_MEEPLES_PER_PLAYER = 7;
 
     public Game(String path) throws IOException, ParseException {
         this.board = new Board();
         this.deck = new Deck(path);
         this.meeples = new HashSet<>();
+    }
+
+    public int getNbMeeplesPerPlayer() {
+        return NB_MEEPLES_PER_PLAYER;
     }
 
     /**
@@ -42,6 +48,9 @@ public class Game {
         this.players.add(player);
     }
 
+    public void setStartingPlayer(Player player){
+        this.currentPlayer = player;
+    }
     /**
      * Draws tile from the deck, if it can't be placed, draws another one.
      * Throws exception if deck is empty.
