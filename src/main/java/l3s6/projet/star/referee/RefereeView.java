@@ -2,21 +2,20 @@ package l3s6.projet.star.referee;
 
 import l3s6.projet.star.game.board.Coordinates;
 import l3s6.projet.star.game.meeple.Color;
+import l3s6.projet.star.game.player.Player;
+import l3s6.projet.star.game.tile.Orientation;
 import l3s6.projet.star.game.tile.Tile;
-import l3s6.projet.star.game.tile.TileBuilder;
 import l3s6.projet.star.game.tile.WrongTileSyntaxException;
 import l3s6.projet.star.interaction.command.InvalidArgumentNumberException;
 import l3s6.projet.star.interaction.role.Role;
 import l3s6.projet.star.interaction.view.AdminView;
 import l3s6.projet.star.referee.board.ImpossibleBoardMove;
 import l3s6.projet.star.referee.deck.EmptyDeckException;
-import l3s6.projet.star.referee.player.Player;
 
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.List;
 import java.util.Objects;
 
 public class RefereeView extends AdminView {
@@ -24,6 +23,7 @@ public class RefereeView extends AdminView {
     private final int MAX_NUMBER_OF_BLAMES = 5;
 
     private boolean isWaitingForPlaceCommandFromPlayer;
+    private Tile drawedTile;
 
     public RefereeView(String ipAddress, int port, String id, String path) throws URISyntaxException, InterruptedException, IOException, ParseException {
         super(ipAddress, port, id);
@@ -43,7 +43,7 @@ public class RefereeView extends AdminView {
      * Sends a COLLECTS and COLORS message to each player.
      * Adds each player to the game then starts it.
      */
-    public void startGame(){
+    public void startGame() throws InvalidArgumentNumberException, WrongTileSyntaxException{
         try {
             send("STARTS");
             for(Player player: this.game.getPlayers()){
@@ -61,15 +61,19 @@ public class RefereeView extends AdminView {
     /**
      * Draws tile from deck and offers it to the player. If there are no more cards the game ends.
      */
-    private void offerTile(){
-        try {
-            Tile tile = game.drawTile();
-            send("OFFERS", game.getCurrentPlayer().getID(), tile.toString());
-            isWaitingForPlaceCommandFromPlayer = true;
-        } catch (EmptyDeckException | WrongTileSyntaxException e) {
+    private void offerTile() throws InvalidArgumentNumberException, WrongTileSyntaxException{
+        if(this.game.getPlayers().size() <= 1){
             endsGame();
-        } catch (InvalidArgumentNumberException e) {
-            throw new RuntimeException(e);
+        }
+        else{
+            try {
+                Tile tile = game.drawTile();
+                this.drawedTile = tile;
+                send("OFFERS", game.getCurrentPlayer().getID(), tile.toString());
+                isWaitingForPlaceCommandFromPlayer = true;
+            } catch (EmptyDeckException e) {
+                endsGame();
+            }
         }
     }
 
@@ -80,7 +84,7 @@ public class RefereeView extends AdminView {
      * Ensures it is correctly used and the right person is calling it.
      */
     @Override
-    public void updateOnPlace(String id, String player, String tileString, int x, int y) {
+    public void updateOnPlace(String id, String player, String orientation, int x, int y) {
         if(!this.isWaitingForPlaceCommandFromPlayer){
             return;
         }
@@ -93,14 +97,13 @@ public class RefereeView extends AdminView {
             //BLamer le joueur
             return;
         }
-
         try {
-            Tile tile = new TileBuilder().build(tileString);
-            this.game.placeTile(tile, new Coordinates(x, y));
-            send("PLACES", player, tileString, x, y);
+            this.drawedTile.setOrientation(Orientation.valueOf(orientation));
+            this.game.placeTile(this.drawedTile, new Coordinates(x, y));
+            send("PLACES", player, orientation, x, y);
             this.isWaitingForPlaceCommandFromPlayer = false;
-            countPoints(tile);
-        } catch (WrongTileSyntaxException e) {
+            countPoints(this.drawedTile);
+        } catch (IllegalArgumentException | NullPointerException e) {
             //Blame le joueur
         } catch (ImpossibleBoardMove e) {
             // Blamer le joueur
@@ -117,28 +120,30 @@ public class RefereeView extends AdminView {
      * Ensures it is correctly used and the right person is calling it.
      */
     @Override
-    public void updateOnPlaceWithMeeple(String id, String player, String tileString, int x, int y, String meeple_type, String meeple_position) {
+    public void updateOnPlaceWithMeeple(String id, String player, String orientation, int x, int y, String meeple_type, String meeple_position) {
         if(!this.isWaitingForPlaceCommandFromPlayer){
             return;
         }
-
         if (!this.roleManager.isRole(id, Role.PLAYER) ){
             return;
         }
-
         if (!Objects.equals(id, player)){
             //BLamer le joueur
             return;
         }
-
         try {
-            Tile tile = new TileBuilder().build(tileString);
-            this.game.placeTile(tile, new Coordinates(x, y));
-            this.game.placeMeeple(tile, meeple_type, meeple_position);
-            send("PLACES", player, tileString, x, y, meeple_type, meeple_position);
-            this.isWaitingForPlaceCommandFromPlayer = false;
-            countPoints(tile);
-        } catch (WrongTileSyntaxException e) {
+            this.drawedTile.setOrientation(Orientation.valueOf(orientation));
+            if(this.game.checkIfTileCanBePlaced(drawedTile, new Coordinates(x, y))){
+                this.game.placeMeeple(this.drawedTile, meeple_type, meeple_position);
+                this.game.placeTile(this.drawedTile, new Coordinates(x, y));
+                send("PLACES", player, orientation, x, y, meeple_type, meeple_position);
+                this.isWaitingForPlaceCommandFromPlayer = false;
+                countPoints(this.drawedTile);
+            }
+            else {
+                //Blame le joueur
+            }
+        } catch (IllegalArgumentException | NullPointerException e) {
             //Blame le joueur
         } catch (ImpossibleBoardMove e) {
             // Blamer le joueur
