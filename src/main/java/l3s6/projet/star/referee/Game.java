@@ -5,6 +5,8 @@ import l3s6.projet.star.game.tile.Direction;
 import l3s6.projet.star.referee.board.BoardMove;
 import l3s6.projet.star.referee.board.ImpossibleBoardMove;
 import l3s6.projet.star.referee.board.OfferTile;
+import l3s6.projet.star.referee.deck.Deck;
+import l3s6.projet.star.referee.deck.EmptyDeckException;
 import l3s6.projet.star.game.board.Board;
 import l3s6.projet.star.game.board.Coordinates;
 import l3s6.projet.star.game.meeple.Meeple;
@@ -13,8 +15,6 @@ import l3s6.projet.star.game.tile.TileBuilder;
 import l3s6.projet.star.game.tile.WrongTileSyntaxException;
 import org.json.simple.parser.ParseException;
 import l3s6.projet.star.referee.player.Player;
-import l3s6.projet.star.referee.tile.Deck;
-import l3s6.projet.star.referee.tile.EmptyDeckException;
 
 import java.io.IOException;
 import java.util.ArrayList;

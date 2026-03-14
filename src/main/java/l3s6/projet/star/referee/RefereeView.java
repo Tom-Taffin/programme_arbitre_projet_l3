@@ -8,8 +8,9 @@ import l3s6.projet.star.interaction.command.InvalidArgumentNumberException;
 import l3s6.projet.star.interaction.role.Role;
 import l3s6.projet.star.interaction.view.AdminView;
 import l3s6.projet.star.referee.board.ImpossibleBoardMove;
+import l3s6.projet.star.referee.deck.EmptyDeckException;
 import l3s6.projet.star.referee.player.Player;
-import l3s6.projet.star.referee.tile.EmptyDeckException;
+
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;

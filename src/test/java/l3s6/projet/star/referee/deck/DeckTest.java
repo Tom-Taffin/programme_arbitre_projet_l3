@@ -1,4 +1,4 @@
-package l3s6.projet.star.referee.tile;
+package l3s6.projet.star.referee.deck;
 
 import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DeckTest {
     @Test
     public void testDataInitialisation() throws IOException, ParseException, EmptyDeckException {
-        Deck deck = new Deck("src/test/java/l3s6/projet/star/referee/tile/tilesMock.json");
+        Deck deck = new Deck("src/test/java/l3s6/projet/star/referee/deck/tilesMock.json");
         String field = "f1-f1-f1-f1";
         String city = "c1-c1-c1-c1";
         int amountFields = 4;
