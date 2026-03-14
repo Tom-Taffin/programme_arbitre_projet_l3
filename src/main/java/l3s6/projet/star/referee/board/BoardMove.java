@@ -26,35 +26,12 @@ public class BoardMove {
             return false;
         }
 
-        if (board.hasTile(coordinates.upCoordinates())){
-            Tile upperTile = board.getTileAt(coordinates.upCoordinates());
-
-            if (!tile.isCompatibleWith(upperTile, Direction.TOP)){
-                return false;
-            }
-        }
-
-        if (board.hasTile(coordinates.rightCoordinates())){
-            Tile rigthTile = board.getTileAt(coordinates.rightCoordinates());
-
-            if (!rigthTile.isCompatibleWith(tile, Direction.LEFT)){
-                return false;
-            }
-        }
-
-        if (board.hasTile(coordinates.downCoordinates())){
-            Tile downTile = board.getTileAt(coordinates.downCoordinates());
-
-            if (!downTile.isCompatibleWith(tile, Direction.TOP)){
-                return false;
-            }
-        }
-
-        if (board.hasTile(coordinates.leftCoordinates())){
-            Tile leftTile = board.getTileAt(coordinates.leftCoordinates());
-
-            if (!leftTile.isCompatibleWith(tile, Direction.RIGHT)){
-                return false;
+        for(Direction direction : Direction.values()){
+            if (board.hasTile(coordinates.getAdjacent(direction))){
+                Tile adjacentTile = board.getTileAt(coordinates.getAdjacent(direction));
+                if (!tile.isCompatibleWith(adjacentTile, direction)){
+                    return false;
+                }
             }
         }
 
