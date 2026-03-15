@@ -26,15 +26,17 @@ public class ScoreManager {
             Set<Zone> zones = zone.getAllBoardConnectingZones();
             if(this.isClosed(zones)){
                 Map<Player,Integer> nbMeeples = this.giveBackMeeples(zones);
-                Set<Player> players = this.getPlayerMajority(nbMeeples);
-                int points = this.pointsCalculationWhenCLosed(zones);
-                for(Player player : players){
-                    player.addPoints(points);
-                    if(pointsEarned.containsKey(player)){
-                        pointsEarned.put(player,points);
-                    }
-                    else {
-                        pointsEarned.put(player, pointsEarned.get(player) + points);
+                if(!nbMeeples.isEmpty()){
+                    Set<Player> players = this.getPlayerMajority(nbMeeples);
+                    int points = this.pointsCalculationWhenCLosed(zones);
+                    for(Player player : players){
+                        player.addPoints(points);
+                        if(pointsEarned.containsKey(player)){
+                            pointsEarned.put(player,points);
+                        }
+                        else {
+                            pointsEarned.put(player, pointsEarned.get(player) + points);
+                        }
                     }
                 }
             }

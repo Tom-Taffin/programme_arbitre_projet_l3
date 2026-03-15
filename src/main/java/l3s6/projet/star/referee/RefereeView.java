@@ -9,6 +9,7 @@ import l3s6.projet.star.interaction.command.InvalidArgumentNumberException;
 import l3s6.projet.star.interaction.role.Role;
 import l3s6.projet.star.interaction.view.AdminView;
 import l3s6.projet.star.referee.board.ImpossibleBoardMove;
+import l3s6.projet.star.referee.board.ImpossibleMeepleMoveException;
 import l3s6.projet.star.referee.deck.EmptyDeckException;
 
 import org.json.simple.parser.ParseException;

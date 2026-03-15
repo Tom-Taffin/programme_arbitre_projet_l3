@@ -4,7 +4,10 @@ import java.util.Set;
 
 import l3s6.projet.star.game.board.Board;
 import l3s6.projet.star.game.board.Coordinates;
+import l3s6.projet.star.game.edge.WrongTopologyException;
 import l3s6.projet.star.game.edge.Zone;
+import l3s6.projet.star.game.meeple.Meeple;
+import l3s6.projet.star.game.player.Player;
 import l3s6.projet.star.game.tile.Direction;
 import l3s6.projet.star.game.tile.Tile;
 
@@ -63,6 +66,38 @@ public class BoardManager {
         return false;
     }
 
+    /**
+     * Places a meeple on the tile.
+     * Throws ImpossibleBoardMove if the move is impossible
+     */
+    public void placeMeeple(Tile tile, String type, String position, Player player) throws ImpossibleMeepleMoveException {
+        if (player.hasMeeples()){
+            throw new ImpossibleMeepleMoveException("Player doesn't have any meeple.");
+        }
+        if (!type.equals("regular")){
+            throw new ImpossibleMeepleMoveException("Meeple Type is not regular");
+        }
+
+        int index;
+        try {
+            index = Integer.parseInt(position.substring(1));
+        } catch (Exception e) {
+            throw new ImpossibleMeepleMoveException("Wrong meeple position syntax");
+        }
+
+        Zone zone = tile.getZoneAt(this.parseDirection(position.charAt(0)), index);
+
+        if (this.hasMeepleOnBoardZone(zone)){
+            throw new ImpossibleMeepleMoveException("There is already meeple on the board zone");
+        }
+
+        try {
+            zone.setMeeple(new Meeple(player));
+        } catch (WrongTopologyException e) {
+            throw new ImpossibleMeepleMoveException("Meeple can't be placed on this topology");
+        }
+    }
+
     public boolean hasMeepleOnBoardZone(Zone zone) {
         Set<Zone> zones = zone.getAllBoardConnectingZones();
         for(Zone z : zones){
@@ -71,5 +106,20 @@ public class BoardManager {
             }
         }
         return false;
+    }
+
+    private Direction parseDirection(char direction) throws ImpossibleMeepleMoveException {
+        switch (direction) {
+            case 'T':
+                return Direction.TOP;
+            case 'R':
+                return Direction.RIGHT;
+            case 'B':
+                return Direction.BOTTOM;
+            case 'L':
+                return Direction.LEFT;
+            default:
+                throw new ImpossibleMeepleMoveException("Wrong meeple position syntax");
+        }
     }
 }

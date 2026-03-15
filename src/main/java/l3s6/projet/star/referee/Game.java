@@ -1,14 +1,12 @@
 package l3s6.projet.star.referee;
 
-import l3s6.projet.star.game.edge.Zone;
-import l3s6.projet.star.game.tile.Direction;
 import l3s6.projet.star.referee.board.BoardManager;
 import l3s6.projet.star.referee.board.ImpossibleBoardMove;
+import l3s6.projet.star.referee.board.ImpossibleMeepleMoveException;
 import l3s6.projet.star.referee.deck.Deck;
 import l3s6.projet.star.referee.deck.EmptyDeckException;
 import l3s6.projet.star.referee.players.PlayersManager;
 import l3s6.projet.star.game.board.Coordinates;
-import l3s6.projet.star.game.meeple.Meeple;
 import l3s6.projet.star.game.player.Player;
 import l3s6.projet.star.referee.score.ScoreManager;
 import l3s6.projet.star.game.tile.Tile;
@@ -77,6 +75,10 @@ public class Game {
         return tile;
     }
 
+    public boolean checkIfTileCanBePlaced(Tile tile, Coordinates coordinates){
+        return this.boardManager.checkIfTileCanBePlaced(tile, coordinates);
+    }
+
     /**
      * Puts the tile on the board at the given coordinates.
      * Throws ImpossibleBoardMove if the move is impossible
@@ -85,51 +87,12 @@ public class Game {
         this.boardManager.placeTile(tile, coordinates);
     }
 
-    public boolean checkIfTileCanBePlaced(Tile tile, Coordinates coordinates){
-        return this.boardManager.checkIfTileCanBePlaced(tile, coordinates);
-    }
-
     /**
      * Places a meeple on the tile.
-     * Throws ImpossibleBoardMove if the move is impossible
+     * @throws ImpossibleMeepleMoveException if the move is impossible
      */
-    public void placeMeeple(Tile tile, String type, String position) throws ImpossibleMeepleMoveException {
-        if (!this.playersManager.getCurrentPlayer().hasMeeples()){
-            throw new ImpossibleMeepleMoveException("Player doesn't have any meeple.");
-        }
-        if (!type.equals("regular")){
-            throw new ImpossibleMeepleMoveException("Meeple Type is not regular");
-        }
-
-        int index;
-        try {
-            index = Integer.parseInt(position.substring(1));
-        } catch (Exception e) {
-            throw new ImpossibleMeepleMoveException("Wrong meeple position syntax");
-        }
-
-        Zone zone = tile.getZoneAt(this.parseDirection(position.charAt(0)), index);
-
-        if (this.boardManager.hasMeepleOnBoardZone(zone)){
-            throw new ImpossibleMeepleMoveException("There is already meeple on the board zone");
-        }
-
-        zone.setMeeple(new Meeple(this.playersManager.getCurrentPlayer()));
-    }
-
-    private Direction parseDirection(char direction) throws ImpossibleMeepleMoveException {
-        switch (direction) {
-            case 'T':
-                return Direction.TOP;
-            case 'R':
-                return Direction.RIGHT;
-            case 'B':
-                return Direction.BOTTOM;
-            case 'L':
-                return Direction.LEFT;
-            default:
-                throw new ImpossibleMeepleMoveException("Wrong meeple position syntax");
-        }
+    public void placeMeeple(Tile tile, String type, String position) throws ImpossibleMeepleMoveException{
+        this.boardManager.placeMeeple(tile, type, position, this.playersManager.getCurrentPlayer());
     }
 
     /**
