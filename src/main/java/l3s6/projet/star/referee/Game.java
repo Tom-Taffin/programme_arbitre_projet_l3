@@ -166,6 +166,21 @@ public class Game {
     }
 
     /**
+     * Returns true if the provided player exists in this game.
+     * */
+    public boolean playerExists(Player player){
+        return this.getPlayers().contains(player);
+    }
+
+    /**
+     * Removes provided player from the game.
+     * Removes all his meeples.
+     */
+    public void removePlayer(Player player){
+        //ToDo
+    }
+
+    /**
      * Returns the player with the provided ID from the game.
      * If this player doesn't exist, throws an Exception.
      */

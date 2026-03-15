@@ -231,18 +231,22 @@ public class RefereeView extends AdminView {
         }
 
         if (player.getNumberOfBlames() >= MAX_NUMBER_OF_BLAMES){
-            expel(ID);
+            expel(player);
         }
     }
 
     /**
      * Expels given player from the game.
      */
-    private void expel(String ID){
+    private void expel(Player player){
         try {
-            send("EXPELS", ID);
+            send("EXPELS", player.getID());
         } catch (InvalidArgumentNumberException e) {
             throw new RuntimeException(e);
+        }
+
+        if(this.game.playerExists(player)){
+            this.game.removePlayer(player);
         }
     }
 }
