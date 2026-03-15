@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 
 public class RefereeView extends AdminView {
     private final Game game;
@@ -39,7 +40,6 @@ public class RefereeView extends AdminView {
         if (this.game.playerExists(ID)){
             return;
         }
-
         this.game.addPlayer(new Player(ID, this.game.getNbMeeplesPerPlayer()));
     }
 
@@ -115,7 +115,9 @@ public class RefereeView extends AdminView {
             this.game.placeTile(drawnTile, new Coordinates(x, y));
             send("PLACES", id, orientation, x, y);
             this.isWaitingForPlaceCommandFromPlayer = false;
-            updateScores();
+            this.calculatePointsEarned();
+        } catch (IllegalArgumentException | NullPointerException e) {
+            //Blame le joueur
         } catch (ImpossibleBoardMove e) {
             blame(id, "illegal-move");
         } catch (InvalidArgumentNumberException e) {
@@ -161,7 +163,7 @@ public class RefereeView extends AdminView {
                 send("PLACES", id, orientation, x, y, meeple_type, meeple_position);
 
                 this.isWaitingForPlaceCommandFromPlayer = false;
-                updateScores();
+                this.calculatePointsEarned();
             }
             else {
                 blame(id, "illegal-move");
@@ -178,23 +180,11 @@ public class RefereeView extends AdminView {
      * Sends the amount of points each player won with SCORES command.
      * If no zone is finished, nothing happens.
      */
-    private void updateScores(){
-        if(!this.game.checkIfTileFinishesZone(this.game.getLastDrawnTile())){
-            this.game.changeCurrentPlayer();
-            offerTile();
-            return;
+    private void calculatePointsEarned() throws InvalidArgumentNumberException{
+        Map<Player,Integer> pointEarned = this.game.calculatePointsEarned(this.drawedTile);
+        for (Player player : pointEarned.keySet()){
+            send("SCORES", player.getID(), pointEarned.get(player));
         }
-
-        Map<Player, Integer> points = this.game.countPoints(this.game.getLastDrawnTile());
-
-        for(Player player: points.keySet()){
-            try {
-                send("SCORES", player.getID(), points.get(player));
-            } catch (InvalidArgumentNumberException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
         this.game.changeCurrentPlayer();
         offerTile();
     }
