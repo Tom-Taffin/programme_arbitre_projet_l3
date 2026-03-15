@@ -138,4 +138,28 @@ public class Game {
         return null;
     }
 
+    /**
+     * Returns true if a player with the provided ID exists in this game.
+     * */
+    public boolean playerExists(String ID){
+        for(Player player: this.getPlayers()){
+            if (player.getID().equals(ID)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns the player with the provided ID from the game.
+     * If this player doesn't exist, throws an Exception.
+     */
+    public Player findPlayerFromId(String ID) throws NonExistantPlayerException {
+        for(Player player: this.getPlayers()){
+            if (player.getID().equals(ID)){
+                return player;
+            }
+        }
+        throw new NonExistantPlayerException("This player does not exist.");
+    }
 }

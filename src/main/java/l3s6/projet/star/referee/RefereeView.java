@@ -37,6 +37,10 @@ public class RefereeView extends AdminView {
      * Adds him to the game.
      */
     private void initializePlayer(String ID){
+        if (this.game.playerExists(ID)){
+            return;
+        }
+
         this.game.addPlayer(new Player(ID, this.game.getNbMeeplesPerPlayer()));
     }
 
@@ -88,7 +92,7 @@ public class RefereeView extends AdminView {
      * Ensures it is correctly used and the right person is calling it.
      */
     @Override
-    public void updateOnPlace(String id, String player, String orientation, int x, int y) {
+    public void updateOnPlace(String id, String idPrime, String orientation, int x, int y) {
         if(!this.isWaitingForPlaceCommandFromPlayer){
             return;
         }
@@ -97,14 +101,18 @@ public class RefereeView extends AdminView {
             return;
         }
 
-        if (!Objects.equals(id, player)){
-            //BLamer le joueur
+        if(!this.game.playerExists(idPrime)){
+            return;
+        }
+
+        if (!id.equals(idPrime)){
+            blame(id, "illegal-id");
             return;
         }
         try {
             this.drawedTile.setOrientation(Orientation.valueOf(orientation));
             this.game.placeTile(this.drawedTile, new Coordinates(x, y));
-            send("PLACES", player, orientation, x, y);
+            send("PLACES", idPrime, orientation, x, y);
             this.isWaitingForPlaceCommandFromPlayer = false;
             countPoints(this.drawedTile);
         } catch (IllegalArgumentException | NullPointerException e) {
@@ -181,7 +189,15 @@ public class RefereeView extends AdminView {
     /**
      * Blames the player and sends him the reason. If the player exceeds max number of blames, he is expelled.
      */
-    public void blame(Player player, String reason){
+    public void blame(String ID, String reason){
+        Player player;
+
+        try {
+            player = this.game.findPlayerFromId(ID);
+        } catch (NonExistantPlayerException e) {
+            return;
+        }
+
         player.blame();
         try {
             send("BLAMES", player.getID(), reason);
@@ -195,18 +211,5 @@ public class RefereeView extends AdminView {
                 throw new RuntimeException(e);
             }
         }
-    }
-
-    /**
-     * Returns the player with the provided ID from the game.
-     * If this player doesn't exist, throws an Exception.
-     */
-    private Player findPlayerFromId(String Id) throws NonExistantPlayerException {
-        for(Player player: this.game.getPlayers()){
-            if (player.getID().equals(Id)){
-                return player;
-            }
-        }
-        throw new NonExistantPlayerException("This player does not exist.");
     }
 }
