@@ -16,6 +16,7 @@ import org.json.simple.parser.ParseException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Collections;
+import java.util.Map;
 
 public class RefereeView extends AdminView {
     private final Game game;
@@ -66,7 +67,7 @@ public class RefereeView extends AdminView {
      * If there are no more tiles the game ends.
      * If there is only one player he is declared a winner.
      */
-    private void offerTile() throws InvalidArgumentNumberException, WrongTileSyntaxException{
+    private void offerTile(){
         if(this.game.getPlayers().size() <= 1){
             endsGame();
         }
@@ -77,6 +78,8 @@ public class RefereeView extends AdminView {
                 isWaitingForPlaceCommandFromPlayer = true;
             } catch (EmptyDeckException e) {
                 endsGame();
+            } catch (InvalidArgumentNumberException | WrongTileSyntaxException e) {
+                throw new RuntimeException(e);
             }
         }
     }
@@ -112,7 +115,7 @@ public class RefereeView extends AdminView {
             this.game.placeTile(drawnTile, new Coordinates(x, y));
             send("PLACES", id, orientation, x, y);
             this.isWaitingForPlaceCommandFromPlayer = false;
-            countPoints();
+            updateScores();
         } catch (ImpossibleBoardMove e) {
             blame(id, "illegal-move");
         } catch (InvalidArgumentNumberException e) {
@@ -158,7 +161,7 @@ public class RefereeView extends AdminView {
                 send("PLACES", id, orientation, x, y, meeple_type, meeple_position);
 
                 this.isWaitingForPlaceCommandFromPlayer = false;
-                countPoints();
+                updateScores();
             }
             else {
                 blame(id, "illegal-move");
@@ -172,10 +175,24 @@ public class RefereeView extends AdminView {
 
     /**
      * Counts points for each player when a zone is finished.
+     * Sends the amount of points each player won with SCORES command.
      * If no zone is finished, nothing happens.
      */
-    private void countPoints(){
+    private void updateScores(){
+        if(!this.game.checkIfTileFinishesZone(this.game.getLastDrawnTile())){
+            offerTile();
+            return;
+        }
 
+        Map<Player, Integer> points = this.game.countPoints(this.game.getLastDrawnTile());
+
+        for(Player player: points.keySet()){
+            try {
+                send("SCORES", player.getID(), points.get(player));
+            } catch (InvalidArgumentNumberException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     /**

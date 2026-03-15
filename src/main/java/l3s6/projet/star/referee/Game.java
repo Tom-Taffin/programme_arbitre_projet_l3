@@ -131,6 +131,13 @@ public class Game {
     }
 
     /**
+     * Return true if provided tile finishes any zone on the board.
+     */
+    public boolean checkIfTileFinishesZone(Tile tile){
+        return false;
+    }
+
+    /**
      * If a zone is finished, updates scores and gives back meeples.
      * Otherwise, does nothing.
      * @return a map with the players who have earned points in keys and the number of points earned in value
