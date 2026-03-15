@@ -112,58 +112,58 @@ public class RefereeView extends AdminView {
         try {
             this.drawedTile.setOrientation(Orientation.valueOf(orientation));
             this.game.placeTile(this.drawedTile, new Coordinates(x, y));
-            send("PLACES", idPrime, orientation, x, y);
+            send("PLACES", id, orientation, x, y);
             this.isWaitingForPlaceCommandFromPlayer = false;
-            countPoints(this.drawedTile);
-        } catch (IllegalArgumentException | NullPointerException e) {
-            //Blame le joueur
+            countPoints();
         } catch (ImpossibleBoardMove e) {
-            // Blamer le joueur
+            blame(id, "illegal-move");
         } catch (InvalidArgumentNumberException e) {
-            // Blame le joueur
             throw new RuntimeException(e);
         }
     }
 
     /**
-     * Checks if the received tile and meeple placement are correct, then updates the board and informs other players.
+     * Case where the player places the tile and a meeple.
+     * Checks if the received tile and meeple placement are correct, then updates the board and informs other players about the moves.
      * Blames the player otherwise.
      * Must be called when waiting for PLACES command from current player
      * Ensures it is correctly used and the right person is calling it.
      */
     @Override
-    public void updateOnPlaceWithMeeple(String id, String player, String orientation, int x, int y, String meeple_type, String meeple_position) {
+    public void updateOnPlaceWithMeeple(String id, String idPrime, String orientation, int x, int y, String meeple_type, String meeple_position) {
         if(!this.isWaitingForPlaceCommandFromPlayer){
             return;
         }
+
         if (!this.roleManager.isRole(id, Role.PLAYER) ){
             return;
         }
-        if (!Objects.equals(id, player)){
-            //BLamer le joueur
+
+        if(!this.game.playerExists(idPrime)){
             return;
         }
+
+        if (!id.equals(idPrime)){
+            blame(id, "illegal-id");
+            return;
+        }
+
         try {
             this.drawedTile.setOrientation(Orientation.valueOf(orientation));
             if(this.game.checkIfTileCanBePlaced(drawedTile, new Coordinates(x, y))){
                 this.game.placeMeeple(this.drawedTile, meeple_type, meeple_position);
                 this.game.placeTile(this.drawedTile, new Coordinates(x, y));
-                send("PLACES", player, orientation, x, y, meeple_type, meeple_position);
+                send("PLACES", id, orientation, x, y, meeple_type, meeple_position);
                 this.isWaitingForPlaceCommandFromPlayer = false;
-                countPoints(this.drawedTile);
+                countPoints();
             }
             else {
-                //Blame le joueur
+                blame(id, "illegal-move");
             }
-        } catch (IllegalArgumentException | NullPointerException e) {
-            //Blame le joueur
-        } catch (ImpossibleBoardMove e) {
-            // Blamer le joueur
+        } catch (ImpossibleBoardMove | ImpossibleMeepleMoveException e) {
+            blame(id, "illegal-move");
         } catch (InvalidArgumentNumberException e) {
-            // Blame le joueur
             throw new RuntimeException(e);
-        } catch (ImpossibleMeepleMoveException e) {
-            // Blame le joueur
         }
     }
 
@@ -171,7 +171,7 @@ public class RefereeView extends AdminView {
      * Counts points for each player when a zone is finished.
      * If no zone is finished, nothing happens.
      */
-    private void countPoints(Tile tile){
+    private void countPoints(){
 
     }
 
