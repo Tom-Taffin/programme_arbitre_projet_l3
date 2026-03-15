@@ -16,14 +16,12 @@ import org.json.simple.parser.ParseException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Collections;
-import java.util.Objects;
 
 public class RefereeView extends AdminView {
     private final Game game;
     private final int MAX_NUMBER_OF_BLAMES = 5;
 
     private boolean isWaitingForPlaceCommandFromPlayer;
-    private Tile drawedTile;
 
     public RefereeView(String ipAddress, int port, String id, String path) throws URISyntaxException, InterruptedException, IOException, ParseException {
         super(ipAddress, port, id);
@@ -75,7 +73,6 @@ public class RefereeView extends AdminView {
         else{
             try {
                 Tile tile = game.drawTile();
-                this.drawedTile = tile;
                 send("OFFERS", game.getCurrentPlayer().getID(), tile.toString());
                 isWaitingForPlaceCommandFromPlayer = true;
             } catch (EmptyDeckException e) {
@@ -110,8 +107,9 @@ public class RefereeView extends AdminView {
             return;
         }
         try {
-            this.drawedTile.setOrientation(Orientation.valueOf(orientation));
-            this.game.placeTile(this.drawedTile, new Coordinates(x, y));
+            Tile drawnTile = this.game.getLastDrawnTile();
+            drawnTile.setOrientation(Orientation.valueOf(orientation));
+            this.game.placeTile(drawnTile, new Coordinates(x, y));
             send("PLACES", id, orientation, x, y);
             this.isWaitingForPlaceCommandFromPlayer = false;
             countPoints();
@@ -149,11 +147,16 @@ public class RefereeView extends AdminView {
         }
 
         try {
-            this.drawedTile.setOrientation(Orientation.valueOf(orientation));
-            if(this.game.checkIfTileCanBePlaced(drawedTile, new Coordinates(x, y))){
-                this.game.placeMeeple(this.drawedTile, meeple_type, meeple_position);
-                this.game.placeTile(this.drawedTile, new Coordinates(x, y));
+            Tile drawnTile = this.game.getLastDrawnTile();
+
+            drawnTile.setOrientation(Orientation.valueOf(orientation));
+
+            if(this.game.checkIfTileCanBePlaced(drawnTile, new Coordinates(x, y))){
+                this.game.placeMeeple(drawnTile, meeple_type, meeple_position);
+                this.game.placeTile(drawnTile, new Coordinates(x, y));
+
                 send("PLACES", id, orientation, x, y, meeple_type, meeple_position);
+
                 this.isWaitingForPlaceCommandFromPlayer = false;
                 countPoints();
             }

@@ -26,6 +26,7 @@ public class Game {
     private PlayersManager playersManager;
     private Deck deck;
     private BoardManager boardManager;
+    private Tile lastDrawnTile;
 
     public Game(String path) throws IOException, ParseException {
         this.boardManager = new BoardManager();
@@ -37,8 +38,8 @@ public class Game {
         return NB_MEEPLES_PER_PLAYER;
     }
 
-    public static int getMaxNumberOfBlames() {
-        return MAX_NUMBER_OF_BLAMES;
+    public Tile getLastDrawnTile() {
+        return lastDrawnTile;
     }
 
     public void addPlayer(Player player){
@@ -71,6 +72,8 @@ public class Game {
         while (!this.boardManager.hasValidPosition(tile)){
             tile = new TileBuilder().build(this.deck.drawTile());
         }
+
+        lastDrawnTile = tile;
         return tile;
     }
 
