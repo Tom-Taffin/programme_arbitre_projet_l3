@@ -19,8 +19,6 @@ import java.io.IOException;
 import java.util.*;
 
 public class Game {
-
-    private static final int MAX_NUMBER_OF_BLAMES = 5;
     private static final int NB_MEEPLES_PER_PLAYER = 7;
 
     private PlayersManager playersManager;
