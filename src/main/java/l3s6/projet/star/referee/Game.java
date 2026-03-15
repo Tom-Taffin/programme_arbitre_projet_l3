@@ -22,13 +22,12 @@ import java.io.IOException;
 import java.util.*;
 
 public class Game {
-
-    private static final int MAX_NUMBER_OF_BLAMES = 5;
     private static final int NB_MEEPLES_PER_PLAYER = 7;
 
     private PlayersManager playersManager;
     private Deck deck;
     private BoardManager boardManager;
+    private Tile lastDrawnTile;
     private ScoreManager scoreManager;
 
     public Game(String path) throws IOException, ParseException {
@@ -41,8 +40,8 @@ public class Game {
         return NB_MEEPLES_PER_PLAYER;
     }
 
-    public static int getMaxNumberOfBlames() {
-        return MAX_NUMBER_OF_BLAMES;
+    public Tile getLastDrawnTile() {
+        return lastDrawnTile;
     }
 
     public void addPlayer(Player player){
@@ -75,6 +74,8 @@ public class Game {
         while (!this.boardManager.hasValidPosition(tile)){
             tile = new TileBuilder().build(this.deck.drawTile());
         }
+
+        lastDrawnTile = tile;
         return tile;
     }
 
@@ -134,6 +135,13 @@ public class Game {
     }
 
     /**
+     * Return true if provided tile finishes any zone on the board.
+     */
+    public boolean checkIfTileFinishesZone(Tile tile){
+        return false;
+    }
+
+    /**
      * After the tile is placed,
      * If a zone is finished, updates players scores and gives back meeples.
      * Otherwise, does nothing.
@@ -143,4 +151,50 @@ public class Game {
         return this.scoreManager.calculatePointsEarned(tile);
     }
 
+    /**
+     * Changes the current player for the next one.
+     */
+    public void changeCurrentPlayer(){
+        //ToDo
+    }
+
+    /**
+     * Returns true if a player with the provided ID exists in this game.
+     * */
+    public boolean playerExists(String ID){
+        for(Player player: this.getPlayers()){
+            if (player.getID().equals(ID)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns true if the provided player exists in this game.
+     * */
+    public boolean playerExists(Player player){
+        return this.getPlayers().contains(player);
+    }
+
+    /**
+     * Removes provided player from the game.
+     * Removes all his meeples.
+     */
+    public void removePlayer(Player player){
+        //ToDo
+    }
+
+    /**
+     * Returns the player with the provided ID from the game.
+     * If this player doesn't exist, throws an Exception.
+     */
+    public Player findPlayerFromId(String ID) throws NonExistantPlayerException {
+        for(Player player: this.getPlayers()){
+            if (player.getID().equals(ID)){
+                return player;
+            }
+        }
+        throw new NonExistantPlayerException("This player does not exist.");
+    }
 }

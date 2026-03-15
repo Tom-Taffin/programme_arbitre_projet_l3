@@ -15,6 +15,7 @@ import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
@@ -23,7 +24,6 @@ public class RefereeView extends AdminView {
     private final int MAX_NUMBER_OF_BLAMES = 5;
 
     private boolean isWaitingForPlaceCommandFromPlayer;
-    private Tile drawedTile;
 
     public RefereeView(String ipAddress, int port, String id, String path) throws URISyntaxException, InterruptedException, IOException, ParseException {
         super(ipAddress, port, id);
@@ -33,15 +33,19 @@ public class RefereeView extends AdminView {
     }
 
     /**
-     * Initializes all the players: Waits for their connection and sets their score to 0.
+     * Initializes player when it connects.
+     * Adds him to the game.
      */
     private void initializePlayer(String ID){
+        if (this.game.playerExists(ID)){
+            return;
+        }
         this.game.addPlayer(new Player(ID, this.game.getNbMeeplesPerPlayer()));
     }
 
     /**
-     * Sends a COLLECTS and COLORS message to each player.
-     * Adds each player to the game then starts it.
+     * Starts the game and gives a certain number of meeples to each player.
+     * Randomly makes an order for the players then starts a turn by drawing a tile.
      */
     public void startGame() throws InvalidArgumentNumberException, WrongTileSyntaxException{
         try {
@@ -53,37 +57,42 @@ public class RefereeView extends AdminView {
             throw new RuntimeException(e);
         }
 
+        Collections.shuffle(this.game.getPlayers());
         this.game.setStartingPlayer(this.game.getPlayers().get(0));
         offerTile();
     }
 
     /**
-     * Draws tile from deck and offers it to the player. If there are no more cards the game ends.
+     * Beginning of a turn: This method draws tile from deck and offers it to the current player.
+     * If there are no more tiles the game ends.
+     * If there is only one player he is declared a winner.
      */
-    private void offerTile() throws InvalidArgumentNumberException, WrongTileSyntaxException{
+    private void offerTile(){
         if(this.game.getPlayers().size() <= 1){
             endsGame();
         }
         else{
             try {
                 Tile tile = game.drawTile();
-                this.drawedTile = tile;
                 send("OFFERS", game.getCurrentPlayer().getID(), tile.toString());
                 isWaitingForPlaceCommandFromPlayer = true;
             } catch (EmptyDeckException e) {
                 endsGame();
+            } catch (InvalidArgumentNumberException | WrongTileSyntaxException e) {
+                throw new RuntimeException(e);
             }
         }
     }
 
     /**
-     * Checks if the received tile placement is correct, then updates the board and informs other players.
+     * Case where the player places the tile without a meeple.
+     * Checks if the received tile placement is correct, then updates the board and informs other players about the move.
      * Blames the player otherwise.
-     * Must be called when waiting for PLACES command from current player
+     * Must be called when waiting for PLACES command from current player.
      * Ensures it is correctly used and the right person is calling it.
      */
     @Override
-    public void updateOnPlace(String id, String player, String orientation, int x, int y) {
+    public void updateOnPlace(String id, String idPrime, String orientation, int x, int y) {
         if(!this.isWaitingForPlaceCommandFromPlayer){
             return;
         }
@@ -92,83 +101,96 @@ public class RefereeView extends AdminView {
             return;
         }
 
-        if (!Objects.equals(id, player)){
-            //BLamer le joueur
+        if(!this.game.playerExists(idPrime)){
+            return;
+        }
+
+        if (!id.equals(idPrime)){
+            blame(id, "illegal-id");
             return;
         }
         try {
-            this.drawedTile.setOrientation(Orientation.valueOf(orientation));
-            this.game.placeTile(this.drawedTile, new Coordinates(x, y));
-            send("PLACES", player, orientation, x, y);
+            Tile drawnTile = this.game.getLastDrawnTile();
+            drawnTile.setOrientation(Orientation.valueOf(orientation));
+            this.game.placeTile(drawnTile, new Coordinates(x, y));
+            send("PLACES", id, orientation, x, y);
             this.isWaitingForPlaceCommandFromPlayer = false;
             this.calculatePointsEarned();
         } catch (IllegalArgumentException | NullPointerException e) {
             //Blame le joueur
         } catch (ImpossibleBoardMove e) {
-            // Blamer le joueur
+            blame(id, "illegal-move");
         } catch (InvalidArgumentNumberException e) {
-            // Blame le joueur
             throw new RuntimeException(e);
         }
     }
 
     /**
-     * Checks if the received tile and meeple placement are correct, then updates the board and informs other players.
+     * Case where the player places the tile and a meeple.
+     * Checks if the received tile and meeple placement are correct, then updates the board and informs other players about the moves.
      * Blames the player otherwise.
      * Must be called when waiting for PLACES command from current player
      * Ensures it is correctly used and the right person is calling it.
      */
     @Override
-    public void updateOnPlaceWithMeeple(String id, String player, String orientation, int x, int y, String meeple_type, String meeple_position) {
+    public void updateOnPlaceWithMeeple(String id, String idPrime, String orientation, int x, int y, String meeple_type, String meeple_position) {
         if(!this.isWaitingForPlaceCommandFromPlayer){
             return;
         }
+
         if (!this.roleManager.isRole(id, Role.PLAYER) ){
             return;
         }
-        if (!Objects.equals(id, player)){
-            //BLamer le joueur
+
+        if(!this.game.playerExists(idPrime)){
             return;
         }
+
+        if (!id.equals(idPrime)){
+            blame(id, "illegal-id");
+            return;
+        }
+
         try {
-            this.drawedTile.setOrientation(Orientation.valueOf(orientation));
-            if(this.game.checkIfTileCanBePlaced(drawedTile, new Coordinates(x, y))){
-                this.game.placeMeeple(this.drawedTile, meeple_type, meeple_position);
-                this.game.placeTile(this.drawedTile, new Coordinates(x, y));
-                send("PLACES", player, orientation, x, y, meeple_type, meeple_position);
+            Tile drawnTile = this.game.getLastDrawnTile();
+
+            drawnTile.setOrientation(Orientation.valueOf(orientation));
+
+            if(this.game.checkIfTileCanBePlaced(drawnTile, new Coordinates(x, y))){
+                this.game.placeMeeple(drawnTile, meeple_type, meeple_position);
+                this.game.placeTile(drawnTile, new Coordinates(x, y));
+
+                send("PLACES", id, orientation, x, y, meeple_type, meeple_position);
+
                 this.isWaitingForPlaceCommandFromPlayer = false;
                 this.calculatePointsEarned();
             }
             else {
-                //Blame le joueur
+                blame(id, "illegal-move");
             }
-        } catch (IllegalArgumentException | NullPointerException e) {
-            //Blame le joueur
-        } catch (ImpossibleBoardMove e) {
-            // Blamer le joueur
+        } catch (ImpossibleBoardMove | ImpossibleMeepleMoveException e) {
+            blame(id, "illegal-move");
         } catch (InvalidArgumentNumberException e) {
-            // Blame le joueur
             throw new RuntimeException(e);
-        } catch (ImpossibleMeepleMoveException e) {
-            // Blame le joueur
         }
     }
 
     /**
-     * After the tile is placed,
-     * If a zone is finished, updates players scores, gives back meeples 
-     * and send point earned to players.
-     * Otherwise, does nothing.
+     * Counts points for each player when a zone is finished.
+     * Sends the amount of points each player won with SCORES command.
+     * If no zone is finished, nothing happens.
      */
     private void calculatePointsEarned() throws InvalidArgumentNumberException{
         Map<Player,Integer> pointEarned = this.game.calculatePointsEarned(this.drawedTile);
         for (Player player : pointEarned.keySet()){
             send("SCORES", player.getID(), pointEarned.get(player));
         }
+        this.game.changeCurrentPlayer();
+        offerTile();
     }
 
     /**
-     * Ends game, sends an appropriate message to everybody.
+     * Determines who the winner is and sends a ENDS command.
      */
     private void endsGame(){
         try {
@@ -179,21 +201,42 @@ public class RefereeView extends AdminView {
     }
 
     /**
-     * Blames the player, gives him a reason. If the player exceeds max number of blames, he is expelled.
+     * Blames the player and sends him the reason. If the player exceeds max number of blames, he is expelled.
      */
-    public void blame(Player player, String reason){
+    private void blame(String ID, String reason){
+        Player player;
+
+        try {
+            player = this.game.findPlayerFromId(ID);
+        } catch (NonExistantPlayerException e) {
+            return;
+        }
+
         player.blame();
+
         try {
             send("BLAMES", player.getID(), reason);
         } catch (InvalidArgumentNumberException e) {
             throw new RuntimeException(e);
         }
-        if (player.getNumberOfBlames() > MAX_NUMBER_OF_BLAMES){
-            try {
-                send("EXPELS", player.getID());
-            } catch (InvalidArgumentNumberException e) {
-                throw new RuntimeException(e);
-            }
+
+        if (player.getNumberOfBlames() >= MAX_NUMBER_OF_BLAMES){
+            expel(player);
+        }
+    }
+
+    /**
+     * Expels given player from the game.
+     */
+    private void expel(Player player){
+        try {
+            send("EXPELS", player.getID());
+        } catch (InvalidArgumentNumberException e) {
+            throw new RuntimeException(e);
+        }
+
+        if(this.game.playerExists(player)){
+            this.game.removePlayer(player);
         }
     }
 }
