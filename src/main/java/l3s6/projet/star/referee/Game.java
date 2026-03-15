@@ -1,5 +1,7 @@
 package l3s6.projet.star.referee;
 
+import l3s6.projet.star.game.edge.NoMeepleException;
+import l3s6.projet.star.game.edge.Topology;
 import l3s6.projet.star.game.edge.Zone;
 import l3s6.projet.star.game.tile.Direction;
 import l3s6.projet.star.referee.board.BoardManager;
@@ -10,6 +12,7 @@ import l3s6.projet.star.referee.players.PlayersManager;
 import l3s6.projet.star.game.board.Coordinates;
 import l3s6.projet.star.game.meeple.Meeple;
 import l3s6.projet.star.game.player.Player;
+import l3s6.projet.star.referee.score.ScoreManager;
 import l3s6.projet.star.game.tile.Tile;
 import l3s6.projet.star.game.tile.TileBuilder;
 import l3s6.projet.star.game.tile.WrongTileSyntaxException;
@@ -26,6 +29,7 @@ public class Game {
     private PlayersManager playersManager;
     private Deck deck;
     private BoardManager boardManager;
+    private ScoreManager scoreManager;
 
     public Game(String path) throws IOException, ParseException {
         this.boardManager = new BoardManager();
@@ -130,12 +134,13 @@ public class Game {
     }
 
     /**
-     * If a zone is finished, updates scores and gives back meeples.
+     * After the tile is placed,
+     * If a zone is finished, updates players scores and gives back meeples.
      * Otherwise, does nothing.
      * @return a map with the players who have earned points in keys and the number of points earned in value
      */
-    public Map<Player,Integer> countPoints(Tile tile){
-        return null;
+    public Map<Player,Integer> calculatePointsEarned(Tile tile){
+        return this.scoreManager.calculatePointsEarned(tile);
     }
 
 }

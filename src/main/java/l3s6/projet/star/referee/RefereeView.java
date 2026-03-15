@@ -1,7 +1,6 @@
 package l3s6.projet.star.referee;
 
 import l3s6.projet.star.game.board.Coordinates;
-import l3s6.projet.star.game.meeple.Color;
 import l3s6.projet.star.game.player.Player;
 import l3s6.projet.star.game.tile.Orientation;
 import l3s6.projet.star.game.tile.Tile;
@@ -16,6 +15,7 @@ import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Map;
 import java.util.Objects;
 
 public class RefereeView extends AdminView {
@@ -36,7 +36,7 @@ public class RefereeView extends AdminView {
      * Initializes all the players: Waits for their connection and sets their score to 0.
      */
     private void initializePlayer(String ID){
-        this.game.addPlayer(new Player(ID, Color.RED, this.game.getNbMeeplesPerPlayer()));
+        this.game.addPlayer(new Player(ID, this.game.getNbMeeplesPerPlayer()));
     }
 
     /**
@@ -48,7 +48,6 @@ public class RefereeView extends AdminView {
             send("STARTS");
             for(Player player: this.game.getPlayers()){
                 send("COLLECTS", player.getID(), this.game.getNbMeeplesPerPlayer());
-                send("COLORS", player.getID(), player.getColor());
             }
         } catch (InvalidArgumentNumberException e) {
             throw new RuntimeException(e);
@@ -102,7 +101,7 @@ public class RefereeView extends AdminView {
             this.game.placeTile(this.drawedTile, new Coordinates(x, y));
             send("PLACES", player, orientation, x, y);
             this.isWaitingForPlaceCommandFromPlayer = false;
-            countPoints(this.drawedTile);
+            this.calculatePointsEarned();
         } catch (IllegalArgumentException | NullPointerException e) {
             //Blame le joueur
         } catch (ImpossibleBoardMove e) {
@@ -138,7 +137,7 @@ public class RefereeView extends AdminView {
                 this.game.placeTile(this.drawedTile, new Coordinates(x, y));
                 send("PLACES", player, orientation, x, y, meeple_type, meeple_position);
                 this.isWaitingForPlaceCommandFromPlayer = false;
-                countPoints(this.drawedTile);
+                this.calculatePointsEarned();
             }
             else {
                 //Blame le joueur
@@ -156,11 +155,16 @@ public class RefereeView extends AdminView {
     }
 
     /**
-     * Counts points for each player when a zone is finished.
-     * If no zone is finished, nothing happens.
+     * After the tile is placed,
+     * If a zone is finished, updates players scores, gives back meeples 
+     * and send point earned to players.
+     * Otherwise, does nothing.
      */
-    private void countPoints(Tile tile){
-
+    private void calculatePointsEarned() throws InvalidArgumentNumberException{
+        Map<Player,Integer> pointEarned = this.game.calculatePointsEarned(this.drawedTile);
+        for (Player player : pointEarned.keySet()){
+            send("SCORES", player.getID(), pointEarned.get(player));
+        }
     }
 
     /**
