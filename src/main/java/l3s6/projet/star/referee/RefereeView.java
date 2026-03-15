@@ -1,7 +1,6 @@
 package l3s6.projet.star.referee;
 
 import l3s6.projet.star.game.board.Coordinates;
-import l3s6.projet.star.game.meeple.Color;
 import l3s6.projet.star.game.player.Player;
 import l3s6.projet.star.game.tile.Orientation;
 import l3s6.projet.star.game.tile.Tile;
@@ -33,10 +32,11 @@ public class RefereeView extends AdminView {
     }
 
     /**
-     * Initializes all the players: Waits for their connection and sets their score to 0.
+     * Initializes player when it connects.
+     * Adds him to the game.
      */
     private void initializePlayer(String ID){
-        this.game.addPlayer(new Player(ID, Color.RED, this.game.getNbMeeplesPerPlayer()));
+        this.game.addPlayer(new Player(ID, this.game.getNbMeeplesPerPlayer()));
     }
 
     /**
