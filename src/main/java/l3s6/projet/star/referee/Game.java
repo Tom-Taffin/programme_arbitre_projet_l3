@@ -147,6 +147,13 @@ public class Game {
     }
 
     /**
+     * Changes the current player for the next one.
+     */
+    public void changeCurrentPlayer(){
+        //ToDo
+    }
+
+    /**
      * Returns true if a player with the provided ID exists in this game.
      * */
     public boolean playerExists(String ID){

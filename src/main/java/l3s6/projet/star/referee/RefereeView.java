@@ -180,6 +180,7 @@ public class RefereeView extends AdminView {
      */
     private void updateScores(){
         if(!this.game.checkIfTileFinishesZone(this.game.getLastDrawnTile())){
+            this.game.changeCurrentPlayer();
             offerTile();
             return;
         }
@@ -193,10 +194,13 @@ public class RefereeView extends AdminView {
                 throw new RuntimeException(e);
             }
         }
+
+        this.game.changeCurrentPlayer();
+        offerTile();
     }
 
     /**
-     * Ends game, sends an appropriate message to everybody.
+     * Determines who the winner is and sends a ENDS command.
      */
     private void endsGame(){
         try {
@@ -209,7 +213,7 @@ public class RefereeView extends AdminView {
     /**
      * Blames the player and sends him the reason. If the player exceeds max number of blames, he is expelled.
      */
-    public void blame(String ID, String reason){
+    private void blame(String ID, String reason){
         Player player;
 
         try {
@@ -219,17 +223,26 @@ public class RefereeView extends AdminView {
         }
 
         player.blame();
+
         try {
             send("BLAMES", player.getID(), reason);
         } catch (InvalidArgumentNumberException e) {
             throw new RuntimeException(e);
         }
-        if (player.getNumberOfBlames() > MAX_NUMBER_OF_BLAMES){
-            try {
-                send("EXPELS", player.getID());
-            } catch (InvalidArgumentNumberException e) {
-                throw new RuntimeException(e);
-            }
+
+        if (player.getNumberOfBlames() >= MAX_NUMBER_OF_BLAMES){
+            expel(ID);
+        }
+    }
+
+    /**
+     * Expels given player from the game.
+     */
+    private void expel(String ID){
+        try {
+            send("EXPELS", ID);
+        } catch (InvalidArgumentNumberException e) {
+            throw new RuntimeException(e);
         }
     }
 }
