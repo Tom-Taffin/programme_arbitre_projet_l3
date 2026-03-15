@@ -81,9 +81,10 @@ public class RefereeView extends AdminView {
     }
 
     /**
-     * Checks if the received tile placement is correct, then updates the board and informs other players.
+     * Case where the player places the tile without a meeple.
+     * Checks if the received tile placement is correct, then updates the board and informs other players about the move.
      * Blames the player otherwise.
-     * Must be called when waiting for PLACES command from current player
+     * Must be called when waiting for PLACES command from current player.
      * Ensures it is correctly used and the right person is calling it.
      */
     @Override
@@ -178,7 +179,7 @@ public class RefereeView extends AdminView {
     }
 
     /**
-     * Blames the player, gives him a reason. If the player exceeds max number of blames, he is expelled.
+     * Blames the player and sends him the reason. If the player exceeds max number of blames, he is expelled.
      */
     public void blame(Player player, String reason){
         player.blame();
@@ -194,5 +195,18 @@ public class RefereeView extends AdminView {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    /**
+     * Returns the player with the provided ID from the game.
+     * If this player doesn't exist, throws an Exception.
+     */
+    private Player findPlayerFromId(String Id) throws NonExistantPlayerException {
+        for(Player player: this.game.getPlayers()){
+            if (player.getID().equals(Id)){
+                return player;
+            }
+        }
+        throw new NonExistantPlayerException("This player does not exist.");
     }
 }
