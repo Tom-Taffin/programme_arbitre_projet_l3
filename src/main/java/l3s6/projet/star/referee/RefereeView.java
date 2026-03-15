@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Objects;
 
 public class RefereeView extends AdminView {
     private final Game game;
@@ -181,7 +180,7 @@ public class RefereeView extends AdminView {
      * If no zone is finished, nothing happens.
      */
     private void calculatePointsEarned() throws InvalidArgumentNumberException{
-        Map<Player,Integer> pointEarned = this.game.calculatePointsEarned(this.drawedTile);
+        Map<Player,Integer> pointEarned = this.game.calculatePointsEarned();
         for (Player player : pointEarned.keySet()){
             send("SCORES", player.getID(), pointEarned.get(player));
         }
@@ -194,6 +193,10 @@ public class RefereeView extends AdminView {
      */
     private void endsGame(){
         try {
+            Map<Player,Integer> pointEarned = this.game.calculateEndGamePoints();
+            for (Player player : pointEarned.keySet()){
+                send("SCORES", player.getID(), pointEarned.get(player));
+            }
             send("ENDS", game.winner().getID());
         } catch (InvalidArgumentNumberException e) {
             throw new RuntimeException(e);

@@ -1,7 +1,5 @@
 package l3s6.projet.star.referee;
 
-import l3s6.projet.star.game.edge.NoMeepleException;
-import l3s6.projet.star.game.edge.Topology;
 import l3s6.projet.star.game.edge.Zone;
 import l3s6.projet.star.game.tile.Direction;
 import l3s6.projet.star.referee.board.BoardManager;
@@ -147,8 +145,13 @@ public class Game {
      * Otherwise, does nothing.
      * @return a map with the players who have earned points in keys and the number of points earned in value
      */
-    public Map<Player,Integer> calculatePointsEarned(Tile tile){
-        return this.scoreManager.calculatePointsEarned(tile);
+    public Map<Player,Integer> calculatePointsEarned(){
+        return this.scoreManager.calculatePointsEarned(this.lastDrawnTile);
+    }
+
+    public Map<Player, Integer> calculateEndGamePoints() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'calculateEndGamePoints'");
     }
 
     /**
