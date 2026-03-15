@@ -15,6 +15,7 @@ import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.Objects;
 
 public class RefereeView extends AdminView {
@@ -40,26 +41,28 @@ public class RefereeView extends AdminView {
     }
 
     /**
-     * Sends a COLLECTS and COLORS message to each player.
-     * Adds each player to the game then starts it.
+     * Starts the game and gives a certain number of meeples to each player.
+     * Randomly makes an order for the players then starts a turn by drawing a tile.
      */
     public void startGame() throws InvalidArgumentNumberException, WrongTileSyntaxException{
         try {
             send("STARTS");
             for(Player player: this.game.getPlayers()){
                 send("COLLECTS", player.getID(), this.game.getNbMeeplesPerPlayer());
-                send("COLORS", player.getID(), player.getColor());
             }
         } catch (InvalidArgumentNumberException e) {
             throw new RuntimeException(e);
         }
 
+        Collections.shuffle(this.game.getPlayers());
         this.game.setStartingPlayer(this.game.getPlayers().get(0));
         offerTile();
     }
 
     /**
-     * Draws tile from deck and offers it to the player. If there are no more cards the game ends.
+     * Beginning of a turn: This method draws tile from deck and offers it to the current player.
+     * If there are no more tiles the game ends.
+     * If there is only one player he is declared a winner.
      */
     private void offerTile() throws InvalidArgumentNumberException, WrongTileSyntaxException{
         if(this.game.getPlayers().size() <= 1){
