@@ -1,5 +1,6 @@
 package l3s6.projet.star.referee;
 
+import l3s6.projet.star.game.edge.Zone;
 import l3s6.projet.star.referee.board.BoardManager;
 import l3s6.projet.star.referee.board.ImpossibleBoardMove;
 import l3s6.projet.star.referee.board.ImpossibleMeepleMoveException;
@@ -44,6 +45,15 @@ public class Game {
 
         lastDrawnTile = tile;
         return tile;
+    }
+
+    /**
+     * Removes provided player from the game.
+     * Removes all his meeples.
+     */
+    public void removePlayer(Player player){
+        this.boardManager.removeMeeplesFrom(player);
+        this.playersManager.removePlayer(player);
     }
 
     public Tile getLastDrawnTile() {
@@ -100,6 +110,10 @@ public class Game {
 
     public void placeMeeple(Tile tile, String type, String position) throws ImpossibleMeepleMoveException{
         this.boardManager.placeMeeple(tile, type, position, this.playersManager.getCurrentPlayer());
+    }
+
+    public boolean checkIfTileFinishesZone(Tile tile){
+        return this.boardManager.checkIfTileFinishesZone(tile);
     }
 
     public Map<Player,Integer> calculatePointsEarned(){

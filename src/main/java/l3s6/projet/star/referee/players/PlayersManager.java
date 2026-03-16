@@ -7,7 +7,7 @@ import l3s6.projet.star.game.player.Player;
 
 public class PlayersManager {
 
-    private ArrayList<Player> players = new ArrayList<>();
+    private final ArrayList<Player> players = new ArrayList<>();
     private Player currentPlayer;
 
     public ArrayList<Player> getPlayers() {
@@ -38,6 +38,17 @@ public class PlayersManager {
         return currentPlayer;
     }
 
+    public void changeCurrentPlayer(){
+        this.currentPlayer = this.players.get((this.players.indexOf(this.currentPlayer) + 1)%this.players.size());
+    }
+
+    public void removePlayer(Player player){
+        if (player.equals(this.currentPlayer)){
+            changeCurrentPlayer();
+        }
+
+        players.remove(player);
+
     /**
      * Returns true if the provided player exists in this game.
      * */
@@ -55,21 +66,6 @@ public class PlayersManager {
             }
         }
         return false;
-    }
-
-    /**
-     * Changes the current player for the next one.
-     */
-    public void changeCurrentPlayer(){
-        //ToDo
-    }
-
-    /**
-     * Removes provided player from the game.
-     * Removes all his meeples.
-     */
-    public void removePlayer(Player player){
-        //ToDo
     }
 
     /**
