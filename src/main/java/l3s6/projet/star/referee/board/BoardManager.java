@@ -21,11 +21,11 @@ public class BoardManager {
 
     /**
      * Places the given tile at the given coordinates on the board.
-     * @throws ImpossibleBoardMove if the tile can't be placed.
+     * @throws ImpossibleBoardMoveException if the tile can't be placed.
      */
-    public void placeTile(Tile tile, Coordinates coordinates) throws ImpossibleBoardMove{
+    public void placeTile(Tile tile, Coordinates coordinates) throws ImpossibleBoardMoveException{
         if (!this.checkIfTileCanBePlaced(tile, coordinates)){
-            throw new ImpossibleBoardMove("Tile not compatible!");
+            throw new ImpossibleBoardMoveException("Tile not compatible!");
         }
 
         this.board.putTileAt(tile, coordinates);

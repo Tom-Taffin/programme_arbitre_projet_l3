@@ -8,7 +8,7 @@ import l3s6.projet.star.game.tile.WrongTileSyntaxException;
 import l3s6.projet.star.interaction.command.InvalidArgumentNumberException;
 import l3s6.projet.star.interaction.role.Role;
 import l3s6.projet.star.interaction.view.AdminView;
-import l3s6.projet.star.referee.board.ImpossibleBoardMove;
+import l3s6.projet.star.referee.board.ImpossibleBoardMoveException;
 import l3s6.projet.star.referee.board.ImpossibleMeepleMoveException;
 import l3s6.projet.star.referee.deck.EmptyDeckException;
 import l3s6.projet.star.referee.players.NonExistantPlayerException;
@@ -116,7 +116,7 @@ public class RefereeView extends AdminView {
             send("PLACES", id, orientation, x, y);
             this.isWaitingForPlaceCommandFromPlayer = false;
             this.calculatePointsEarned();
-        } catch (ImpossibleBoardMove e) {
+        } catch (ImpossibleBoardMoveException e) {
             blame(id, "illegal-move");
         } catch (InvalidArgumentNumberException e) {
             throw new RuntimeException(e);
@@ -166,7 +166,7 @@ public class RefereeView extends AdminView {
             else {
                 blame(id, "illegal-move");
             }
-        } catch (ImpossibleBoardMove | ImpossibleMeepleMoveException e) {
+        } catch (ImpossibleBoardMoveException | ImpossibleMeepleMoveException e) {
             blame(id, "illegal-move");
         } catch (InvalidArgumentNumberException e) {
             throw new RuntimeException(e);

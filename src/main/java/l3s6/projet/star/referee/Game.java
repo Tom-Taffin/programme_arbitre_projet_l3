@@ -1,8 +1,7 @@
 package l3s6.projet.star.referee;
 
-import l3s6.projet.star.game.edge.Zone;
 import l3s6.projet.star.referee.board.BoardManager;
-import l3s6.projet.star.referee.board.ImpossibleBoardMove;
+import l3s6.projet.star.referee.board.ImpossibleBoardMoveException;
 import l3s6.projet.star.referee.board.ImpossibleMeepleMoveException;
 import l3s6.projet.star.referee.deck.Deck;
 import l3s6.projet.star.referee.deck.EmptyDeckException;
@@ -49,6 +48,7 @@ public class Game {
 
     /**
      * Removes provided player from the game.
+     * and change current player if the deleted player was the current player
      * Removes all his meeples.
      */
     public void removePlayer(Player player){
@@ -92,10 +92,6 @@ public class Game {
         this.playersManager.changeCurrentPlayer();
     }
 
-    public void removePlayer(Player player){
-        this.playersManager.removePlayer(player);
-    }
-
     public Player findPlayerFromId(String ID) throws NonExistantPlayerException {
         return this.playersManager.findPlayerFromId(ID);
     }
@@ -104,7 +100,7 @@ public class Game {
         return this.boardManager.checkIfTileCanBePlaced(tile, coordinates);
     }
 
-    public void placeTile(Tile tile, Coordinates coordinates) throws ImpossibleBoardMove {
+    public void placeTile(Tile tile, Coordinates coordinates) throws ImpossibleBoardMoveException {
         this.boardManager.placeTile(tile, coordinates);
     }
 

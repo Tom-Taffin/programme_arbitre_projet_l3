@@ -42,12 +42,16 @@ public class PlayersManager {
         this.currentPlayer = this.players.get((this.players.indexOf(this.currentPlayer) + 1)%this.players.size());
     }
 
+    /**
+     * remove player and change player if it is the current player
+     */
     public void removePlayer(Player player){
         if (player.equals(this.currentPlayer)){
             changeCurrentPlayer();
         }
 
         players.remove(player);
+    }
 
     /**
      * Returns true if the provided player exists in this game.
