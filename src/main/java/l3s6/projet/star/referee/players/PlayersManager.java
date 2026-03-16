@@ -6,7 +6,7 @@ import l3s6.projet.star.game.player.Player;
 
 public class PlayersManager {
 
-    private ArrayList<Player> players = new ArrayList<>();
+    private final ArrayList<Player> players = new ArrayList<>();
     private Player currentPlayer;
 
     public ArrayList<Player> getPlayers() {
@@ -31,6 +31,18 @@ public class PlayersManager {
      */
     public Player winner() {
         return currentPlayer;
+    }
+
+    public void changeCurrentPlayer(){
+        this.currentPlayer = this.players.get((this.players.indexOf(this.currentPlayer) + 1)%this.players.size());
+    }
+
+    public void removePlayer(Player player){
+        if (player.equals(this.currentPlayer)){
+            changeCurrentPlayer();
+        }
+
+        players.remove(player);
     }
 
 }

@@ -122,7 +122,7 @@ public class Game {
      * Changes the current player for the next one.
      */
     public void changeCurrentPlayer(){
-        //ToDo
+       this.playersManager.changeCurrentPlayer();
     }
 
     /**
@@ -149,7 +149,7 @@ public class Game {
      * Removes all his meeples.
      */
     public void removePlayer(Player player){
-        //ToDo
+        this.playersManager.removePlayer(player);
     }
 
     /**
