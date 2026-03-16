@@ -50,9 +50,10 @@ public class Game {
      * Removes provided player from the game.
      * and change current player if the deleted player was the current player
      * Removes all his meeples.
+     * @param refereeView 
      */
-    public void removePlayer(Player player){
-        this.boardManager.removeMeeplesFrom(player);
+    public void removePlayer(Player player, RefereeView refereeView){
+        this.boardManager.removeMeeplesFrom(player, refereeView);
         this.playersManager.removePlayer(player);
     }
 
@@ -113,7 +114,6 @@ public class Game {
     }
 
     public Map<Player, Integer> calculateEndGamePoints() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'calculateEndGamePoints'");
+        return this.scoreManager.calculateEndGamePoints();
     }
 }

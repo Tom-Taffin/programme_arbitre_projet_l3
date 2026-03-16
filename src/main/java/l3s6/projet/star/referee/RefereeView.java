@@ -241,7 +241,7 @@ public class RefereeView extends AdminView {
             this.isWaitingForPlaceCommandFromPlayer = false;
             this.game.changeCurrentPlayer();
             offerTile();
-            this.game.removePlayer(player);
+            this.game.removePlayer(player, this);
         }
     }
 }

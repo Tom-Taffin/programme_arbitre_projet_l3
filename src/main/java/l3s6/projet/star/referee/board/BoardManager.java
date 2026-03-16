@@ -4,6 +4,7 @@ import java.util.Set;
 
 import l3s6.projet.star.game.board.Board;
 import l3s6.projet.star.game.board.Coordinates;
+import l3s6.projet.star.game.edge.NoMeepleException;
 import l3s6.projet.star.game.edge.WrongTopologyException;
 import l3s6.projet.star.game.edge.Zone;
 import l3s6.projet.star.game.meeple.Meeple;
@@ -11,6 +12,8 @@ import l3s6.projet.star.game.player.Player;
 import l3s6.projet.star.game.tile.Direction;
 import l3s6.projet.star.game.tile.Tile;
 import l3s6.projet.star.game.tile.WrongTileSyntaxException;
+import l3s6.projet.star.interaction.command.InvalidArgumentNumberException;
+import l3s6.projet.star.referee.RefereeView;
 
 public class BoardManager {
 
@@ -115,9 +118,25 @@ public class BoardManager {
     }
 
     /**
-     * Removes meeples from a given player.
+     * Removes meeples from a given player and send COLLECT.
      */
-    public void removeMeeplesFrom(Player player){
-       //ToDo: Faire des méthodes intérmédiaires dans Board pour récupérer l'ensemble des zones ou tuiles, et itérer dessus pour enlever les meeples du joueur
+    public void removeMeeplesFrom(Player player, RefereeView refereeView){
+        for(Tile tile : this.board.getTiles()){
+            for(Direction direction : Direction.values()){
+                for(Zone zone : tile.getEdge(direction).getZones()){
+                    if(zone.hasMeeple()){
+                        Meeple meeple = zone.getMeeple();
+                        if(meeple.getPlayer() == player){
+                            try {
+                                refereeView.send("COLLECT", player.getID(), meeple.getCoordinates().getX(), meeple.getCoordinates().getY());
+                                zone.giveBackMeeple();
+                            } catch (InvalidArgumentNumberException | NoMeepleException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

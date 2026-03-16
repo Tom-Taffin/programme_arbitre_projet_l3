@@ -142,4 +142,9 @@ public class ScoreManager {
         }
         return distinctZones;
     }
+
+    public Map<Player, Integer> calculateEndGamePoints() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'calculateEndGamePoints'");
+    }
 }
