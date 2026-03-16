@@ -2,6 +2,7 @@ package l3s6.projet.star.referee.players;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import l3s6.projet.star.game.player.Player;
 
@@ -31,11 +32,23 @@ public class PlayersManager {
     }
 
     /**
-     * Returns the winning player i.e. the player with most points.
+     * Returns the winning players.
      * If there is only one player left, he is returned.
      */
-    public Player winner() {
-        return currentPlayer;
+    public List<Player> winners() {
+        int max = -1;
+        List<Player> winners = new ArrayList<>();
+        for(Player player : this.players){
+            if(player.getScore()>max){
+                winners.clear();
+                winners.add(player);
+                max = player.getScore();
+            }
+            else if(player.getScore()==max){
+                winners.add(player);
+            }
+        }
+        return winners;
     }
 
     public void changeCurrentPlayer(){
