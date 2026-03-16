@@ -104,12 +104,12 @@ public class Game {
         this.boardManager.placeTile(tile, coordinates);
     }
 
-    public void placeMeeple(Tile tile, String type, String position) throws ImpossibleMeepleMoveException{
-        this.boardManager.placeMeeple(tile, type, position, this.playersManager.getCurrentPlayer());
+    public void placeMeeple(Tile tile, Coordinates coordinates, String type, String position) throws ImpossibleMeepleMoveException{
+        this.boardManager.placeMeeple(tile, coordinates, type, position, this.playersManager.getCurrentPlayer());
     }
 
-    public Map<Player,Integer> calculatePointsEarned(){
-        return this.scoreManager.calculatePointsEarned(this.lastDrawnTile);
+    public Map<Player,Integer> calculatePointsEarned(RefereeView refereeView){
+        return this.scoreManager.calculatePointsEarned(this.lastDrawnTile, refereeView);
     }
 
     public Map<Player, Integer> calculateEndGamePoints() {

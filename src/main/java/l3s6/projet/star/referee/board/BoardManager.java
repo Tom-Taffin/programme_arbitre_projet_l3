@@ -70,7 +70,7 @@ public class BoardManager {
      * Places a meeple on the tile.
      * Throws ImpossibleBoardMove if the move is impossible
      */
-    public void placeMeeple(Tile tile, String type, String position, Player player) throws ImpossibleMeepleMoveException {
+    public void placeMeeple(Tile tile, Coordinates coordinates, String type, String position, Player player) throws ImpossibleMeepleMoveException {
         if (!player.hasMeeples()){
             throw new ImpossibleMeepleMoveException("Player doesn't have any meeple.");
         }
@@ -92,7 +92,7 @@ public class BoardManager {
         }
 
         try {
-            zone.setMeeple(new Meeple(player));
+            zone.setMeeple(new Meeple(player, coordinates));
         } catch (WrongTopologyException e) {
             throw new ImpossibleMeepleMoveException("Meeple can't be placed on this topology");
         }

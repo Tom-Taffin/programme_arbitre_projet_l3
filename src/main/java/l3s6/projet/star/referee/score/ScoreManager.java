@@ -9,23 +9,26 @@ import java.util.Set;
 import l3s6.projet.star.game.edge.NoMeepleException;
 import l3s6.projet.star.game.edge.Topology;
 import l3s6.projet.star.game.edge.Zone;
+import l3s6.projet.star.game.meeple.Meeple;
 import l3s6.projet.star.game.player.Player;
 import l3s6.projet.star.game.tile.Tile;
+import l3s6.projet.star.interaction.command.InvalidArgumentNumberException;
+import l3s6.projet.star.referee.RefereeView;
 
 public class ScoreManager {
 
     /**
      * After the tile is placed,
      * If a zone is finished, updates players scores and gives back meeples.
+     * Sends meeple returned with COLLECT command.
      * Otherwise, does nothing.
-     * @return a map with the players who have earned points in keys and the number of points earned in value
      */
-    public Map<Player,Integer> calculatePointsEarned(Tile tile){
+    public Map<Player,Integer> calculatePointsEarned(Tile tile, RefereeView refereeView){
         Map<Player, Integer> pointsEarned = new HashMap<>();
         for(Zone zone : tile.getDistinctZone()){
             Set<Zone> zones = zone.getAllBoardConnectingZones();
             if(this.isClosed(zones)){
-                Map<Player,Integer> nbMeeples = this.giveBackMeeples(zones);
+                Map<Player,Integer> nbMeeples = this.giveBackMeeples(zones, refereeView);
                 if(!nbMeeples.isEmpty()){
                     Set<Player> players = this.getPlayerMajority(nbMeeples);
                     int points = this.pointsCalculationWhenCLosed(zones);
@@ -58,13 +61,20 @@ public class ScoreManager {
 
     /**
      * Give back all the meeples
+     * Sends meeple returned with COLLECT command.
      * @return a map of player and his number of meeple in the zones
      */
-    private Map<Player, Integer> giveBackMeeples(Set<Zone> zones) {
+    private Map<Player, Integer> giveBackMeeples(Set<Zone> zones, RefereeView refereeView) {
         Map<Player, Integer> res = new HashMap<>();
         for(Zone zone : zones){
             if(zone.hasMeeple()){
-                Player player = zone.getMeeple().getPlayer();
+                Meeple meeple = zone.getMeeple();
+                Player player = meeple.getPlayer();
+                try {
+                    refereeView.send("COLLECT", player.getID(), meeple.getCoordinates().getX(), meeple.getCoordinates().getY());
+                } catch (InvalidArgumentNumberException e) {
+                    throw new RuntimeException(e);
+                }
                 if(res.containsKey(player)){
                     res.put(player, res.get(player)+1);
                 }

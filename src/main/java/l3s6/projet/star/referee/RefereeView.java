@@ -153,10 +153,10 @@ public class RefereeView extends AdminView {
             Tile drawnTile = this.game.getLastDrawnTile();
 
             drawnTile.setOrientation(Orientation.valueOf(orientation));
-
-            if(this.game.checkIfTileCanBePlaced(drawnTile, new Coordinates(x, y))){
-                this.game.placeMeeple(drawnTile, meeple_type, meeple_position);
-                this.game.placeTile(drawnTile, new Coordinates(x, y));
+            Coordinates coordinates = new Coordinates(x,y);
+            if(this.game.checkIfTileCanBePlaced(drawnTile, coordinates)){
+                this.game.placeMeeple(drawnTile, coordinates, meeple_type, meeple_position);
+                this.game.placeTile(drawnTile, coordinates);
 
                 send("PLACES", id, orientation, x, y, meeple_type, meeple_position);
 
@@ -175,11 +175,12 @@ public class RefereeView extends AdminView {
 
     /**
      * Counts points for each player when a zone is finished.
+     * Sends meeple returned with COLLECT command.
      * Sends the amount of points each player won with SCORES command.
      * If no zone is finished, nothing happens.
      */
     private void calculatePointsEarned(){
-        Map<Player,Integer> pointEarned = this.game.calculatePointsEarned();
+        Map<Player,Integer> pointEarned = this.game.calculatePointsEarned(this);
         for (Player player : pointEarned.keySet()){
             try {
                 send("SCORES", player.getID(), pointEarned.get(player));
