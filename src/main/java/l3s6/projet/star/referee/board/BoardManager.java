@@ -124,20 +124,6 @@ public class BoardManager {
     }
 
     /**
-     * Return true if provided tile finishes any zone on the board.
-     */
-    public boolean checkIfTileFinishesZone(Tile tile){
-        for(Direction direction: Direction.values()){
-            for(Zone zone: tile.getZones(direction)){
-                if (zone.isFinished()){
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
      * Removes meeples from a given player.
      */
     public void removeMeeplesFrom(Player player){

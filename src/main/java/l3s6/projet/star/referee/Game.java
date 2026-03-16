@@ -108,10 +108,6 @@ public class Game {
         this.boardManager.placeMeeple(tile, type, position, this.playersManager.getCurrentPlayer());
     }
 
-    public boolean checkIfTileFinishesZone(Tile tile){
-        return this.boardManager.checkIfTileFinishesZone(tile);
-    }
-
     public Map<Player,Integer> calculatePointsEarned(){
         return this.scoreManager.calculatePointsEarned(this.lastDrawnTile);
     }
