@@ -93,33 +93,21 @@ public class RefereeView extends AdminView {
      */
     @Override
     public void updateOnPlace(String id, String idPrime, String orientation, int x, int y) {
-        if(!this.isWaitingForPlaceCommandFromPlayer){
-            return;
-        }
-
-        if (!this.roleManager.isRole(id, Role.PLAYER) ){
-            return;
-        }
-
-        if(!this.game.playerExists(idPrime)){
-            return;
-        }
-
-        if (!id.equals(idPrime)){
-            blame(id, "illegal-id");
-            return;
-        }
-        try {
-            Tile drawnTile = this.game.getLastDrawnTile();
-            drawnTile.setOrientation(Orientation.valueOf(orientation));
-            this.game.placeTile(drawnTile, new Coordinates(x, y));
-            send("PLACES", id, orientation, x, y);
-            this.isWaitingForPlaceCommandFromPlayer = false;
-            this.calculatePointsEarned();
-        } catch (ImpossibleBoardMoveException e) {
-            blame(id, "illegal-move");
-        } catch (InvalidArgumentNumberException e) {
-            throw new RuntimeException(e);
+        if(this.IdIsValid(id, idPrime)){
+            try {
+                Tile drawnTile = this.game.getLastDrawnTile();
+                drawnTile.setOrientation(Orientation.valueOf(orientation));
+                this.game.placeTile(drawnTile, new Coordinates(x, y));
+                send("PLACES", id, orientation, x, y);
+                this.isWaitingForPlaceCommandFromPlayer = false;
+                this.calculatePointsEarned();
+            } catch (IllegalArgumentException  e) {
+                blame(id, "illegal-meeple-position");
+            } catch (ImpossibleBoardMoveException e) {
+                blame(id, "illegal-move");
+            } catch (InvalidArgumentNumberException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -132,45 +120,52 @@ public class RefereeView extends AdminView {
      */
     @Override
     public void updateOnPlaceWithMeeple(String id, String idPrime, String orientation, int x, int y, String meeple_type, String meeple_position) {
+        if(this.IdIsValid(id, idPrime)){
+            try {
+                Tile drawnTile = this.game.getLastDrawnTile();
+
+                drawnTile.setOrientation(Orientation.valueOf(orientation));
+                Coordinates coordinates = new Coordinates(x,y);
+                if(this.game.checkIfTileCanBePlaced(drawnTile, coordinates)){
+                    this.game.placeMeeple(drawnTile, coordinates, meeple_type, meeple_position);
+                    this.game.placeTile(drawnTile, coordinates);
+
+                    send("PLACES", id, orientation, x, y, meeple_type, meeple_position);
+
+                    this.isWaitingForPlaceCommandFromPlayer = false;
+                    this.calculatePointsEarned();
+                }
+                else {
+                    blame(id, "illegal-move");
+                }
+            } catch (IllegalArgumentException  e) {
+                blame(id, "illegal-meeple-position");
+            } catch (ImpossibleBoardMoveException | ImpossibleMeepleMoveException e) {
+                blame(id, "illegal-move");
+            } catch (InvalidArgumentNumberException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private Boolean IdIsValid(String id, String idPrime){
         if(!this.isWaitingForPlaceCommandFromPlayer){
-            return;
+            return false;
         }
 
         if (!this.roleManager.isRole(id, Role.PLAYER) ){
-            return;
+            return false;
         }
 
         if(!this.game.playerExists(idPrime)){
-            return;
+            return false;
         }
 
         if (!id.equals(idPrime)){
             blame(id, "illegal-id");
-            return;
+            return false;
         }
-
-        try {
-            Tile drawnTile = this.game.getLastDrawnTile();
-
-            drawnTile.setOrientation(Orientation.valueOf(orientation));
-            Coordinates coordinates = new Coordinates(x,y);
-            if(this.game.checkIfTileCanBePlaced(drawnTile, coordinates)){
-                this.game.placeMeeple(drawnTile, coordinates, meeple_type, meeple_position);
-                this.game.placeTile(drawnTile, coordinates);
-
-                send("PLACES", id, orientation, x, y, meeple_type, meeple_position);
-
-                this.isWaitingForPlaceCommandFromPlayer = false;
-                this.calculatePointsEarned();
-            }
-            else {
-                blame(id, "illegal-move");
-            }
-        } catch (ImpossibleBoardMoveException | ImpossibleMeepleMoveException e) {
-            blame(id, "illegal-move");
-        } catch (InvalidArgumentNumberException e) {
-            throw new RuntimeException(e);
-        }
+        return true;
     }
 
     /**
