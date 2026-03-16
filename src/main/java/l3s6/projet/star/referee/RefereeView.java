@@ -116,8 +116,6 @@ public class RefereeView extends AdminView {
             send("PLACES", id, orientation, x, y);
             this.isWaitingForPlaceCommandFromPlayer = false;
             this.calculatePointsEarned();
-        } catch (IllegalArgumentException | NullPointerException e) {
-            //Blame le joueur
         } catch (ImpossibleBoardMove e) {
             blame(id, "illegal-move");
         } catch (InvalidArgumentNumberException e) {
@@ -180,10 +178,14 @@ public class RefereeView extends AdminView {
      * Sends the amount of points each player won with SCORES command.
      * If no zone is finished, nothing happens.
      */
-    private void calculatePointsEarned() throws InvalidArgumentNumberException{
+    private void calculatePointsEarned(){
         Map<Player,Integer> pointEarned = this.game.calculatePointsEarned();
         for (Player player : pointEarned.keySet()){
-            send("SCORES", player.getID(), pointEarned.get(player));
+            try {
+                send("SCORES", player.getID(), pointEarned.get(player));
+            } catch (InvalidArgumentNumberException e) {
+                throw new RuntimeException(e);
+            }
         }
         this.game.changeCurrentPlayer();
         offerTile();
