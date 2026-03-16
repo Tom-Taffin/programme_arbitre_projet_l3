@@ -11,17 +11,18 @@ import l3s6.projet.star.interaction.view.AdminView;
 import l3s6.projet.star.referee.board.ImpossibleBoardMove;
 import l3s6.projet.star.referee.board.ImpossibleMeepleMoveException;
 import l3s6.projet.star.referee.deck.EmptyDeckException;
+import l3s6.projet.star.referee.players.NonExistantPlayerException;
 
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Collections;
 import java.util.Map;
 
 public class RefereeView extends AdminView {
     private final Game game;
     private final int MAX_NUMBER_OF_BLAMES = 5;
+    private static final int NB_MEEPLES_PER_PLAYER = 7;
 
     private boolean isWaitingForPlaceCommandFromPlayer;
 
@@ -40,7 +41,7 @@ public class RefereeView extends AdminView {
         if (this.game.playerExists(ID)){
             return;
         }
-        this.game.addPlayer(new Player(ID, this.game.getNbMeeplesPerPlayer()));
+        this.game.addPlayer(new Player(ID, NB_MEEPLES_PER_PLAYER));
     }
 
     /**
@@ -50,15 +51,14 @@ public class RefereeView extends AdminView {
     public void startGame() throws InvalidArgumentNumberException, WrongTileSyntaxException{
         try {
             send("STARTS");
+            send("BLAMES", MAX_NUMBER_OF_BLAMES);
             for(Player player: this.game.getPlayers()){
-                send("COLLECTS", player.getID(), this.game.getNbMeeplesPerPlayer());
+                send("COLLECTS", player.getID(), NB_MEEPLES_PER_PLAYER);
             }
         } catch (InvalidArgumentNumberException e) {
             throw new RuntimeException(e);
         }
-
-        Collections.shuffle(this.game.getPlayers());
-        this.game.setStartingPlayer(this.game.getPlayers().get(0));
+        this.game.setStartingPlayer();
         offerTile();
     }
 
@@ -242,6 +242,9 @@ public class RefereeView extends AdminView {
         }
 
         if(this.game.playerExists(player)){
+            this.isWaitingForPlaceCommandFromPlayer = false;
+            this.game.changeCurrentPlayer();
+            offerTile();
             this.game.removePlayer(player);
         }
     }
