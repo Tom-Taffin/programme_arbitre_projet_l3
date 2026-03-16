@@ -76,8 +76,8 @@ public class Game {
         this.playersManager.setStartingPlayer();
     }
 
-    public List<Player> winners() {
-        return playersManager.winners();
+    public List<String> winnersID() {
+        return playersManager.winnersID();
     }
 
     public boolean playerExists(Player player){

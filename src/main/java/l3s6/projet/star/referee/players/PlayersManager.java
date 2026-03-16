@@ -35,17 +35,17 @@ public class PlayersManager {
      * Returns the winning players.
      * If there is only one player left, he is returned.
      */
-    public List<Player> winners() {
+    public List<String> winnersID() {
         int max = -1;
-        List<Player> winners = new ArrayList<>();
+        List<String> winners = new ArrayList<>();
         for(Player player : this.players){
             if(player.getScore()>max){
                 winners.clear();
-                winners.add(player);
+                winners.add(player.getID());
                 max = player.getScore();
             }
             else if(player.getScore()==max){
-                winners.add(player);
+                winners.add(player.getID());
             }
         }
         return winners;

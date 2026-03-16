@@ -200,7 +200,7 @@ public class RefereeView extends AdminView {
             for (Player player : pointEarned.keySet()){
                 send("SCORES", player.getID(), pointEarned.get(player));
             }
-            send("ENDS", game.winners().get(0).getID());
+            send("ENDS", game.winnersID());
         } catch (InvalidArgumentNumberException e) {
             throw new RuntimeException(e);
         }
