@@ -71,7 +71,7 @@ public class BoardManager {
      * Throws ImpossibleBoardMove if the move is impossible
      */
     public void placeMeeple(Tile tile, String type, String position, Player player) throws ImpossibleMeepleMoveException {
-        if (player.hasMeeples()){
+        if (!player.hasMeeples()){
             throw new ImpossibleMeepleMoveException("Player doesn't have any meeple.");
         }
         if (!type.equals("regular")){
@@ -135,5 +135,12 @@ public class BoardManager {
             }
         }
         return false;
+    }
+
+    /**
+     * Removes meeples from a given player.
+     */
+    public void removeMeeplesFrom(Player player){
+       //ToDo: Faire des méthodes intérmédiaires dans Board pour récupérer l'ensemble des zones ou tuiles, et itérer dessus pour enlever les meeples du joueur
     }
 }

@@ -149,6 +149,7 @@ public class Game {
      * Removes all his meeples.
      */
     public void removePlayer(Player player){
+        this.boardManager.removeMeeplesFrom(player);
         this.playersManager.removePlayer(player);
     }
 
