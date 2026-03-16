@@ -51,6 +51,7 @@ public class RefereeView extends AdminView {
     public void startGame() throws InvalidArgumentNumberException, WrongTileSyntaxException{
         try {
             send("STARTS");
+            send("BLAMES", MAX_NUMBER_OF_BLAMES);
             for(Player player: this.game.getPlayers()){
                 send("COLLECTS", player.getID(), NB_MEEPLES_PER_PLAYER);
             }
