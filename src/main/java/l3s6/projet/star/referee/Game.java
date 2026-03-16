@@ -1,5 +1,6 @@
 package l3s6.projet.star.referee;
 
+import l3s6.projet.star.game.edge.Zone;
 import l3s6.projet.star.referee.board.BoardManager;
 import l3s6.projet.star.referee.board.ImpossibleBoardMove;
 import l3s6.projet.star.referee.board.ImpossibleMeepleMoveException;
@@ -99,7 +100,7 @@ public class Game {
      * Return true if provided tile finishes any zone on the board.
      */
     public boolean checkIfTileFinishesZone(Tile tile){
-        return false;
+        return this.boardManager.checkIfTileFinishesZone(tile);
     }
 
     /**

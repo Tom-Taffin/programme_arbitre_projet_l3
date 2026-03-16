@@ -122,4 +122,18 @@ public class BoardManager {
                 throw new ImpossibleMeepleMoveException("Wrong meeple position syntax");
         }
     }
+
+    /**
+     * Return true if provided tile finishes any zone on the board.
+     */
+    public boolean checkIfTileFinishesZone(Tile tile){
+        for(Direction direction: Direction.values()){
+            for(Zone zone: tile.getZones(direction)){
+                if (zone.isFinished()){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
