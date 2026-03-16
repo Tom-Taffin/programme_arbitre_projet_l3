@@ -10,6 +10,7 @@ import l3s6.projet.star.game.meeple.Meeple;
 import l3s6.projet.star.game.player.Player;
 import l3s6.projet.star.game.tile.Direction;
 import l3s6.projet.star.game.tile.Tile;
+import l3s6.projet.star.game.tile.WrongTileSyntaxException;
 
 public class BoardManager {
 
@@ -85,7 +86,12 @@ public class BoardManager {
             throw new ImpossibleMeepleMoveException("Wrong meeple position syntax");
         }
 
-        Zone zone = tile.getZoneAt(this.parseDirection(position.charAt(0)), index);
+        Zone zone;
+        try {
+            zone = tile.getZoneAt(Direction.fromChar(position.charAt(0)), index);
+        } catch (WrongTileSyntaxException e) {
+            throw new ImpossibleMeepleMoveException("Wrong meeple position syntax");
+        }
 
         if (this.hasMeepleOnBoardZone(zone)){
             throw new ImpossibleMeepleMoveException("There is already meeple on the board zone");
@@ -106,21 +112,6 @@ public class BoardManager {
             }
         }
         return false;
-    }
-
-    private Direction parseDirection(char direction) throws ImpossibleMeepleMoveException {
-        switch (direction) {
-            case 'T':
-                return Direction.TOP;
-            case 'R':
-                return Direction.RIGHT;
-            case 'B':
-                return Direction.BOTTOM;
-            case 'L':
-                return Direction.LEFT;
-            default:
-                throw new ImpossibleMeepleMoveException("Wrong meeple position syntax");
-        }
     }
 
     /**
