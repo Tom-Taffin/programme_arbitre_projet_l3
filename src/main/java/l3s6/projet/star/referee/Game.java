@@ -5,6 +5,7 @@ import l3s6.projet.star.referee.board.ImpossibleBoardMove;
 import l3s6.projet.star.referee.board.ImpossibleMeepleMoveException;
 import l3s6.projet.star.referee.deck.Deck;
 import l3s6.projet.star.referee.deck.EmptyDeckException;
+import l3s6.projet.star.referee.players.NonExistantPlayerException;
 import l3s6.projet.star.referee.players.PlayersManager;
 import l3s6.projet.star.game.board.Coordinates;
 import l3s6.projet.star.game.player.Player;
@@ -30,30 +31,6 @@ public class Game {
         this.playersManager = new PlayersManager();
     }
 
-    public Tile getLastDrawnTile() {
-        return lastDrawnTile;
-    }
-
-    public void addPlayer(Player player){
-        this.playersManager.addPlayer(player);
-    }
-
-    public void setStartingPlayer(Player player){
-        this.playersManager.setStartingPlayer(player);
-    }
-
-    public Player winner() {
-        return playersManager.winner();
-    }
-
-    public Player getCurrentPlayer() {
-        return playersManager.getCurrentPlayer();
-    }
-
-    public ArrayList<Player> getPlayers() {
-        return playersManager.getPlayers();
-    }
-
     /**
      * Draws tile from the deck, if it can't be placed, draws another one.
      * Throws exception if deck is empty.
@@ -69,39 +46,62 @@ public class Game {
         return tile;
     }
 
+    public Tile getLastDrawnTile() {
+        return lastDrawnTile;
+    }
+
+    public ArrayList<Player> getPlayers() {
+        return this.playersManager.getPlayers();
+    }
+
+    public Player getCurrentPlayer() {
+        return playersManager.getCurrentPlayer();
+    }
+
+    public void addPlayer(Player player){
+        this.playersManager.addPlayer(player);
+    }
+    
+    public void setStartingPlayer(){
+        this.playersManager.setStartingPlayer();
+    }
+
+    public Player winner() {
+        return playersManager.winner();
+    }
+
+    public boolean playerExists(Player player){
+        return this.playersManager.playerExists(player);
+    }
+
+    public boolean playerExists(String ID){
+        return this.playersManager.playerExists(ID);
+    }
+
+    public void changeCurrentPlayer(){
+        this.playersManager.changeCurrentPlayer();
+    }
+
+    public void removePlayer(Player player){
+        this.playersManager.removePlayer(player);
+    }
+
+    public Player findPlayerFromId(String ID) throws NonExistantPlayerException {
+        return this.playersManager.findPlayerFromId(ID);
+    }
+
     public boolean checkIfTileCanBePlaced(Tile tile, Coordinates coordinates){
         return this.boardManager.checkIfTileCanBePlaced(tile, coordinates);
     }
 
-    /**
-     * Puts the tile on the board at the given coordinates.
-     * Throws ImpossibleBoardMove if the move is impossible
-     */
     public void placeTile(Tile tile, Coordinates coordinates) throws ImpossibleBoardMove {
         this.boardManager.placeTile(tile, coordinates);
     }
 
-    /**
-     * Places a meeple on the tile.
-     * @throws ImpossibleMeepleMoveException if the move is impossible
-     */
     public void placeMeeple(Tile tile, String type, String position) throws ImpossibleMeepleMoveException{
         this.boardManager.placeMeeple(tile, type, position, this.playersManager.getCurrentPlayer());
     }
 
-    /**
-     * Return true if provided tile finishes any zone on the board.
-     */
-    public boolean checkIfTileFinishesZone(Tile tile){
-        return false;
-    }
-
-    /**
-     * After the tile is placed,
-     * If a zone is finished, updates players scores and gives back meeples.
-     * Otherwise, does nothing.
-     * @return a map with the players who have earned points in keys and the number of points earned in value
-     */
     public Map<Player,Integer> calculatePointsEarned(){
         return this.scoreManager.calculatePointsEarned(this.lastDrawnTile);
     }
@@ -109,52 +109,5 @@ public class Game {
     public Map<Player, Integer> calculateEndGamePoints() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'calculateEndGamePoints'");
-    }
-
-    /**
-     * Changes the current player for the next one.
-     */
-    public void changeCurrentPlayer(){
-        //ToDo
-    }
-
-    /**
-     * Returns true if a player with the provided ID exists in this game.
-     * */
-    public boolean playerExists(String ID){
-        for(Player player: this.getPlayers()){
-            if (player.getID().equals(ID)){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Returns true if the provided player exists in this game.
-     * */
-    public boolean playerExists(Player player){
-        return this.getPlayers().contains(player);
-    }
-
-    /**
-     * Removes provided player from the game.
-     * Removes all his meeples.
-     */
-    public void removePlayer(Player player){
-        //ToDo
-    }
-
-    /**
-     * Returns the player with the provided ID from the game.
-     * If this player doesn't exist, throws an Exception.
-     */
-    public Player findPlayerFromId(String ID) throws NonExistantPlayerException {
-        for(Player player: this.getPlayers()){
-            if (player.getID().equals(ID)){
-                return player;
-            }
-        }
-        throw new NonExistantPlayerException("This player does not exist.");
     }
 }

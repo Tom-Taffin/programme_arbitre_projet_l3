@@ -11,12 +11,12 @@ import l3s6.projet.star.interaction.view.AdminView;
 import l3s6.projet.star.referee.board.ImpossibleBoardMove;
 import l3s6.projet.star.referee.board.ImpossibleMeepleMoveException;
 import l3s6.projet.star.referee.deck.EmptyDeckException;
+import l3s6.projet.star.referee.players.NonExistantPlayerException;
 
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Collections;
 import java.util.Map;
 
 public class RefereeView extends AdminView {
@@ -58,9 +58,7 @@ public class RefereeView extends AdminView {
         } catch (InvalidArgumentNumberException e) {
             throw new RuntimeException(e);
         }
-
-        Collections.shuffle(this.game.getPlayers());
-        this.game.setStartingPlayer(this.game.getPlayers().get(0));
+        this.game.setStartingPlayer();
         offerTile();
     }
 
