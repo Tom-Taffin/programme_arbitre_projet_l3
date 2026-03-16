@@ -22,6 +22,7 @@ import java.util.Map;
 public class RefereeView extends AdminView {
     private final Game game;
     private final int MAX_NUMBER_OF_BLAMES = 5;
+    private static final int NB_MEEPLES_PER_PLAYER = 7;
 
     private boolean isWaitingForPlaceCommandFromPlayer;
 
@@ -40,7 +41,7 @@ public class RefereeView extends AdminView {
         if (this.game.playerExists(ID)){
             return;
         }
-        this.game.addPlayer(new Player(ID, this.game.getNbMeeplesPerPlayer()));
+        this.game.addPlayer(new Player(ID, NB_MEEPLES_PER_PLAYER));
     }
 
     /**
@@ -51,7 +52,7 @@ public class RefereeView extends AdminView {
         try {
             send("STARTS");
             for(Player player: this.game.getPlayers()){
-                send("COLLECTS", player.getID(), this.game.getNbMeeplesPerPlayer());
+                send("COLLECTS", player.getID(), NB_MEEPLES_PER_PLAYER);
             }
         } catch (InvalidArgumentNumberException e) {
             throw new RuntimeException(e);

@@ -18,8 +18,6 @@ import java.io.IOException;
 import java.util.*;
 
 public class Game {
-    private static final int NB_MEEPLES_PER_PLAYER = 7;
-
     private PlayersManager playersManager;
     private Deck deck;
     private BoardManager boardManager;
@@ -30,10 +28,6 @@ public class Game {
         this.boardManager = new BoardManager();
         this.deck = new Deck(path);
         this.playersManager = new PlayersManager();
-    }
-
-    public int getNbMeeplesPerPlayer() {
-        return NB_MEEPLES_PER_PLAYER;
     }
 
     public Tile getLastDrawnTile() {
