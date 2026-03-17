@@ -148,6 +148,9 @@ public class RefereeView extends AdminView {
         }
     }
 
+    /**
+     * @return true if the command is expected and if the command is sent by the current player
+     */
     private Boolean IdIsValid(String id, String idPrime){
         if(!this.isWaitingForPlaceCommandFromPlayer){
             return false;
@@ -192,7 +195,7 @@ public class RefereeView extends AdminView {
      */
     private void endsGame(){
         try {
-            Map<Player,Integer> pointEarned = this.game.calculateEndGamePoints();
+            Map<Player,Integer> pointEarned = this.game.calculateEndGamePoints(this);
             for (Player player : pointEarned.keySet()){
                 send("SCORES", player.getID(), pointEarned.get(player));
             }
@@ -238,10 +241,13 @@ public class RefereeView extends AdminView {
         }
 
         if(this.game.playerExists(player)){
-            this.isWaitingForPlaceCommandFromPlayer = false;
-            this.game.changeCurrentPlayer();
-            offerTile();
-            this.game.removePlayer(player, this);
+            if(this.game.getCurrentPlayer() == player){
+                this.isWaitingForPlaceCommandFromPlayer = false;
+                this.game.removePlayer(player, this);
+                offerTile();
+            } else {
+                this.game.removePlayer(player, this);
+            }
         }
     }
 }

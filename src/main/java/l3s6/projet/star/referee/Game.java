@@ -113,7 +113,7 @@ public class Game {
         return this.scoreManager.calculatePointsEarned(this.lastDrawnTile, refereeView);
     }
 
-    public Map<Player, Integer> calculateEndGamePoints() {
-        return this.scoreManager.calculateEndGamePoints(this.boardManager.getZonesWithMeeple());
+    public Map<Player, Integer> calculateEndGamePoints(RefereeView refereeView) {
+        return this.scoreManager.calculateEndGamePoints(this.boardManager.getZonesWithMeeple(), refereeView);
     }
 }

@@ -32,16 +32,27 @@ public class ScoreManager {
                 if(!nbMeeples.isEmpty()){
                     Set<Player> players = this.getPlayerMajority(nbMeeples);
                     int points = this.pointsCalculationWhenCLosed(zones);
-                    for(Player player : players){
-                        player.addPoints(points);
-                        if(pointsEarned.containsKey(player)){
-                            pointsEarned.put(player,points);
-                        }
-                        else {
-                            pointsEarned.put(player, pointsEarned.get(player) + points);
-                        }
-                    }
+                    this.updateScore(pointsEarned, players, points);
                 }
+            }
+        }
+        return pointsEarned;
+    }
+
+    /**
+     * After the end of the game,
+     * For all the zones with meeple, updates players scores and gives back meeples.
+     * Sends meeple returned with COLLECT command.
+     */
+    public Map<Player, Integer> calculateEndGamePoints(Set<Zone> zonesWithMeeple, RefereeView refereeView) {
+        Map<Player, Integer> pointsEarned = new HashMap<>();
+        for(Zone zone : zonesWithMeeple){
+            if(zone.hasMeeple()){
+                Set<Zone> zones = zone.getAllBoardConnectingZones();
+                Map<Player,Integer> nbMeeples = this.giveBackMeeples(zones, refereeView);
+                Set<Player> players = this.getPlayerMajority(nbMeeples);
+                int points = this.pointsCalculationEndGame(zones);
+                this.updateScore(pointsEarned, players, points);
             }
         }
         return pointsEarned;
@@ -109,8 +120,24 @@ public class ScoreManager {
      * @return the number of point earned when the zones are closed
      */
     private int pointsCalculationWhenCLosed(Set<Zone> zones) {
+        int points = this.pointsCalculationEndGame(zones);
+        Topology topology = null;
+        for(Zone zone : zones){
+            topology = zone.getTopology();
+            break;
+        }
+        if (topology == Topology.CITY) {
+            return points * 2;
+        }
+        return points;
+    }
+
+    /**
+     * @return the number of point earned at the end of the game for the zones
+     */
+    private int pointsCalculationEndGame(Set<Zone> zones) {
         Set<Zone> distinctZones = this.getDistinctZones(zones);
-        Topology topology = Topology.FIELD;
+        Topology topology = null;
         for(Zone zone : zones){
             topology = zone.getTopology();
             break;
@@ -125,7 +152,7 @@ public class ScoreManager {
                     nbPoints += 1;
                 }
             }
-            return nbPoints *2;
+            return nbPoints;
         }
         return distinctZones.size();
     }
@@ -143,7 +170,18 @@ public class ScoreManager {
         return distinctZones;
     }
 
-    public Map<Player, Integer> calculateEndGamePoints(Set<Zone> zonesWithMeeple) {
-        return null;
+    /**
+     * add points to all the players and update pointsEarned
+     */
+    private void updateScore(Map<Player, Integer> pointsEarned, Set<Player> players, int points) {
+        for(Player player : players){
+            player.addPoints(points);
+            if(pointsEarned.containsKey(player)){
+                pointsEarned.put(player,points);
+            }
+            else {
+                pointsEarned.put(player, pointsEarned.get(player) + points);
+            }
+        }
     }
 }
