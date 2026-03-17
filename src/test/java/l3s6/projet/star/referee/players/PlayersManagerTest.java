@@ -114,5 +114,14 @@ public class PlayersManagerTest {
 
         assertEquals(this.player2, this.playersManager.getCurrentPlayer());
     }
+
+    @Test
+    public void testPlayerExists(){
+        assertTrue(this.playersManager.playerExists("A"));
+        assertFalse(this.playersManager.playerExists("D"));
+
+        assertTrue(this.playersManager.playerExists(this.player1));
+        assertFalse(this.playersManager.playerExists(new Player("A", 8)));
+    }
 }
     
