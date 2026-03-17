@@ -1,5 +1,6 @@
 package l3s6.projet.star.referee.board;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import l3s6.projet.star.game.board.Board;
@@ -121,22 +122,33 @@ public class BoardManager {
      * Removes meeples from a given player and send COLLECT.
      */
     public void removeMeeplesFrom(Player player, RefereeView refereeView){
+        for(Zone zone : this.getZonesWithMeeple()){
+            Meeple meeple = zone.getMeeple();
+            if(meeple.getPlayer() == player){
+                try {
+                    refereeView.send("COLLECT", player.getID(), meeple.getCoordinates().getX(), meeple.getCoordinates().getY());
+                    zone.giveBackMeeple();
+                } catch (InvalidArgumentNumberException | NoMeepleException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
+    /**
+     * @return all the zones with a meeple
+     */
+    public Set<Zone> getZonesWithMeeple(){
+        Set<Zone> zones = new HashSet<>();
         for(Tile tile : this.board.getTiles()){
             for(Direction direction : Direction.values()){
                 for(Zone zone : tile.getEdge(direction).getZones()){
                     if(zone.hasMeeple()){
-                        Meeple meeple = zone.getMeeple();
-                        if(meeple.getPlayer() == player){
-                            try {
-                                refereeView.send("COLLECT", player.getID(), meeple.getCoordinates().getX(), meeple.getCoordinates().getY());
-                                zone.giveBackMeeple();
-                            } catch (InvalidArgumentNumberException | NoMeepleException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
+                        zones.add(zone);
                     }
                 }
             }
         }
+        return zones;
     }
 }

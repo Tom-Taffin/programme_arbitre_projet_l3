@@ -114,6 +114,6 @@ public class Game {
     }
 
     public Map<Player, Integer> calculateEndGamePoints() {
-        return this.scoreManager.calculateEndGamePoints();
+        return this.scoreManager.calculateEndGamePoints(this.boardManager.getZonesWithMeeple());
     }
 }
