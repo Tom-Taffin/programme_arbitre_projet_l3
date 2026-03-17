@@ -76,4 +76,15 @@ public class PlayersManagerTest {
         assertFalse(winners.contains(this.player2.getID()));
         assertTrue(winners.contains(this.player3.getID()));
     }
+
+    @Test
+    public void testRemoveNonExistentPlayer(){
+        List<Player> players = this.playersManager.getPlayers();
+
+        this.playersManager.removePlayer(new Player("D", 8));
+        assertEquals(players, this.playersManager.getPlayers());
+
+        this.playersManager.removePlayer(new Player("A", 8));
+        assertEquals(players, this.playersManager.getPlayers());
+    }
 }
