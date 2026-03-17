@@ -4,6 +4,7 @@ import l3s6.projet.star.game.player.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -86,5 +87,32 @@ public class PlayersManagerTest {
 
         this.playersManager.removePlayer(new Player("A", 8));
         assertEquals(players, this.playersManager.getPlayers());
+
+        assertEquals(this.player1, this.playersManager.getCurrentPlayer());
+    }
+
+    @Test
+    public void testRemoveNotCurrentPlayer(){
+        List<Player> players = new ArrayList<>();
+        players.add(this.player1);
+        players.add(this.player3);
+
+        this.playersManager.removePlayer(this.player2);
+        assertEquals(players, this.playersManager.getPlayers());
+
+        assertEquals(this.player1, this.playersManager.getCurrentPlayer());
+    }
+
+    @Test
+    public void testRemoveCurrentPlayer(){
+        List<Player> players = new ArrayList<>();
+        players.add(this.player2);
+        players.add(this.player3);
+
+        this.playersManager.removePlayer(this.player1);
+        assertEquals(players, this.playersManager.getPlayers());
+
+        assertEquals(this.player2, this.playersManager.getCurrentPlayer());
     }
 }
+    
