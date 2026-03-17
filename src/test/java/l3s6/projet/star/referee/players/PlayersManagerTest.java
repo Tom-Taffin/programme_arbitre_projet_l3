@@ -4,6 +4,8 @@ import l3s6.projet.star.game.player.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PlayersManagerTest {
@@ -35,5 +37,18 @@ public class PlayersManagerTest {
         assertEquals(this.player3, this.playersManager.getCurrentPlayer());
         this.playersManager.changeCurrentPlayer();
         assertEquals(this.player1, this.playersManager.getCurrentPlayer());
+    }
+
+    @Test
+    public void testWinnerIDSingleWinner(){
+        this.player1.addPoints(10);
+        this.player2.addPoints(5);
+        this.player3.addPoints(20);
+
+        List<String> winners = this.playersManager.winnersID();
+
+        assertFalse(winners.contains(this.player1.getID()));
+        assertFalse(winners.contains(this.player2.getID()));
+        assertTrue(winners.contains(this.player3.getID()));
     }
 }
