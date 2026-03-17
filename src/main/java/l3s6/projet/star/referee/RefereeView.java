@@ -53,11 +53,11 @@ public class RefereeView extends AdminView {
         if (this.game.playerExists(id)){
             return;
         }
+        this.game.addPlayer(new Player(id, NB_MEEPLES_PER_PLAYER));
         if (this.game.getPlayers().size() == this.nbPlayers){
             this.isWaitingForPlayCommand = false;
             startGame();
         }
-        this.game.addPlayer(new Player(id, NB_MEEPLES_PER_PLAYER));
     }
 
     /**
