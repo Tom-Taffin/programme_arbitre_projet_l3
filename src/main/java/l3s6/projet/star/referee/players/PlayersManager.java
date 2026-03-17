@@ -9,7 +9,7 @@ import l3s6.projet.star.game.player.Player;
 public class PlayersManager {
 
     private final ArrayList<Player> players = new ArrayList<>();
-    private Player currentPlayer;
+    protected Player currentPlayer;
 
     public ArrayList<Player> getPlayers() {
         return players;
