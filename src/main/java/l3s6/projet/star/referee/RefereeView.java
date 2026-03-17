@@ -19,11 +19,19 @@ import org.json.simple.parser.ParseException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public class RefereeView extends AdminView {
     private final Game game;
     private final int MAX_NUMBER_OF_BLAMES = 5;
     private static final int NB_MEEPLES_PER_PLAYER = 7;
+    private static final int TIMEOUT_SECONDS = 120;
+
+    private final ScheduledExecutorService timerExecutor = Executors.newSingleThreadScheduledExecutor();
+    private ScheduledFuture<?> currentTimer;
 
     private boolean isWaitingForPlaceCommand;
     private boolean isWaitingForPlayCommand;
@@ -90,8 +98,10 @@ public class RefereeView extends AdminView {
         else{
             try {
                 Tile tile = game.drawTile();
-                send("OFFERS", game.getCurrentPlayer().getID(), tile.toString());
                 isWaitingForPlaceCommand = true;
+                startTimer(TIMEOUT_SECONDS);
+                send("OFFERS", game.getCurrentPlayer().getID(), tile.toString());
+
             } catch (EmptyDeckException e) {
                 endsGame();
             } catch (InvalidArgumentNumberException | WrongTileSyntaxException e) {
@@ -169,7 +179,7 @@ public class RefereeView extends AdminView {
     }
 
     /**
-     * @return true if the command is expected and if the command is sent by the current player
+     * @return true if the command is expected, correct and send by the current player
      */
     private Boolean IdIsValid(String id, String idPrime){
         if(!this.isWaitingForPlaceCommand){
@@ -183,6 +193,13 @@ public class RefereeView extends AdminView {
         if(!this.game.playerExists(idPrime)){
             return false;
         }
+
+        if (id != game.getCurrentPlayer().getID()){
+            blame(id, "illegal-turn");
+            return false;
+        }
+
+        cancelTimer();
 
         if (!id.equals(idPrime)){
             blame(id, "illegal-id");
@@ -248,6 +265,10 @@ public class RefereeView extends AdminView {
         if (player.getNumberOfBlames() >= MAX_NUMBER_OF_BLAMES){
             expel(player);
         }
+
+        if(player == game.getCurrentPlayer()){
+            startTimer(TIMEOUT_SECONDS);
+        }
     }
 
     /**
@@ -268,6 +289,22 @@ public class RefereeView extends AdminView {
             } else {
                 this.game.removePlayer(player, this);
             }
+        }
+    }
+
+    /**
+     * Start a timer to blame the player in case of a timeout
+     */
+    private void startTimer(int seconds){
+        currentTimer = timerExecutor.schedule(() -> {
+            blame(this.game.getCurrentPlayer().getID(), "timeout");
+        }, seconds, TimeUnit.SECONDS);
+    }
+
+    private void cancelTimer() {
+        if (currentTimer != null) {
+            currentTimer.cancel(false);
+            currentTimer = null;
         }
     }
 }
