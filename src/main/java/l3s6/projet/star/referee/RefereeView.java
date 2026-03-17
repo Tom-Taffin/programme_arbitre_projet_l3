@@ -8,8 +8,9 @@ import l3s6.projet.star.game.tile.WrongTileSyntaxException;
 import l3s6.projet.star.interaction.command.InvalidArgumentNumberException;
 import l3s6.projet.star.interaction.role.Role;
 import l3s6.projet.star.interaction.view.AdminView;
-import l3s6.projet.star.referee.board.ImpossibleBoardMoveException;
-import l3s6.projet.star.referee.board.ImpossibleMeepleMoveException;
+import l3s6.projet.star.referee.board.InvalidTileMoveException;
+import l3s6.projet.star.referee.board.InvalidMeepleMoveException;
+import l3s6.projet.star.referee.board.InvalidMeeplePositionException;
 import l3s6.projet.star.referee.deck.EmptyDeckException;
 import l3s6.projet.star.referee.players.NonExistantPlayerException;
 
@@ -24,31 +25,46 @@ public class RefereeView extends AdminView {
     private final int MAX_NUMBER_OF_BLAMES = 5;
     private static final int NB_MEEPLES_PER_PLAYER = 7;
 
-    private boolean isWaitingForPlaceCommandFromPlayer;
+    private boolean isWaitingForPlaceCommand;
+    private boolean isWaitingForPlayCommand;
+    private int nbPlayers;
 
-    public RefereeView(String ipAddress, int port, String id, String path) throws URISyntaxException, InterruptedException, IOException, ParseException {
+    public RefereeView(String ipAddress, int port, String id, String path, int nbPlayers) throws URISyntaxException, InterruptedException, IOException, ParseException {
         super(ipAddress, port, id);
         this.game = new Game(path);
+        this.nbPlayers = nbPlayers;
 
-        this.isWaitingForPlaceCommandFromPlayer = false;
+        this.isWaitingForPlaceCommand = false;
+        this.isWaitingForPlayCommand = true;
     }
 
     /**
-     * Initializes player when it connects.
-     * Adds him to the game.
+     * wait player send PLAY command and add player
+     * start game when all the players are added
      */
-    private void initializePlayer(String ID){
-        if (this.game.playerExists(ID)){
+    public void updateOnPlay(String id){
+        if(!this.isWaitingForPlayCommand){
+            try {
+                send("EXPELS", id);
+            } catch (InvalidArgumentNumberException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if (this.game.playerExists(id)){
             return;
         }
-        this.game.addPlayer(new Player(ID, NB_MEEPLES_PER_PLAYER));
+        if (this.game.getPlayers().size() == this.nbPlayers){
+            this.isWaitingForPlayCommand = false;
+            startGame();
+        }
+        this.game.addPlayer(new Player(id, NB_MEEPLES_PER_PLAYER));
     }
 
     /**
-     * Starts the game and gives a certain number of meeples to each player.
-     * Randomly makes an order for the players then starts a turn by drawing a tile.
+     * Starts the game, send the max number of blames and gives a certain number of meeples to each player.
+     * Randomly makes an order for the players then starts a turn by offer a tile.
      */
-    public void startGame() throws InvalidArgumentNumberException, WrongTileSyntaxException{
+    public void startGame(){
         try {
             send("STARTS");
             send("BLAMES", MAX_NUMBER_OF_BLAMES);
@@ -75,7 +91,7 @@ public class RefereeView extends AdminView {
             try {
                 Tile tile = game.drawTile();
                 send("OFFERS", game.getCurrentPlayer().getID(), tile.toString());
-                isWaitingForPlaceCommandFromPlayer = true;
+                isWaitingForPlaceCommand = true;
             } catch (EmptyDeckException e) {
                 endsGame();
             } catch (InvalidArgumentNumberException | WrongTileSyntaxException e) {
@@ -99,14 +115,14 @@ public class RefereeView extends AdminView {
                 drawnTile.setOrientation(Orientation.valueOf(orientation));
                 this.game.placeTile(drawnTile, new Coordinates(x, y));
                 send("PLACES", id, orientation, x, y);
-                this.isWaitingForPlaceCommandFromPlayer = false;
+                this.isWaitingForPlaceCommand = false;
                 this.calculatePointsEarned();
-            } catch (IllegalArgumentException  e) {
-                blame(id, "illegal-meeple-position");
-            } catch (ImpossibleBoardMoveException e) {
-                blame(id, "illegal-move");
+            } catch (InvalidTileMoveException e) {
+                blame(id, "illegal-tile-move");
             } catch (InvalidArgumentNumberException e) {
                 throw new RuntimeException(e);
+            } catch (IllegalArgumentException e){
+                blame(id, "illegal-orientation-syntax");
             }
         }
     }
@@ -132,18 +148,22 @@ public class RefereeView extends AdminView {
 
                     send("PLACES", id, orientation, x, y, meeple_type, meeple_position);
 
-                    this.isWaitingForPlaceCommandFromPlayer = false;
+                    this.isWaitingForPlaceCommand = false;
                     this.calculatePointsEarned();
                 }
                 else {
-                    blame(id, "illegal-move");
+                    blame(id, "illegal-tile-move");
                 }
             } catch (IllegalArgumentException  e) {
-                blame(id, "illegal-meeple-position");
-            } catch (ImpossibleBoardMoveException | ImpossibleMeepleMoveException e) {
-                blame(id, "illegal-move");
+                blame(id, "illegal-orientation");
+            } catch (InvalidTileMoveException e) {
+                blame(id, "illegal-tile-move");
             } catch (InvalidArgumentNumberException e) {
                 throw new RuntimeException(e);
+            } catch (InvalidMeepleMoveException e) {
+                blame(id, "illegal-meeple-move");
+            } catch (InvalidMeeplePositionException e) {
+                blame(id, "illegal-meeple-position-syntax");
             }
         }
     }
@@ -152,7 +172,7 @@ public class RefereeView extends AdminView {
      * @return true if the command is expected and if the command is sent by the current player
      */
     private Boolean IdIsValid(String id, String idPrime){
-        if(!this.isWaitingForPlaceCommandFromPlayer){
+        if(!this.isWaitingForPlaceCommand){
             return false;
         }
 
@@ -242,7 +262,7 @@ public class RefereeView extends AdminView {
 
         if(this.game.playerExists(player)){
             if(this.game.getCurrentPlayer() == player){
-                this.isWaitingForPlaceCommandFromPlayer = false;
+                this.isWaitingForPlaceCommand = false;
                 this.game.removePlayer(player, this);
                 offerTile();
             } else {

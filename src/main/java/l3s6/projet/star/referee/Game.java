@@ -1,8 +1,9 @@
 package l3s6.projet.star.referee;
 
 import l3s6.projet.star.referee.board.BoardManager;
-import l3s6.projet.star.referee.board.ImpossibleBoardMoveException;
-import l3s6.projet.star.referee.board.ImpossibleMeepleMoveException;
+import l3s6.projet.star.referee.board.InvalidTileMoveException;
+import l3s6.projet.star.referee.board.InvalidMeepleMoveException;
+import l3s6.projet.star.referee.board.InvalidMeeplePositionException;
 import l3s6.projet.star.referee.deck.Deck;
 import l3s6.projet.star.referee.deck.EmptyDeckException;
 import l3s6.projet.star.referee.players.NonExistantPlayerException;
@@ -101,11 +102,11 @@ public class Game {
         return this.boardManager.checkIfTileCanBePlaced(tile, coordinates);
     }
 
-    public void placeTile(Tile tile, Coordinates coordinates) throws ImpossibleBoardMoveException {
+    public void placeTile(Tile tile, Coordinates coordinates) throws InvalidTileMoveException {
         this.boardManager.placeTile(tile, coordinates);
     }
 
-    public void placeMeeple(Tile tile, Coordinates coordinates, String type, String position) throws ImpossibleMeepleMoveException{
+    public void placeMeeple(Tile tile, Coordinates coordinates, String type, String position) throws InvalidMeepleMoveException, InvalidMeeplePositionException{
         this.boardManager.placeMeeple(tile, coordinates, type, position, this.playersManager.getCurrentPlayer());
     }
 
