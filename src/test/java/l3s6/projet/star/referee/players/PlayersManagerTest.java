@@ -14,7 +14,7 @@ public class PlayersManagerTest {
 
     @BeforeEach
     public void init(){
-        this.playersManager = new PlayersManager();
+        this.playersManager = new PlayersManagerMock();
         this.player1 = new Player("A", 8);
         this.player2 = new Player("B", 8);
         this.player3 = new Player("C", 8);
@@ -23,25 +23,17 @@ public class PlayersManagerTest {
         this.playersManager.addPlayer(this.player2);
         this.playersManager.addPlayer(this.player3);
 
-        this.playersManager.setStartingPlayer(this.player1);
+        this.playersManager.setStartingPlayer();
     }
 
     @Test
     public void testChangeCurrentPlayer(){
-        // ToDo: A décommenter quand la branche feat/GameMethods sera merge
-
-        //assertEquals(this.player1, this.playersManager.getCurrentPlayer());
-
-        //this.playersManager.changeCurrentPlayer();
-
-        //assertEquals(this.player2, this.playersManager.getCurrentPlayer());
-
-        //this.playersManager.changeCurrentPlayer();
-
-        //assertEquals(this.player3, this.playersManager.getCurrentPlayer());
-
-        //this.playersManager.changeCurrentPlayer();
-
+        assertEquals(this.player1, this.playersManager.getCurrentPlayer());
+        this.playersManager.changeCurrentPlayer();
+        assertEquals(this.player2, this.playersManager.getCurrentPlayer());
+        this.playersManager.changeCurrentPlayer();
+        assertEquals(this.player3, this.playersManager.getCurrentPlayer());
+        this.playersManager.changeCurrentPlayer();
         assertEquals(this.player1, this.playersManager.getCurrentPlayer());
     }
 }
