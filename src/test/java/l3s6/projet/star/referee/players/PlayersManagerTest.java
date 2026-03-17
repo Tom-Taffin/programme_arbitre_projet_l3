@@ -64,4 +64,16 @@ public class PlayersManagerTest {
         assertTrue(winners.contains(this.player2.getID()));
         assertTrue(winners.contains(this.player3.getID()));
     }
+
+    @Test
+    public void testWinnerIDSinglePlayer(){
+        this.playersManager.removePlayer(this.player1);
+        this.playersManager.removePlayer(this.player2);
+
+        List<String> winners = this.playersManager.winnersID();
+
+        assertFalse(winners.contains(this.player1.getID()));
+        assertFalse(winners.contains(this.player2.getID()));
+        assertTrue(winners.contains(this.player3.getID()));
+    }
 }
