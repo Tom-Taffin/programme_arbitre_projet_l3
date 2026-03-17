@@ -51,4 +51,17 @@ public class PlayersManagerTest {
         assertFalse(winners.contains(this.player2.getID()));
         assertTrue(winners.contains(this.player3.getID()));
     }
+
+    @Test
+    public void testWinnerIDMultipleWinners(){
+        this.player1.addPoints(10);
+        this.player2.addPoints(20);
+        this.player3.addPoints(20);
+
+        List<String> winners = this.playersManager.winnersID();
+
+        assertFalse(winners.contains(this.player1.getID()));
+        assertTrue(winners.contains(this.player2.getID()));
+        assertTrue(winners.contains(this.player3.getID()));
+    }
 }
