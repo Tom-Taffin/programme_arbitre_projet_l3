@@ -1,8 +1,11 @@
 package l3s6.projet.star.referee.board;
 
+import l3s6.projet.star.game.board.Board;
 import l3s6.projet.star.game.board.Coordinates;
 import l3s6.projet.star.game.edge.Edge;
 import l3s6.projet.star.game.edge.Topology;
+import l3s6.projet.star.game.edge.Zone;
+import l3s6.projet.star.game.tile.Direction;
 import l3s6.projet.star.game.tile.Tile;
 import org.junit.jupiter.api.Test;
 
@@ -135,5 +138,19 @@ public class BoardManagerTest {
         boardManager.getBoard().putTileAt(tile1, coordinates);
 
         assertFalse(boardManager.hasValidPosition(tile2));
+    }
+
+    @Test
+    public void testBoardZoneDoesntHaveMeeple() throws ImpossibleBoardMoveException {
+        BoardManager boardManager = new BoardManager();
+        Tile tile1 = new Tile(new Edge(Topology.FIELD), new Edge(Topology.FIELD), new Edge(Topology.FIELD), new Edge(Topology.FIELD));
+        Tile tile2 = new Tile(new Edge(Topology.FIELD), new Edge(Topology.FIELD), new Edge(Topology.FIELD), new Edge(Topology.FIELD));
+        Coordinates origin = new Coordinates(0, 0);
+
+        boardManager.placeTile(tile1, origin.downCoordinates());
+        boardManager.placeTile(tile2, origin.downCoordinates().downCoordinates());
+
+        assertFalse(boardManager.hasMeepleOnBoardZone(tile1.getZoneAt(Direction.TOP, 0)));
+        assertFalse(boardManager.hasMeepleOnBoardZone(boardManager.getBoard().getTileAt(origin).getZoneAt(Direction.TOP, 0)));
     }
 }
