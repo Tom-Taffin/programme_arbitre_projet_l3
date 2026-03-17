@@ -10,6 +10,7 @@ import l3s6.projet.star.game.meeple.Meeple;
 import l3s6.projet.star.game.player.Player;
 import l3s6.projet.star.game.tile.Direction;
 import l3s6.projet.star.game.tile.Tile;
+import l3s6.projet.star.game.tile.WrongTileSyntaxException;
 
 public class BoardManager {
 
@@ -21,11 +22,11 @@ public class BoardManager {
 
     /**
      * Places the given tile at the given coordinates on the board.
-     * @throws ImpossibleBoardMove if the tile can't be placed.
+     * @throws ImpossibleBoardMoveException if the tile can't be placed.
      */
-    public void placeTile(Tile tile, Coordinates coordinates) throws ImpossibleBoardMove{
+    public void placeTile(Tile tile, Coordinates coordinates) throws ImpossibleBoardMoveException{
         if (!this.checkIfTileCanBePlaced(tile, coordinates)){
-            throw new ImpossibleBoardMove("Tile not compatible!");
+            throw new ImpossibleBoardMoveException("Tile not compatible!");
         }
 
         this.board.putTileAt(tile, coordinates);
@@ -70,8 +71,8 @@ public class BoardManager {
      * Places a meeple on the tile.
      * Throws ImpossibleBoardMove if the move is impossible
      */
-    public void placeMeeple(Tile tile, String type, String position, Player player) throws ImpossibleMeepleMoveException {
-        if (player.hasMeeples()){
+    public void placeMeeple(Tile tile, Coordinates coordinates, String type, String position, Player player) throws ImpossibleMeepleMoveException {
+        if (!player.hasMeeples()){
             throw new ImpossibleMeepleMoveException("Player doesn't have any meeple.");
         }
         if (!type.equals("regular")){
@@ -85,14 +86,19 @@ public class BoardManager {
             throw new ImpossibleMeepleMoveException("Wrong meeple position syntax");
         }
 
-        Zone zone = tile.getZoneAt(this.parseDirection(position.charAt(0)), index);
+        Zone zone;
+        try {
+            zone = tile.getZoneAt(Direction.fromChar(position.charAt(0)), index);
+        } catch (WrongTileSyntaxException e) {
+            throw new ImpossibleMeepleMoveException("Wrong meeple position syntax");
+        }
 
         if (this.hasMeepleOnBoardZone(zone)){
             throw new ImpossibleMeepleMoveException("There is already meeple on the board zone");
         }
 
         try {
-            zone.setMeeple(new Meeple(player));
+            zone.setMeeple(new Meeple(player, coordinates));
         } catch (WrongTopologyException e) {
             throw new ImpossibleMeepleMoveException("Meeple can't be placed on this topology");
         }
@@ -108,18 +114,10 @@ public class BoardManager {
         return false;
     }
 
-    private Direction parseDirection(char direction) throws ImpossibleMeepleMoveException {
-        switch (direction) {
-            case 'T':
-                return Direction.TOP;
-            case 'R':
-                return Direction.RIGHT;
-            case 'B':
-                return Direction.BOTTOM;
-            case 'L':
-                return Direction.LEFT;
-            default:
-                throw new ImpossibleMeepleMoveException("Wrong meeple position syntax");
-        }
+    /**
+     * Removes meeples from a given player.
+     */
+    public void removeMeeplesFrom(Player player){
+       //ToDo: Faire des méthodes intérmédiaires dans Board pour récupérer l'ensemble des zones ou tuiles, et itérer dessus pour enlever les meeples du joueur
     }
 }

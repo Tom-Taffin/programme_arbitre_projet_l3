@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class BoardManagerTest {
     @Test
-    public void testPlaceTileUpperTileNotCompatible() throws ImpossibleBoardMove {
+    public void testPlaceTileUpperTileNotCompatible() throws ImpossibleBoardMoveException {
         BoardManager boardManager = new BoardManager();
         Tile tile1 = new Tile(new Edge(Topology.FIELD), new Edge(Topology.FIELD), new Edge(Topology.FIELD), new Edge(Topology.FIELD));
         Tile tile2 = new Tile(new Edge(Topology.FIELD), new Edge(Topology.FIELD), new Edge(Topology.CITY), new Edge(Topology.FIELD));
@@ -19,11 +19,11 @@ public class BoardManagerTest {
         boardManager.getBoard().putTileAt(tile1, origin);
 
         assertFalse(boardManager.checkIfTileCanBePlaced(tile2, origin.upCoordinates()));
-        assertThrows(ImpossibleBoardMove.class, () -> {boardManager.placeTile(tile2, origin.upCoordinates()); });
+        assertThrows(ImpossibleBoardMoveException.class, () -> {boardManager.placeTile(tile2, origin.upCoordinates()); });
     }
 
     @Test
-    public void testPlaceTileLeftTileNotCompatible() throws ImpossibleBoardMove {
+    public void testPlaceTileLeftTileNotCompatible() throws ImpossibleBoardMoveException {
         BoardManager boardManager = new BoardManager();
         Tile tile1 = new Tile(new Edge(Topology.FIELD), new Edge(Topology.FIELD), new Edge(Topology.FIELD), new Edge(Topology.FIELD));
         Tile tile2 = new Tile(new Edge(Topology.FIELD), new Edge(Topology.CITY), new Edge(Topology.FIELD), new Edge(Topology.FIELD));
@@ -32,11 +32,11 @@ public class BoardManagerTest {
         boardManager.getBoard().putTileAt(tile1, origin);
 
         assertFalse(boardManager.checkIfTileCanBePlaced(tile2, origin.leftCoordinates()));
-        assertThrows(ImpossibleBoardMove.class, () -> {boardManager.placeTile(tile2, origin.leftCoordinates()); });
+        assertThrows(ImpossibleBoardMoveException.class, () -> {boardManager.placeTile(tile2, origin.leftCoordinates()); });
     }
 
     @Test
-    public void testPlaceTileRightTileNotCompatible() throws ImpossibleBoardMove {
+    public void testPlaceTileRightTileNotCompatible() throws ImpossibleBoardMoveException {
         BoardManager boardManager = new BoardManager();
         Tile tile1 = new Tile(new Edge(Topology.FIELD), new Edge(Topology.FIELD), new Edge(Topology.FIELD), new Edge(Topology.FIELD));
         Tile tile2 = new Tile(new Edge(Topology.FIELD), new Edge(Topology.FIELD), new Edge(Topology.FIELD), new Edge(Topology.CITY));
@@ -45,11 +45,11 @@ public class BoardManagerTest {
         boardManager.getBoard().putTileAt(tile1, origin);
 
         assertFalse(boardManager.checkIfTileCanBePlaced(tile2, origin.rightCoordinates()));
-        assertThrows(ImpossibleBoardMove.class, () -> {boardManager.placeTile(tile2, origin.rightCoordinates()); });
+        assertThrows(ImpossibleBoardMoveException.class, () -> {boardManager.placeTile(tile2, origin.rightCoordinates()); });
     }
 
     @Test
-    public void testPlaceTileLowerTileNotCompatible() throws ImpossibleBoardMove {
+    public void testPlaceTileLowerTileNotCompatible() throws ImpossibleBoardMoveException {
         BoardManager boardManager = new BoardManager();
         Tile tile1 = new Tile(new Edge(Topology.FIELD), new Edge(Topology.FIELD), new Edge(Topology.FIELD), new Edge(Topology.FIELD));
         Tile tile2 = new Tile(new Edge(Topology.CITY), new Edge(Topology.FIELD), new Edge(Topology.FIELD), new Edge(Topology.FIELD));
@@ -58,11 +58,11 @@ public class BoardManagerTest {
         boardManager.getBoard().putTileAt(tile1, origin);
 
         assertFalse(boardManager.checkIfTileCanBePlaced(tile2, origin.downCoordinates()));
-        assertThrows(ImpossibleBoardMove.class, () -> {boardManager.placeTile(tile2, origin.downCoordinates()); });
+        assertThrows(ImpossibleBoardMoveException.class, () -> {boardManager.placeTile(tile2, origin.downCoordinates()); });
     }
 
     @Test
-    public void testPlaceTileLowerUpperTileCompatible() throws ImpossibleBoardMove {
+    public void testPlaceTileLowerUpperTileCompatible() throws ImpossibleBoardMoveException {
         BoardManager boardManager = new BoardManager();
         Tile tile1 = new Tile(new Edge(Topology.FIELD), new Edge(Topology.FIELD), new Edge(Topology.FIELD), new Edge(Topology.FIELD));
         Tile tile2 = new Tile(new Edge(Topology.FIELD), new Edge(Topology.FIELD), new Edge(Topology.FIELD), new Edge(Topology.FIELD));
@@ -78,7 +78,7 @@ public class BoardManagerTest {
     }
 
     @Test
-    public void testPlaceTileAlreadyHasATileAtCoordinates() throws ImpossibleBoardMove {
+    public void testPlaceTileAlreadyHasATileAtCoordinates() throws ImpossibleBoardMoveException {
         BoardManager boardManager = new BoardManager();
         Tile tile1 = new Tile(new Edge(Topology.FIELD), new Edge(Topology.FIELD), new Edge(Topology.FIELD), new Edge(Topology.FIELD));
         Tile tile2 = new Tile(new Edge(Topology.FIELD), new Edge(Topology.FIELD), new Edge(Topology.FIELD), new Edge(Topology.FIELD));
@@ -90,7 +90,7 @@ public class BoardManagerTest {
 
         boardManager.placeTile(tile2, origin.upCoordinates());
 
-        assertThrows(ImpossibleBoardMove.class, () -> {boardManager.placeTile(tile2, origin); });
+        assertThrows(ImpossibleBoardMoveException.class, () -> {boardManager.placeTile(tile2, origin); });
     }
 
      @Test
