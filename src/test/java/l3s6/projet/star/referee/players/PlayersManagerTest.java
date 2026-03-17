@@ -123,5 +123,15 @@ public class PlayersManagerTest {
         assertTrue(this.playersManager.playerExists(this.player1));
         assertFalse(this.playersManager.playerExists(new Player("A", 8)));
     }
+
+    @Test
+    public void testFindPlayerFromId() throws NonExistantPlayerException {
+        assertEquals(this.player2, this.playersManager.findPlayerFromId("B"));
+    }
+
+    @Test
+    public void testFindNonExistentPlayerFromId() {
+        assertThrows(NonExistantPlayerException.class, () -> this.playersManager.findPlayerFromId("D"));
+    }
 }
     
