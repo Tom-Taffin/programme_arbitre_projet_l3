@@ -180,14 +180,18 @@ public class BoardManagerTest {
     }
 
     @Test
-    public void testPlaceMeepleTypeNotRegular() {
+    public void testPlaceMeepleInvalidMove() throws InvalidMeeplePositionException, InvalidMeepleMoveException {
         BoardManager boardManager = new BoardManager();
         Player player1 = new Player("A", 8);
         Coordinates origin = new Coordinates(0, 0);
         Tile originTile = boardManager.getBoard().getTileAt(origin);
 
-        assertThrows(InvalidMeepleMoveException.class, () -> boardManager.placeMeeple(originTile, origin, "not-regular", "B0", player1));
-    }
+        assertThrows(InvalidMeepleMoveException.class, ()-> boardManager.placeMeeple(originTile, origin, "regular", "B0", player1));
+        assertThrows(InvalidMeepleMoveException.class, ()-> boardManager.placeMeeple(originTile, origin, "not-regular", "T0", player1));
+        assertThrows(InvalidMeeplePositionException.class, ()-> boardManager.placeMeeple(originTile, origin, "regular", "A0", player1));
 
-    
+        boardManager.placeMeeple(originTile, origin, "regular", "T0", player1);
+
+        assertThrows(InvalidMeepleMoveException.class, ()-> boardManager.placeMeeple(originTile, origin, "regular", "T0", player1));
+    }
 }
