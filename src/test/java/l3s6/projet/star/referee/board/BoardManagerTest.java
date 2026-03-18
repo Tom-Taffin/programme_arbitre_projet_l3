@@ -3,18 +3,12 @@ package l3s6.projet.star.referee.board;
 import l3s6.projet.star.game.board.Coordinates;
 import l3s6.projet.star.game.edge.Edge;
 import l3s6.projet.star.game.edge.Topology;
-import l3s6.projet.star.game.edge.Zone;
 import l3s6.projet.star.game.player.Player;
 import l3s6.projet.star.game.tile.Direction;
 import l3s6.projet.star.game.tile.Tile;
 import l3s6.projet.star.game.tile.TileBuilder;
 import l3s6.projet.star.game.tile.WrongTileSyntaxException;
-import l3s6.projet.star.referee.RefereeView;
-import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
