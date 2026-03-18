@@ -20,15 +20,18 @@ import java.io.IOException;
 import java.util.*;
 
 public class Game {
+
+    private static final String DECKPATH = "src/main/resources/tiles.json";
+
     private PlayersManager playersManager;
     private Deck deck;
     private BoardManager boardManager;
     private Tile lastDrawnTile;
     private ScoreManager scoreManager;
 
-    public Game(String path) throws IOException, ParseException {
+    public Game() throws IOException, ParseException {
         this.boardManager = new BoardManager();
-        this.deck = new Deck(path);
+        this.deck = new Deck(DECKPATH);
         this.playersManager = new PlayersManager();
     }
 

@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import l3s6.projet.star.game.edge.NoMeepleException;
+import l3s6.projet.star.game.meeple.NoMeepleException;
 import l3s6.projet.star.game.edge.Topology;
 import l3s6.projet.star.game.edge.Zone;
 import l3s6.projet.star.game.meeple.Meeple;

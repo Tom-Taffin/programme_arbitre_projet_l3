@@ -5,9 +5,10 @@ import java.util.Set;
 
 import l3s6.projet.star.game.board.Board;
 import l3s6.projet.star.game.board.Coordinates;
-import l3s6.projet.star.game.edge.NoMeepleException;
+import l3s6.projet.star.game.meeple.NoMeepleException;
 import l3s6.projet.star.game.edge.WrongTopologyException;
 import l3s6.projet.star.game.edge.Zone;
+import l3s6.projet.star.game.meeple.AlreadyHaveMeepleException;
 import l3s6.projet.star.game.meeple.Meeple;
 import l3s6.projet.star.game.player.Player;
 import l3s6.projet.star.game.tile.Direction;
@@ -105,6 +106,8 @@ public class BoardManager {
             zone.setMeeple(new Meeple(player, coordinates));
         } catch (WrongTopologyException e) {
             throw new InvalidMeepleMoveException("Meeple can't be placed on this topology");
+        } catch (AlreadyHaveMeepleException e) {
+            throw new InvalidMeepleMoveException("There is already meeple on the board zone");
         }
     }
 

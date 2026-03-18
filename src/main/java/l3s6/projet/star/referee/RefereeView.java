@@ -6,6 +6,7 @@ import l3s6.projet.star.game.tile.Orientation;
 import l3s6.projet.star.game.tile.Tile;
 import l3s6.projet.star.game.tile.WrongTileSyntaxException;
 import l3s6.projet.star.interaction.command.InvalidArgumentNumberException;
+import l3s6.projet.star.interaction.network.AdminClient;
 import l3s6.projet.star.interaction.role.Role;
 import l3s6.projet.star.interaction.view.AdminView;
 import l3s6.projet.star.referee.board.InvalidTileMoveException;
@@ -24,7 +25,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class RefereeView extends AdminView {
+public class RefereeView extends AdminView<AdminClient> {
     private final Game game;
     private final int MAX_NUMBER_OF_BLAMES = 5;
     private static final int NB_MEEPLES_PER_PLAYER = 7;
@@ -37,10 +38,16 @@ public class RefereeView extends AdminView {
     private boolean isWaitingForPlayCommand;
     private int nbPlayers;
 
-    public RefereeView(String ipAddress, int port, String id, String path, int nbPlayers) throws URISyntaxException, InterruptedException, IOException, ParseException {
+    public RefereeView(String ipAddress, int port, String id, int nbPlayers) throws URISyntaxException, InterruptedException, IOException, ParseException {
         super(ipAddress, port, id);
-        this.game = new Game(path);
+        this.game = new Game();
         this.nbPlayers = nbPlayers;
+
+        try {
+            send("ELECTS", "referee", id);
+        } catch (InvalidArgumentNumberException e) {
+            throw new RuntimeException(e);
+        }
 
         this.isWaitingForPlaceCommand = false;
         this.isWaitingForPlayCommand = true;
@@ -62,6 +69,12 @@ public class RefereeView extends AdminView {
             return;
         }
         this.game.addPlayer(new Player(id, NB_MEEPLES_PER_PLAYER));
+        try {
+            send("ELECTS", "player", id);
+        } catch (InvalidArgumentNumberException e) {
+            throw new RuntimeException(e);
+        }
+
         if (this.game.getPlayers().size() == this.nbPlayers){
             this.isWaitingForPlayCommand = false;
             startGame();
@@ -305,6 +318,21 @@ public class RefereeView extends AdminView {
         if (currentTimer != null) {
             currentTimer.cancel(false);
             currentTimer = null;
+        }
+    }
+
+    public static void main(String[] args) throws InvalidArgumentNumberException {
+        if (args.length != 4){
+            throw new InvalidArgumentNumberException("Usage : <IPAddress> <Port> <id> <nbPlayers>");
+        }
+        String IPAddress = args[0];
+        int port = Integer.parseInt(args[1]);
+        String id = args[2];
+        int nbPlayers = Integer.parseInt(args[3]);
+        try {
+            new RefereeView(IPAddress, port, id, nbPlayers);
+        } catch (URISyntaxException | InterruptedException | IOException | ParseException e) {
+            e.printStackTrace();
         }
     }
 }

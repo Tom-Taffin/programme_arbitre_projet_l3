@@ -1,0 +1,128 @@
+@startuml
+
+class l3s6.projet.star.referee.Game {
+	{field} {static} -DECKPATH : String
+	{field} -lastDrawnTile : l3s6.projet.star.game.tile.Tile
+	{method} +addPlayer ( paramPlayer1 : l3s6.projet.star.game.player.Player ) : void
+	{method} +calculateEndGamePoints ( paramRefereeView1 : l3s6.projet.star.referee.RefereeView ) : java.util.Map
+	{method} +calculatePointsEarned ( paramRefereeView1 : l3s6.projet.star.referee.RefereeView ) : java.util.Map
+	{method} +changeCurrentPlayer () : void
+	{method} +checkIfTileCanBePlaced ( paramTile1 : l3s6.projet.star.game.tile.Tile , paramCoordinates2 : l3s6.projet.star.game.board.Coordinates ) : boolean
+	{method} +drawTile () : l3s6.projet.star.game.tile.Tile
+	{method} +findPlayerFromId ( paramString1 : String ) : l3s6.projet.star.game.player.Player
+	{method} +getCurrentPlayer () : l3s6.projet.star.game.player.Player
+	{method} +getPlayers () : java.util.ArrayList
+	{method} +placeMeeple ( paramTile1 : l3s6.projet.star.game.tile.Tile , paramCoordinates2 : l3s6.projet.star.game.board.Coordinates , paramString3 : String , paramString4 : String ) : void
+	{method} +placeTile ( paramTile1 : l3s6.projet.star.game.tile.Tile , paramCoordinates2 : l3s6.projet.star.game.board.Coordinates ) : void
+	{method} +playerExists ( paramString1 : String ) : boolean
+	{method} +playerExists ( paramPlayer1 : l3s6.projet.star.game.player.Player ) : boolean
+	{method} +removePlayer ( paramPlayer1 : l3s6.projet.star.game.player.Player , paramRefereeView2 : l3s6.projet.star.referee.RefereeView ) : void
+	{method} +setStartingPlayer () : void
+	{method} +winnersID () : java.util.List
+}
+
+
+class l3s6.projet.star.referee.RefereeView {
+	{field} -MAX_NUMBER_OF_BLAMES : int
+	{field} {static} -NB_MEEPLES_PER_PLAYER : int
+	{field} {static} -TIMEOUT_SECONDS : int
+	{field} -currentTimer : java.util.concurrent.ScheduledFuture
+	{field} -isWaitingForPlaceCommand : boolean
+	{field} -isWaitingForPlayCommand : boolean
+	{field} -nbPlayers : int
+	{field} -timerExecutor : java.util.concurrent.ScheduledExecutorService
+	{method} -IdIsValid ( paramString1 : String , paramString2 : String ) : Boolean
+	{method} -blame ( paramString1 : String , paramString2 : String ) : void
+	{method} -calculatePointsEarned () : void
+	{method} -cancelTimer () : void
+	{method} -endsGame () : void
+	{method} -expel ( paramPlayer1 : l3s6.projet.star.game.player.Player ) : void
+	{method}  {static} +main ( paramString;1 : [Ljava.lang.String; ) : void
+	{method} -offerTile () : void
+	{method} +startGame () : void
+	{method} -startTimer ( paramint1 : int ) : void
+	{method} +updateOnPlace ( paramString1 : String , paramString2 : String , paramString3 : String , paramint4 : int , paramint5 : int ) : void
+	{method} +updateOnPlaceWithMeeple ( paramString1 : String , paramString2 : String , paramString3 : String , paramint4 : int , paramint5 : int , paramString6 : String , paramString7 : String ) : void
+	{method} +updateOnPlay ( paramString1 : String ) : void
+}
+
+
+class l3s6.projet.star.referee.board.BoardManager {
+	{field} -board : l3s6.projet.star.game.board.Board
+	{method} +checkIfTileCanBePlaced ( paramTile1 : l3s6.projet.star.game.tile.Tile , paramCoordinates2 : l3s6.projet.star.game.board.Coordinates ) : boolean
+	{method} +getZonesWithMeeple () : java.util.Set
+	{method} +hasMeepleOnBoardZone ( paramZone1 : l3s6.projet.star.game.edge.Zone ) : boolean
+	{method} +hasValidPosition ( paramTile1 : l3s6.projet.star.game.tile.Tile ) : boolean
+	{method} +placeMeeple ( paramTile1 : l3s6.projet.star.game.tile.Tile , paramCoordinates2 : l3s6.projet.star.game.board.Coordinates , paramString3 : String , paramString4 : String , paramPlayer5 : l3s6.projet.star.game.player.Player ) : void
+	{method} +placeTile ( paramTile1 : l3s6.projet.star.game.tile.Tile , paramCoordinates2 : l3s6.projet.star.game.board.Coordinates ) : void
+	{method} +removeMeeplesFrom ( paramPlayer1 : l3s6.projet.star.game.player.Player , paramRefereeView2 : l3s6.projet.star.referee.RefereeView ) : void
+}
+
+
+class l3s6.projet.star.referee.board.InvalidMeepleMoveException {
+}
+
+
+class l3s6.projet.star.referee.board.InvalidMeeplePositionException {
+}
+
+
+class l3s6.projet.star.referee.board.InvalidTileMoveException {
+}
+
+
+class l3s6.projet.star.referee.deck.Deck {
+	{field} #jsonPath : String
+	{field} -tiles : java.util.ArrayList
+	{method} +drawTile () : String
+	{method} #initializeDeck () : void
+	{method} +isEmpty () : boolean
+	{method} +shuffle () : void
+}
+
+
+class l3s6.projet.star.referee.deck.EmptyDeckException {
+}
+
+
+class l3s6.projet.star.referee.players.NonExistantPlayerException {
+}
+
+
+class l3s6.projet.star.referee.players.PlayersManager {
+	{field} #currentPlayer : l3s6.projet.star.game.player.Player
+	{field} -players : java.util.ArrayList
+	{method} +addPlayer ( paramPlayer1 : l3s6.projet.star.game.player.Player ) : void
+	{method} +changeCurrentPlayer () : void
+	{method} +findPlayerFromId ( paramString1 : String ) : l3s6.projet.star.game.player.Player
+	{method} +playerExists ( paramString1 : String ) : boolean
+	{method} +playerExists ( paramPlayer1 : l3s6.projet.star.game.player.Player ) : boolean
+	{method} +removePlayer ( paramPlayer1 : l3s6.projet.star.game.player.Player ) : void
+	{method} +setStartingPlayer () : void
+	{method} +winnersID () : java.util.List
+}
+
+
+class l3s6.projet.star.referee.score.ScoreManager {
+	{method} +calculateEndGamePoints ( paramSet1 : java.util.Set , paramRefereeView2 : l3s6.projet.star.referee.RefereeView ) : java.util.Map
+	{method} +calculatePointsEarned ( paramTile1 : l3s6.projet.star.game.tile.Tile , paramRefereeView2 : l3s6.projet.star.referee.RefereeView ) : java.util.Map
+	{method} -getDistinctZones ( paramSet1 : java.util.Set ) : java.util.Set
+	{method} -getPlayerMajority ( paramMap1 : java.util.Map ) : java.util.Set
+	{method} -giveBackMeeples ( paramSet1 : java.util.Set , paramRefereeView2 : l3s6.projet.star.referee.RefereeView ) : java.util.Map
+	{method} -isClosed ( paramSet1 : java.util.Set ) : boolean
+	{method} -pointsCalculationEndGame ( paramSet1 : java.util.Set ) : int
+	{method} -pointsCalculationWhenCLosed ( paramSet1 : java.util.Set ) : int
+	{method} -updateScore ( paramMap1 : java.util.Map , paramSet2 : java.util.Set , paramint3 : int ) : void
+}
+
+
+
+
+l3s6.projet.star.referee.Game -->  l3s6.projet.star.referee.board.BoardManager : boardManager
+l3s6.projet.star.referee.Game -->  l3s6.projet.star.referee.deck.Deck : deck
+l3s6.projet.star.referee.Game -->  l3s6.projet.star.referee.players.PlayersManager : playersManager
+l3s6.projet.star.referee.Game -->  l3s6.projet.star.referee.score.ScoreManager : scoreManager
+l3s6.projet.star.referee.RefereeView *--  l3s6.projet.star.referee.Game : game
+
+
+@enduml
