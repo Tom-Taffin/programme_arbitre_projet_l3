@@ -151,10 +151,11 @@ public class BoardManagerTest {
         Tile tile1 = tileBuilder.build("Nf0-c1-c1-c1");
         Tile tile2 = tileBuilder.build("Nc0-c0-c0-c0");
         Coordinates origin = new Coordinates(0, 0);
+        Tile originTile = boardManager.getBoard().getTileAt(origin);
 
         boardManager.placeTile(tile1, origin.downCoordinates());
         boardManager.placeTile(tile2, origin.downCoordinates().downCoordinates());
-        boardManager.placeMeeple(boardManager.getBoard().getTileAt(origin), origin, "regular", "T0", player1);
+        boardManager.placeMeeple(originTile, origin, "regular", "T0", player1);
 
         assertFalse(boardManager.hasMeepleOnBoardZone(tile1.getZoneAt(Direction.RIGHT, 0)));
     }
@@ -167,13 +168,26 @@ public class BoardManagerTest {
         Tile tile1 = tileBuilder.build("Nf0-c1-c1-c1");
         Tile tile2 = tileBuilder.build("Nc0-c0-c0-c0");
         Coordinates origin = new Coordinates(0, 0);
+        Tile originTile = boardManager.getBoard().getTileAt(origin);
 
         boardManager.placeTile(tile1, origin.downCoordinates());
         boardManager.placeTile(tile2, origin.downCoordinates().downCoordinates());
         boardManager.placeMeeple(tile1, origin.downCoordinates(), "regular", "B0", player1);
 
-        assertFalse(boardManager.hasMeepleOnBoardZone(boardManager.getBoard().getTileAt(origin).getZoneAt(Direction.TOP, 0)));
+        assertFalse(boardManager.hasMeepleOnBoardZone(originTile.getZoneAt(Direction.TOP, 0)));
         assertTrue(boardManager.hasMeepleOnBoardZone(tile1.getZoneAt(Direction.RIGHT, 0)));
         assertTrue(boardManager.hasMeepleOnBoardZone(tile2.getZoneAt(Direction.TOP, 0)));
     }
+
+    @Test
+    public void testPlaceMeepleTypeNotRegular() {
+        BoardManager boardManager = new BoardManager();
+        Player player1 = new Player("A", 8);
+        Coordinates origin = new Coordinates(0, 0);
+        Tile originTile = boardManager.getBoard().getTileAt(origin);
+
+        assertThrows(InvalidMeepleMoveException.class, () -> boardManager.placeMeeple(originTile, origin, "not-regular", "B0", player1));
+    }
+
+    
 }
