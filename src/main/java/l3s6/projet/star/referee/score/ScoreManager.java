@@ -20,7 +20,7 @@ public class ScoreManager {
     /**
      * After the tile is placed,
      * If a zone is finished, updates players scores and gives back meeples.
-     * Sends meeple returned with COLLECT command.
+     * Sends meeple returned with COLLECTS command.
      * Otherwise, does nothing.
      */
     public Map<Player,Integer> calculatePointsEarned(Tile tile, RefereeView refereeView){
@@ -42,7 +42,7 @@ public class ScoreManager {
     /**
      * After the end of the game,
      * For all the zones with meeple, updates players scores and gives back meeples.
-     * Sends meeple returned with COLLECT command.
+     * Sends meeple returned with COLLECTS command.
      */
     public Map<Player, Integer> calculateEndGamePoints(Set<Zone> zonesWithMeeple, RefereeView refereeView) {
         Map<Player, Integer> pointsEarned = new HashMap<>();
@@ -72,7 +72,7 @@ public class ScoreManager {
 
     /**
      * Give back all the meeples
-     * Sends meeple returned with COLLECT command.
+     * Sends meeple returned with COLLECTS command.
      * @return a map of player and his number of meeple in the zones
      */
     private Map<Player, Integer> giveBackMeeples(Set<Zone> zones, RefereeView refereeView) {
@@ -82,7 +82,7 @@ public class ScoreManager {
                 Meeple meeple = zone.getMeeple();
                 Player player = meeple.getPlayer();
                 try {
-                    refereeView.send("COLLECT", player.getID(), meeple.getCoordinates().getX(), meeple.getCoordinates().getY());
+                    refereeView.send("COLLECTS", player.getID(), meeple.getCoordinates().getX(), meeple.getCoordinates().getY());
                 } catch (InvalidArgumentNumberException e) {
                     throw new RuntimeException(e);
                 }

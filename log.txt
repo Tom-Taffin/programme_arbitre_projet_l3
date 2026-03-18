@@ -1,0 +1,142 @@
+CarcassonneWebSocket opened
+[Andrei] Andrei enters.
+[arbitre] arbitre enters.
+[arbitre] Players [arbitre] gained the role referee.
+[arbitre] Players [Andrei] gained the role player.
+[Samuel] Samuel enters.
+[arbitre] Players [Samuel] gained the role player.
+[arbitre] The game starts.
+[arbitre] 5 blames are authorized for this game.
+[arbitre] Player Andrei collects 7 meeples regular.
+[arbitre] Player Samuel collects 7 meeples regular.
+[arbitre] Player Samuel gets the tile f1-f1-f1r1f2-f2r1f1.
+[arbitre] Player Andrei gets the tile c1-f1r1f2-f2-f2r1f1.
+[arbitre] Player Samuel gets the tile f1r1f2-f2-f2r1f1-f1.
+[arbitre] Player Andrei gets the tile f1r1f2-f2-f2r1f1-f1.
+[arbitre] Player Samuel gets the tile c1-f1-f1-c2.
+[arbitre] Player Andrei gets the tile c1-f1-f1r1f2-f2r1f1.
+[arbitre] Player Samuel gets the tile f1r1f2-f2-f2r1f1-f1.
+[arbitre] Player Andrei gets the tile f1r1f2-f2r2f3-f3r3f4-f4r4f1.
+[arbitre] Player Samuel gets the tile f1-c1-f2-c1.
+[arbitre] Player Andrei gets the tile c1-c1-f1r1f2-c1.
+[arbitre] Player Andrei was blamed for the reason illegal-meeple-move.
+[arbitre] Player Samuel gets the tile c1-f1-c2-f1.
+[WebSocketConnectReadThread-21] ERROR org.java_websocket.drafts.Draft_6455 - Runtime exception during onWebsocketMessage
+java.lang.RuntimeException: l3s6.projet.star.interaction.command.InvalidArgumentNumberException: command not found
+	at l3s6.projet.star.referee.score.ScoreManager.giveBackMeeples(ScoreManager.java:87)
+	at l3s6.projet.star.referee.score.ScoreManager.calculatePointsEarned(ScoreManager.java:31)
+	at l3s6.projet.star.referee.Game.calculatePointsEarned(Game.java:118)
+	at l3s6.projet.star.referee.RefereeView.calculatePointsEarned(RefereeView.java:231)
+	at l3s6.projet.star.referee.RefereeView.updateOnPlace(RefereeView.java:142)
+	at l3s6.projet.star.interaction.command.PlaceCommand.execute(PlaceCommand.java:36)
+	at l3s6.projet.star.interaction.command.PlaceCommand.execute(PlaceCommand.java:7)
+	at l3s6.projet.star.interaction.router.AbstractRouter.update(AbstractRouter.java:28)
+	at l3s6.projet.star.interaction.network.GameSocket.onMessage(GameSocket.java:41)
+	at org.java_websocket.client.WebSocketClient.onWebsocketMessage(WebSocketClient.java:661)
+	at org.java_websocket.drafts.Draft_6455.processFrameText(Draft_6455.java:986)
+	at org.java_websocket.drafts.Draft_6455.processFrame(Draft_6455.java:910)
+	at org.java_websocket.WebSocketImpl.decodeFrames(WebSocketImpl.java:397)
+	at org.java_websocket.WebSocketImpl.decode(WebSocketImpl.java:229)
+	at org.java_websocket.client.WebSocketClient.run(WebSocketClient.java:544)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: l3s6.projet.star.interaction.command.InvalidArgumentNumberException: command not found
+	at l3s6.projet.star.interaction.network.AbstractClient.send(AbstractClient.java:44)
+	at l3s6.projet.star.interaction.view.AbstractView.send(AbstractView.java:39)
+	at l3s6.projet.star.referee.score.ScoreManager.giveBackMeeples(ScoreManager.java:85)
+	... 15 more
+java.lang.RuntimeException: l3s6.projet.star.interaction.command.InvalidArgumentNumberException: command not found
+	at l3s6.projet.star.referee.score.ScoreManager.giveBackMeeples(ScoreManager.java:87)
+	at l3s6.projet.star.referee.score.ScoreManager.calculatePointsEarned(ScoreManager.java:31)
+	at l3s6.projet.star.referee.Game.calculatePointsEarned(Game.java:118)
+	at l3s6.projet.star.referee.RefereeView.calculatePointsEarned(RefereeView.java:231)
+	at l3s6.projet.star.referee.RefereeView.updateOnPlace(RefereeView.java:142)
+	at l3s6.projet.star.interaction.command.PlaceCommand.execute(PlaceCommand.java:36)
+	at l3s6.projet.star.interaction.command.PlaceCommand.execute(PlaceCommand.java:7)
+	at l3s6.projet.star.interaction.router.AbstractRouter.update(AbstractRouter.java:28)
+	at l3s6.projet.star.interaction.network.GameSocket.onMessage(GameSocket.java:41)
+	at org.java_websocket.client.WebSocketClient.onWebsocketMessage(WebSocketClient.java:661)
+	at org.java_websocket.drafts.Draft_6455.processFrameText(Draft_6455.java:986)
+	at org.java_websocket.drafts.Draft_6455.processFrame(Draft_6455.java:910)
+	at org.java_websocket.WebSocketImpl.decodeFrames(WebSocketImpl.java:397)
+	at org.java_websocket.WebSocketImpl.decode(WebSocketImpl.java:229)
+	at org.java_websocket.client.WebSocketClient.run(WebSocketClient.java:544)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: l3s6.projet.star.interaction.command.InvalidArgumentNumberException: command not found
+	at l3s6.projet.star.interaction.network.AbstractClient.send(AbstractClient.java:44)
+	at l3s6.projet.star.interaction.view.AbstractView.send(AbstractView.java:39)
+	at l3s6.projet.star.referee.score.ScoreManager.giveBackMeeples(ScoreManager.java:85)
+	... 15 more
+[Andrei] Andrei leaves.
+
+
+
+
+
+
+
+
+
+CarcassonneWebSocket opened
+[Andrei] Andrei enters.
+[Tom] Tom enters.
+[arbitre] arbitre enters.
+[arbitre] Players [arbitre] gained the role referee.
+[arbitre] Players [Andrei] gained the role player.
+[Samuel] Samuel enters.
+[arbitre] Players [Tom] gained the role player.
+[arbitre] Players [Samuel] gained the role player.
+[arbitre] The game starts.
+[arbitre] 5 blames are authorized for this game.
+[arbitre] Player Andrei collects 7 meeples regular.
+[arbitre] Player Tom collects 7 meeples regular.
+[arbitre] Player Samuel collects 7 meeples regular.
+[arbitre] Player Andrei gets the tile f1-f1-f1r1f2-f2r1f1.
+[arbitre] Player Tom gets the tile f1-f1-f1r1f2-f2r1f1.
+[arbitre] Player Samuel gets the tile c1-c1-f1-f1.
+[arbitre] Player Andrei gets the tile f1-c1-f2-c1.
+[arbitre] Player Tom gets the tile c1-f1r1f2-f2r1f1-f1.
+[WebSocketConnectReadThread-21] ERROR org.java_websocket.drafts.Draft_6455 - Runtime exception during onWebsocketMessage
+java.util.ConcurrentModificationException
+	at java.base/java.util.HashMap$HashIterator.nextNode(HashMap.java:1605)
+	at java.base/java.util.HashMap$KeyIterator.next(HashMap.java:1628)
+	at l3s6.projet.star.referee.score.ScoreManager.getDistinctZones(ScoreManager.java:165)
+	at l3s6.projet.star.referee.score.ScoreManager.pointsCalculationEndGame(ScoreManager.java:139)
+	at l3s6.projet.star.referee.score.ScoreManager.pointsCalculationWhenCLosed(ScoreManager.java:123)
+	at l3s6.projet.star.referee.score.ScoreManager.calculatePointsEarned(ScoreManager.java:34)
+	at l3s6.projet.star.referee.Game.calculatePointsEarned(Game.java:118)
+	at l3s6.projet.star.referee.RefereeView.calculatePointsEarned(RefereeView.java:231)
+	at l3s6.projet.star.referee.RefereeView.updateOnPlace(RefereeView.java:142)
+	at l3s6.projet.star.interaction.command.PlaceCommand.execute(PlaceCommand.java:36)
+	at l3s6.projet.star.interaction.command.PlaceCommand.execute(PlaceCommand.java:7)
+	at l3s6.projet.star.interaction.router.AbstractRouter.update(AbstractRouter.java:28)
+	at l3s6.projet.star.interaction.network.GameSocket.onMessage(GameSocket.java:41)
+	at org.java_websocket.client.WebSocketClient.onWebsocketMessage(WebSocketClient.java:661)
+	at org.java_websocket.drafts.Draft_6455.processFrameText(Draft_6455.java:986)
+	at org.java_websocket.drafts.Draft_6455.processFrame(Draft_6455.java:910)
+	at org.java_websocket.WebSocketImpl.decodeFrames(WebSocketImpl.java:397)
+	at org.java_websocket.WebSocketImpl.decode(WebSocketImpl.java:229)
+	at org.java_websocket.client.WebSocketClient.run(WebSocketClient.java:544)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+java.util.ConcurrentModificationException
+	at java.base/java.util.HashMap$HashIterator.nextNode(HashMap.java:1605)
+	at java.base/java.util.HashMap$KeyIterator.next(HashMap.java:1628)
+	at l3s6.projet.star.referee.score.ScoreManager.getDistinctZones(ScoreManager.java:165)
+	at l3s6.projet.star.referee.score.ScoreManager.pointsCalculationEndGame(ScoreManager.java:139)
+	at l3s6.projet.star.referee.score.ScoreManager.pointsCalculationWhenCLosed(ScoreManager.java:123)
+	at l3s6.projet.star.referee.score.ScoreManager.calculatePointsEarned(ScoreManager.java:34)
+	at l3s6.projet.star.referee.Game.calculatePointsEarned(Game.java:118)
+	at l3s6.projet.star.referee.RefereeView.calculatePointsEarned(RefereeView.java:231)
+	at l3s6.projet.star.referee.RefereeView.updateOnPlace(RefereeView.java:142)
+	at l3s6.projet.star.interaction.command.PlaceCommand.execute(PlaceCommand.java:36)
+	at l3s6.projet.star.interaction.command.PlaceCommand.execute(PlaceCommand.java:7)
+	at l3s6.projet.star.interaction.router.AbstractRouter.update(AbstractRouter.java:28)
+	at l3s6.projet.star.interaction.network.GameSocket.onMessage(GameSocket.java:41)
+	at org.java_websocket.client.WebSocketClient.onWebsocketMessage(WebSocketClient.java:661)
+	at org.java_websocket.drafts.Draft_6455.processFrameText(Draft_6455.java:986)
+	at org.java_websocket.drafts.Draft_6455.processFrame(Draft_6455.java:910)
+	at org.java_websocket.WebSocketImpl.decodeFrames(WebSocketImpl.java:397)
+	at org.java_websocket.WebSocketImpl.decode(WebSocketImpl.java:229)
+	at org.java_websocket.client.WebSocketClient.run(WebSocketClient.java:544)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+[arbitre] Player Samuel collects 1 meeples 0.
+

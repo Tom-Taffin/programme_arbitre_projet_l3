@@ -33,6 +33,7 @@ public class Game {
         this.boardManager = new BoardManager();
         this.deck = new Deck(DECKPATH);
         this.playersManager = new PlayersManager();
+        this.scoreManager = new ScoreManager();
     }
 
     /**
