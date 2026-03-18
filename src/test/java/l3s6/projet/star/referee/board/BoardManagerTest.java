@@ -5,8 +5,11 @@ import l3s6.projet.star.game.board.Coordinates;
 import l3s6.projet.star.game.edge.Edge;
 import l3s6.projet.star.game.edge.Topology;
 import l3s6.projet.star.game.edge.Zone;
+import l3s6.projet.star.game.player.Player;
 import l3s6.projet.star.game.tile.Direction;
 import l3s6.projet.star.game.tile.Tile;
+import l3s6.projet.star.game.tile.TileBuilder;
+import l3s6.projet.star.game.tile.WrongTileSyntaxException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -141,16 +144,36 @@ public class BoardManagerTest {
     }
 
     @Test
-    public void testBoardZoneDoesntHaveMeeple() throws InvalidTileMoveException {
+    public void testBoardZoneDoesntHaveMeeple() throws InvalidTileMoveException, InvalidMeeplePositionException, InvalidMeepleMoveException, WrongTileSyntaxException {
         BoardManager boardManager = new BoardManager();
-        Tile tile1 = new Tile(new Edge(Topology.FIELD), new Edge(Topology.FIELD), new Edge(Topology.FIELD), new Edge(Topology.FIELD));
-        Tile tile2 = new Tile(new Edge(Topology.FIELD), new Edge(Topology.FIELD), new Edge(Topology.FIELD), new Edge(Topology.FIELD));
+        TileBuilder tileBuilder = new TileBuilder();
+        Player player1 = new Player("A", 8);
+        Tile tile1 = tileBuilder.build("Nf0-c1-c1-c1");
+        Tile tile2 = tileBuilder.build("Nc0-c0-c0-c0");
         Coordinates origin = new Coordinates(0, 0);
 
         boardManager.placeTile(tile1, origin.downCoordinates());
         boardManager.placeTile(tile2, origin.downCoordinates().downCoordinates());
+        boardManager.placeMeeple(boardManager.getBoard().getTileAt(origin), origin, "regular", "T0", player1);
 
-        assertFalse(boardManager.hasMeepleOnBoardZone(tile1.getZoneAt(Direction.TOP, 0)));
+        assertFalse(boardManager.hasMeepleOnBoardZone(tile1.getZoneAt(Direction.RIGHT, 0)));
+    }
+
+    @Test
+    public void testHasBoardZoneDoesntHaveMeeple() throws InvalidTileMoveException, InvalidMeeplePositionException, InvalidMeepleMoveException, WrongTileSyntaxException {
+        BoardManager boardManager = new BoardManager();
+        TileBuilder tileBuilder = new TileBuilder();
+        Player player1 = new Player("A", 8);
+        Tile tile1 = tileBuilder.build("Nf0-c1-c1-c1");
+        Tile tile2 = tileBuilder.build("Nc0-c0-c0-c0");
+        Coordinates origin = new Coordinates(0, 0);
+
+        boardManager.placeTile(tile1, origin.downCoordinates());
+        boardManager.placeTile(tile2, origin.downCoordinates().downCoordinates());
+        boardManager.placeMeeple(tile1, origin.downCoordinates(), "regular", "B0", player1);
+
         assertFalse(boardManager.hasMeepleOnBoardZone(boardManager.getBoard().getTileAt(origin).getZoneAt(Direction.TOP, 0)));
+        assertTrue(boardManager.hasMeepleOnBoardZone(tile1.getZoneAt(Direction.RIGHT, 0)));
+        assertTrue(boardManager.hasMeepleOnBoardZone(tile2.getZoneAt(Direction.TOP, 0)));
     }
 }
