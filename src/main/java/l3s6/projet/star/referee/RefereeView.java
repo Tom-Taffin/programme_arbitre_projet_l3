@@ -135,7 +135,7 @@ public class RefereeView extends AdminView<AdminClient> {
         if(this.IdIsValid(id, idPrime)){
             try {
                 Tile drawnTile = this.game.getLastDrawnTile();
-                drawnTile.setOrientation(Orientation.valueOf(orientation));
+                drawnTile.setOrientation(Orientation.fromChar((orientation.charAt(0))));
                 this.game.placeTile(drawnTile, new Coordinates(x, y));
                 send("PLACES", id, orientation, x, y);
                 this.isWaitingForPlaceCommand = false;
@@ -163,7 +163,7 @@ public class RefereeView extends AdminView<AdminClient> {
             try {
                 Tile drawnTile = this.game.getLastDrawnTile();
 
-                drawnTile.setOrientation(Orientation.valueOf(orientation));
+                drawnTile.setOrientation(Orientation.fromChar((orientation.charAt(0))));
                 Coordinates coordinates = new Coordinates(x,y);
                 if(this.game.checkIfTileCanBePlaced(drawnTile, coordinates)){
                     this.game.placeMeeple(drawnTile, coordinates, meeple_type, meeple_position);
