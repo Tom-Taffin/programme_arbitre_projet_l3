@@ -21,7 +21,7 @@ import java.util.*;
 
 public class Game {
 
-    private static final String DECKPATH = "src/main/resources/tiles.json";
+    private static final String DECKPATH = "src/main/java/l3s6/projet/star/referee/deck/tiles.json";
 
     private PlayersManager playersManager;
     private Deck deck;
@@ -40,10 +40,10 @@ public class Game {
      * Throws exception if deck is empty.
      */
     public Tile drawTile() throws EmptyDeckException, WrongTileSyntaxException {
-        Tile tile = new TileBuilder().build(this.deck.drawTile());
+        Tile tile = new TileBuilder().build("N" + this.deck.drawTile());
 
         while (!this.boardManager.hasValidPosition(tile)){
-            tile = new TileBuilder().build(this.deck.drawTile());
+            tile = new TileBuilder().build("N" + this.deck.drawTile());
         }
 
         lastDrawnTile = tile;

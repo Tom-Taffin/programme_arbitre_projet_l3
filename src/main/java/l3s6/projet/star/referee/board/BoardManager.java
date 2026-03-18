@@ -12,6 +12,7 @@ import l3s6.projet.star.game.meeple.AlreadyHaveMeepleException;
 import l3s6.projet.star.game.meeple.Meeple;
 import l3s6.projet.star.game.player.Player;
 import l3s6.projet.star.game.tile.Direction;
+import l3s6.projet.star.game.tile.Orientation;
 import l3s6.projet.star.game.tile.Tile;
 import l3s6.projet.star.game.tile.WrongTileSyntaxException;
 import l3s6.projet.star.interaction.command.InvalidArgumentNumberException;
@@ -61,14 +62,17 @@ public class BoardManager {
      * Returns true if the given tile can be placed on the board. Checks tile with all neighboring empty tiles on the board, with all orientations.
      */
     public boolean hasValidPosition(Tile tile){
+        Orientation orientation = tile.getOrientation();
         for(Coordinates coord : this.board.getOutsideFrontierTiles()){
             for (int i=0; i < 4; i++){
                 if(this.checkIfTileCanBePlaced(tile, coord)){
+                    tile.setOrientation(orientation);
                     return true;
                 }
                 tile.rotateRight();
             }
         }
+        tile.setOrientation(orientation);
         return false;
     }
 

@@ -90,7 +90,7 @@ public class RefereeView extends AdminView<AdminClient> {
             send("STARTS");
             send("BLAMES", MAX_NUMBER_OF_BLAMES);
             for(Player player: this.game.getPlayers()){
-                send("COLLECTS", player.getID(), NB_MEEPLES_PER_PLAYER);
+                send("COLLECTS", player.getID(), "regular", NB_MEEPLES_PER_PLAYER);
             }
         } catch (InvalidArgumentNumberException e) {
             throw new RuntimeException(e);
@@ -113,7 +113,7 @@ public class RefereeView extends AdminView<AdminClient> {
                 Tile tile = game.drawTile();
                 isWaitingForPlaceCommand = true;
                 startTimer(TIMEOUT_SECONDS);
-                send("OFFERS", game.getCurrentPlayer().getID(), tile.toString());
+                send("OFFERS", game.getCurrentPlayer().getID(), tile.toString().substring(1));
 
             } catch (EmptyDeckException e) {
                 endsGame();
@@ -207,7 +207,7 @@ public class RefereeView extends AdminView<AdminClient> {
             return false;
         }
 
-        if (id != game.getCurrentPlayer().getID()){
+        if (!id.equals(game.getCurrentPlayer().getID())){
             blame(id, "illegal-turn");
             return false;
         }
