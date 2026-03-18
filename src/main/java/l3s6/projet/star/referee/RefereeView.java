@@ -25,8 +25,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import javax.swing.SwingUtilities;
-
 public class RefereeView extends AdminView<AdminClient> {
     private final Game game;
     private final int MAX_NUMBER_OF_BLAMES = 5;
