@@ -23,6 +23,8 @@ Si un état a besoin de vérifier, ou de mettre à jour un élément de jeu, il 
 
 Pour le plateau, les joueurs et le score, la logique devient compliqué à gérer au sein d'une seule classe, donc on a préféré faire des classes *Manager* pour ces éléments auxquels **Game.java** va faire appel pour déléguer les tâches.
 
+**RefereeView.java** gère également la distribution des blâmes aux joueurs, ainsi que leur expulsion de la partie.
+
 Voyons un exemple de déroulement d'un état:
 
 Dans l'état *OfferTile*, on est au début du tour. On doit piocher une tuile et l'offrir au joueur courant. **RefereeView.java** commence par demander à **Game.java** de piocher une tuile.
