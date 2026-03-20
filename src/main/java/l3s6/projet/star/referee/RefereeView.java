@@ -64,6 +64,7 @@ public class RefereeView extends AdminView<AdminClient> {
             } catch (InvalidArgumentNumberException e) {
                 throw new RuntimeException(e);
             }
+            return;
         }
         if (this.game.playerExists(id)){
             return;
@@ -274,6 +275,7 @@ public class RefereeView extends AdminView<AdminClient> {
 
         if (player.getNumberOfBlames() >= MAX_NUMBER_OF_BLAMES){
             expel(player);
+            return;
         }
 
         if(player == game.getCurrentPlayer()){
