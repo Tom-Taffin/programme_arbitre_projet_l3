@@ -82,7 +82,7 @@ public class ScoreManager {
                 Meeple meeple = zone.getMeeple();
                 Player player = meeple.getPlayer();
                 try {
-                    refereeView.send("COLLECTS", player.getID(), meeple.getCoordinates().getX(), meeple.getCoordinates().getY());
+                    refereeView.send("COLLECTS", player.getID(), "regular", meeple.getCoordinates().getX(), meeple.getCoordinates().getY());
                 } catch (InvalidArgumentNumberException e) {
                     throw new RuntimeException(e);
                 }

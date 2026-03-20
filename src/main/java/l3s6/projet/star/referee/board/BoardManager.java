@@ -158,4 +158,8 @@ public class BoardManager {
         }
         return zones;
     }
+
+    public void removeTile(Coordinates coordinates) {
+        this.board.removeTileAt(coordinates);
+    }
 }

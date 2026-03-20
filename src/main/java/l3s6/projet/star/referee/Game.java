@@ -21,7 +21,7 @@ import java.util.*;
 
 public class Game {
 
-    private static final String DECKPATH = "src/main/java/l3s6/projet/star/referee/deck/tiles.json";
+    private static final String DECKPATH = "./ressources/deck/tiles.json";
 
     private PlayersManager playersManager;
     private Deck deck;
@@ -102,12 +102,12 @@ public class Game {
         return this.playersManager.findPlayerFromId(ID);
     }
 
-    public boolean checkIfTileCanBePlaced(Tile tile, Coordinates coordinates){
-        return this.boardManager.checkIfTileCanBePlaced(tile, coordinates);
-    }
-
     public void placeTile(Tile tile, Coordinates coordinates) throws InvalidTileMoveException {
         this.boardManager.placeTile(tile, coordinates);
+    }
+
+    public void removeTile(Coordinates coordinates) {
+        this.boardManager.removeTile(coordinates);
     }
 
     public void placeMeeple(Tile tile, Coordinates coordinates, String type, String position) throws InvalidMeepleMoveException, InvalidMeeplePositionException{

@@ -161,22 +161,17 @@ public class RefereeView extends AdminView<AdminClient> {
     public void updateOnPlaceWithMeeple(String id, String idPrime, String orientation, int x, int y, String meeple_type, String meeple_position) {
         if(this.IdIsValid(id, idPrime)){
             try {
-                Tile drawnTile = this.game.getLastDrawnTile();
+            Tile drawnTile = this.game.getLastDrawnTile();
 
-                drawnTile.setOrientation(Orientation.fromChar((orientation.charAt(0))));
-                Coordinates coordinates = new Coordinates(x,y);
-                if(this.game.checkIfTileCanBePlaced(drawnTile, coordinates)){
-                    this.game.placeMeeple(drawnTile, coordinates, meeple_type, meeple_position);
-                    this.game.placeTile(drawnTile, coordinates);
+            drawnTile.setOrientation(Orientation.fromChar((orientation.charAt(0))));
+            Coordinates coordinates = new Coordinates(x,y);
+                this.game.placeTile(drawnTile, coordinates);
+                this.game.placeMeeple(drawnTile, coordinates, meeple_type, meeple_position);
 
-                    send("PLACES", id, orientation, x, y, meeple_type, meeple_position);
+                send("PLACES", id, orientation, x, y, meeple_type, meeple_position);
 
-                    this.isWaitingForPlaceCommand = false;
-                    this.calculatePointsEarned();
-                }
-                else {
-                    blame(id, "illegal-tile-move");
-                }
+                this.isWaitingForPlaceCommand = false;
+                this.calculatePointsEarned();
             } catch (IllegalArgumentException  e) {
                 blame(id, "illegal-orientation");
             } catch (InvalidTileMoveException e) {
@@ -185,8 +180,10 @@ public class RefereeView extends AdminView<AdminClient> {
                 throw new RuntimeException(e);
             } catch (InvalidMeepleMoveException e) {
                 blame(id, "illegal-meeple-move");
+                this.game.removeTile(new Coordinates(x,y));
             } catch (InvalidMeeplePositionException e) {
                 blame(id, "illegal-meeple-position-syntax");
+                this.game.removeTile(new Coordinates(x,y));
             }
         }
     }
