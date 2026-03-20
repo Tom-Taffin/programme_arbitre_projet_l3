@@ -161,7 +161,7 @@ public class ScoreManager {
      * @return one zone per tile for all the tiles covered by zones.
      */
     private Set<Zone> getDistinctZones(Set<Zone> zones) {
-        Set<Zone> distinctZones = zones;
+        Set<Zone> distinctZones = new HashSet<>(zones);
         for(Zone zone : zones){
             if(distinctZones.contains(zone)){
                 distinctZones.removeAll(zone.getConnectingZones());
