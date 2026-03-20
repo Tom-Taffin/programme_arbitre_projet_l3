@@ -133,7 +133,7 @@ public class BoardManager {
             Meeple meeple = zone.getMeeple();
             if(meeple.getPlayer() == player){
                 try {
-                    refereeView.send("COLLECT", player.getID(), meeple.getCoordinates().getX(), meeple.getCoordinates().getY());
+                    refereeView.send("COLLECTS", player.getID(), meeple.getCoordinates().getX(), meeple.getCoordinates().getY());
                     zone.giveBackMeeple();
                 } catch (InvalidArgumentNumberException | NoMeepleException e) {
                     throw new RuntimeException(e);
