@@ -177,10 +177,10 @@ public class ScoreManager {
         for(Player player : players){
             player.addPoints(points);
             if(pointsEarned.containsKey(player)){
-                pointsEarned.put(player,points);
+                pointsEarned.put(player, pointsEarned.get(player) + points);
             }
             else {
-                pointsEarned.put(player, pointsEarned.get(player) + points);
+                pointsEarned.put(player,points);
             }
         }
     }
