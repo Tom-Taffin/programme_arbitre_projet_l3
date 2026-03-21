@@ -7,15 +7,24 @@ import java.util.Map;
 import java.util.Set;
 
 import l3s6.projet.star.game.meeple.NoMeepleException;
+import l3s6.projet.star.game.board.Coordinates;
 import l3s6.projet.star.game.edge.Topology;
 import l3s6.projet.star.game.edge.Zone;
 import l3s6.projet.star.game.meeple.Meeple;
 import l3s6.projet.star.game.player.Player;
+import l3s6.projet.star.game.tile.NoAbbeyException;
 import l3s6.projet.star.game.tile.Tile;
 import l3s6.projet.star.interaction.command.InvalidArgumentNumberException;
 import l3s6.projet.star.referee.RefereeView;
+import l3s6.projet.star.referee.board.BoardManager;
 
 public class ScoreManager {
+
+    private BoardManager boardManager;
+
+    public ScoreManager(BoardManager boardManager) {
+        this.boardManager = boardManager;
+    }
 
     /**
      * After the tile is placed,
@@ -23,7 +32,7 @@ public class ScoreManager {
      * Sends meeple returned with COLLECTS command.
      * Otherwise, does nothing.
      */
-    public Map<Player,Integer> calculatePointsEarned(Tile tile, RefereeView refereeView){
+    public Map<Player,Integer> calculatePointsEarned(Tile tile, Coordinates coordinates, RefereeView refereeView){
         Map<Player, Integer> pointsEarned = new HashMap<>();
         for(Zone zone : tile.getDistinctZone()){
             Set<Zone> zones = zone.getAllBoardConnectingZones();
@@ -36,6 +45,10 @@ public class ScoreManager {
                 }
             }
         }
+        this.calculateAbbeyPoints(coordinates, refereeView, pointsEarned);
+        for(Coordinates coord : coordinates.getAdjacentAndCornerCoordinates()){
+            this.calculateAbbeyPoints(coord, refereeView, pointsEarned);
+        }
         return pointsEarned;
     }
 
@@ -44,9 +57,9 @@ public class ScoreManager {
      * For all the zones with meeple, updates players scores and gives back meeples.
      * Sends meeple returned with COLLECTS command.
      */
-    public Map<Player, Integer> calculateEndGamePoints(Set<Zone> zonesWithMeeple, RefereeView refereeView) {
+    public Map<Player, Integer> calculateEndGamePoints(RefereeView refereeView) {
         Map<Player, Integer> pointsEarned = new HashMap<>();
-        for(Zone zone : zonesWithMeeple){
+        for(Zone zone : this.boardManager.getZonesWithMeeple()){
             if(zone.hasMeeple()){
                 Set<Zone> zones = zone.getAllBoardConnectingZones();
                 Map<Player,Integer> nbMeeples = this.giveBackMeeples(zones, refereeView);
@@ -55,7 +68,23 @@ public class ScoreManager {
                 this.updateScore(pointsEarned, players, points);
             }
         }
+
+        calculateEndGameAbbeyPoints(refereeView, pointsEarned);
         return pointsEarned;
+    }
+
+    private void calculateEndGameAbbeyPoints(RefereeView refereeView, Map<Player, Integer> pointsEarned) {
+        for(Tile tile : this.boardManager.getAbbeyTilesWithMeeple()){
+            try {
+                Meeple meeple = tile.getAbbeyMeeple();
+                int point = 1 + this.boardManager.countSurroundingTiles(meeple.getCoordinates());
+                refereeView.send("COLLECTS", meeple.getPlayer().getID(), "regular", meeple.getCoordinates().getX(), meeple.getCoordinates().getY());
+                this.updateScore(pointsEarned, Set.of(meeple.getPlayer()), point);
+                tile.giveBackAbbeyMeeple();
+            } catch (NoAbbeyException | NoMeepleException | InvalidArgumentNumberException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     /**
@@ -181,6 +210,25 @@ public class ScoreManager {
             }
             else {
                 pointsEarned.put(player,points);
+            }
+        }
+    }
+
+    private void calculateAbbeyPoints(Coordinates coordinates, RefereeView refereeView, Map<Player,Integer> pointsEarned) {
+        if(this.boardManager.hasTile(coordinates)){
+            Tile tile = this.boardManager.getTileAt(coordinates);
+            if(tile.hasAbbey() && tile.hasMeepleOnAbbey()){
+                if(this.boardManager.isSurrounded(coordinates)){
+                    try {
+                        Meeple meeple = tile.getAbbeyMeeple();
+                        Player player = meeple.getPlayer();
+                        refereeView.send("COLLECTS", player.getID(), "regular", meeple.getCoordinates().getX(), meeple.getCoordinates().getY());
+                        tile.giveBackAbbeyMeeple();
+                        this.updateScore(pointsEarned, Set.of(player), 9);
+                    } catch (NoMeepleException | NoAbbeyException | InvalidArgumentNumberException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
             }
         }
     }

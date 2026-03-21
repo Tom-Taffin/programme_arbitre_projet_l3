@@ -12,6 +12,7 @@ import l3s6.projet.star.game.meeple.AlreadyHaveMeepleException;
 import l3s6.projet.star.game.meeple.Meeple;
 import l3s6.projet.star.game.player.Player;
 import l3s6.projet.star.game.tile.Direction;
+import l3s6.projet.star.game.tile.NoAbbeyException;
 import l3s6.projet.star.game.tile.Orientation;
 import l3s6.projet.star.game.tile.Tile;
 import l3s6.projet.star.game.tile.WrongTileSyntaxException;
@@ -88,6 +89,11 @@ public class BoardManager {
             throw new InvalidMeepleMoveException("Meeple Type is not regular");
         }
 
+        if (position.equals("A")) {
+            this.placeMeepleOnAbbey(tile, coordinates, player);
+            return;
+        }
+
         int index;
         try {
             index = Integer.parseInt(position.substring(1));
@@ -100,6 +106,8 @@ public class BoardManager {
             zone = tile.getZoneAt(Direction.fromChar(position.charAt(0)), index);
         } catch (WrongTileSyntaxException e) {
             throw new InvalidMeeplePositionException("Wrong meeple position syntax");
+        } catch (IndexOutOfBoundsException e) {
+            throw new InvalidMeeplePositionException("Meeple position index out of bounds");
         }
 
         if (this.hasMeepleOnBoardZone(zone)){
@@ -112,6 +120,16 @@ public class BoardManager {
             throw new InvalidMeepleMoveException("Meeple can't be placed on this topology");
         } catch (AlreadyHaveMeepleException e) {
             throw new InvalidMeepleMoveException("There is already meeple on the board zone");
+        }
+    }
+
+    private void placeMeepleOnAbbey(Tile tile, Coordinates coordinates, Player player) throws InvalidMeepleMoveException {
+        try {
+            tile.setAbbeyMeeple(new Meeple(player, coordinates));
+        } catch (NoAbbeyException e) {
+            throw new InvalidMeepleMoveException("This tile has no abbey");
+        } catch (AlreadyHaveMeepleException e) {
+            throw new InvalidMeepleMoveException("Abbey already has a meeple");
         }
     }
 
@@ -129,11 +147,16 @@ public class BoardManager {
      * Removes meeples from a given player and send COLLECT.
      */
     public void removeMeeplesFrom(Player player, RefereeView refereeView){
+        removeZoneMeeple(player, refereeView);
+        removeAbbeyMeeple(player, refereeView);
+    }
+
+    private void removeZoneMeeple(Player player, RefereeView refereeView) {
         for(Zone zone : this.getZonesWithMeeple()){
             Meeple meeple = zone.getMeeple();
             if(meeple.getPlayer() == player){
                 try {
-                    refereeView.send("COLLECTS", player.getID(), meeple.getCoordinates().getX(), meeple.getCoordinates().getY());
+                    refereeView.send("COLLECTS", player.getID(), "regular", meeple.getCoordinates().getX(), meeple.getCoordinates().getY());
                     zone.giveBackMeeple();
                 } catch (InvalidArgumentNumberException | NoMeepleException e) {
                     throw new RuntimeException(e);
@@ -159,7 +182,68 @@ public class BoardManager {
         return zones;
     }
 
+    private void removeAbbeyMeeple(Player player, RefereeView refereeView) {
+        for (Tile tile : this.getAbbeyTilesWithMeeple()) {
+            Meeple meeple;
+            try {
+                meeple = tile.getAbbeyMeeple();
+            } catch (NoAbbeyException | NoMeepleException e) {
+                throw new RuntimeException(e);
+            }
+            if (meeple.getPlayer() == player) {
+                try {
+                    refereeView.send("COLLECTS", player.getID(), "regular", meeple.getCoordinates().getX(), meeple.getCoordinates().getY());
+                    tile.giveBackAbbeyMeeple();
+                } catch (InvalidArgumentNumberException | NoMeepleException | NoAbbeyException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
+    /**
+     * @return all the tiles with a meeple on the abbey
+     */
+    public Set<Tile> getAbbeyTilesWithMeeple() {
+        Set<Tile> result = new HashSet<>();
+        for (Tile tile : this.board.getTiles()) {
+            if (tile.hasAbbey() && tile.hasMeepleOnAbbey()) {
+                result.add(tile);
+            }
+        }
+        return result;
+    }
+
     public void removeTile(Coordinates coordinates) {
         this.board.removeTileAt(coordinates);
+    }
+
+    
+    /**
+     * @return the number of tiles around a coordinate (max 8)
+     */
+    public int countSurroundingTiles(Coordinates coordinates) {
+        int count = 0;
+        for(Coordinates coord : coordinates.getAdjacentAndCornerCoordinates()){
+                if (board.hasTile(coord)) {
+                    count++;
+                }
+        }
+        return count;
+    }
+
+    /**
+     * @return true if the coordinates is surrounded by 8 tiles.
+     */
+    public boolean isSurrounded(Coordinates coordinates) {
+        return countSurroundingTiles(coordinates) == 8;
+    }
+
+    public Tile getTileAt(Coordinates coord){
+        return this.board.getTileAt(coord);
+    }
+
+    public boolean hasTile(Coordinates coord){
+        return this.board.hasTile(coord);
     }
 }

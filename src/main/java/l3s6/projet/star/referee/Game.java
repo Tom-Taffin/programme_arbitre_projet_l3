@@ -26,14 +26,15 @@ public class Game {
     private PlayersManager playersManager;
     private Deck deck;
     private BoardManager boardManager;
-    private Tile lastDrawnTile;
     private ScoreManager scoreManager;
+    private Tile lastDrawnTile;
+    private Coordinates lastCoordinates;
 
     public Game() throws IOException, ParseException {
         this.boardManager = new BoardManager();
         this.deck = new Deck(DECKPATH);
         this.playersManager = new PlayersManager();
-        this.scoreManager = new ScoreManager();
+        this.scoreManager = new ScoreManager(this.boardManager);
     }
 
     /**
@@ -104,6 +105,7 @@ public class Game {
 
     public void placeTile(Tile tile, Coordinates coordinates) throws InvalidTileMoveException {
         this.boardManager.placeTile(tile, coordinates);
+        this.lastCoordinates = coordinates;
     }
 
     public void removeTile(Coordinates coordinates) {
@@ -115,10 +117,10 @@ public class Game {
     }
 
     public Map<Player,Integer> calculatePointsEarned(RefereeView refereeView){
-        return this.scoreManager.calculatePointsEarned(this.lastDrawnTile, refereeView);
+        return this.scoreManager.calculatePointsEarned(this.lastDrawnTile, this.lastCoordinates, refereeView);
     }
 
     public Map<Player, Integer> calculateEndGamePoints(RefereeView refereeView) {
-        return this.scoreManager.calculateEndGamePoints(this.boardManager.getZonesWithMeeple(), refereeView);
+        return this.scoreManager.calculateEndGamePoints(refereeView);
     }
 }
