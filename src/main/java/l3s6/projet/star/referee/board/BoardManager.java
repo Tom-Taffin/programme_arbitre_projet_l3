@@ -46,9 +46,11 @@ public class BoardManager {
         if (this.board.hasTile(coordinates)){
             return false;
         }
+        boolean hasAdjacentTile = false;
 
         for(Direction direction : Direction.values()){
             if (board.hasTile(coordinates.getAdjacent(direction))){
+                hasAdjacentTile = true;
                 Tile adjacentTile = board.getTileAt(coordinates.getAdjacent(direction));
                 if (!tile.isCompatibleWith(adjacentTile, direction)){
                     return false;
@@ -56,7 +58,7 @@ public class BoardManager {
             }
         }
 
-        return true;
+        return hasAdjacentTile;
     }
 
     /**
