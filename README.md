@@ -91,8 +91,8 @@ Une fois que tous les joueurs attendus sont connectés, la partie démarre autom
 ```
 referee1 STARTS                                 // la partie commence
 referee1 BLAMES 5                               // joueur explusé si il reçoit 5 blames
-referee1 COLLECTS alice regular 7               // alice reçois 7 "regular meeeple"
-referee1 COLLECTS bob regular 7                 // bob reçois 7 "regular meeeple"
+referee1 COLLECTS alice regular 8               // alice reçois 8 "regular meeeple"
+referee1 COLLECTS bob regular 8                 // bob reçois 8 "regular meeeple"
 referee1 OFFERS alice c1-f2r3f4-f4-f4r3f2       // la tuile piochée est proposée à alice
 ```
 
