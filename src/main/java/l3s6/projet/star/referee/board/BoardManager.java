@@ -84,9 +84,6 @@ public class BoardManager {
      * Throws ImpossibleBoardMove if the move is impossible
      */
     public void placeMeeple(Tile tile, Coordinates coordinates, String type, String position, Player player) throws InvalidMeepleMoveException, InvalidMeeplePositionException {
-        if (!player.hasMeeples()){
-            throw new InvalidMeepleMoveException("Player doesn't have any meeple.");
-        }
         if (!type.equals("regular")){
             throw new InvalidMeepleMoveException("Meeple Type is not regular");
         }
@@ -122,6 +119,8 @@ public class BoardManager {
             throw new InvalidMeepleMoveException("Meeple can't be placed on this topology");
         } catch (AlreadyHaveMeepleException e) {
             throw new InvalidMeepleMoveException("There is already meeple on the board zone");
+        } catch (NoMeepleException e) {
+            throw new InvalidMeepleMoveException("Player has no meeples left");
         }
     }
 
@@ -132,6 +131,8 @@ public class BoardManager {
             throw new InvalidMeepleMoveException("This tile has no abbey");
         } catch (AlreadyHaveMeepleException e) {
             throw new InvalidMeepleMoveException("Abbey already has a meeple");
+        } catch (NoMeepleException e) {
+            throw new InvalidMeepleMoveException("Player has no meeples left");
         }
     }
 
