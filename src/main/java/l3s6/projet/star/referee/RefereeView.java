@@ -29,7 +29,7 @@ public class RefereeView extends AdminView<AdminClient> {
     private final Game game;
     private final int MAX_NUMBER_OF_BLAMES = 5;
     private static final int NB_MEEPLES_PER_PLAYER = 7;
-    private static final int TIMEOUT_SECONDS = 120;
+    private static final int TIMEOUT_SECONDS = 30;
 
     private final ScheduledExecutorService timerExecutor = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> currentTimer;
