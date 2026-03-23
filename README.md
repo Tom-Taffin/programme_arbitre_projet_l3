@@ -70,13 +70,13 @@ Au démarrage, l'arbitre se connecte au réflecteur et annonce son rôle :
 referee1 ELECTS referee referee1
 ```
 
-L'arbitre attend ensuite que tous les joueurs se connectent via la commande `PLAY`.
+L'arbitre attend ensuite que tous les joueurs se connectent via la commande `PLAYS`.
 
 ### 3.2 Arrivée des joueurs
 
 Chaque joueur envoie :
 ```
-alice PLAY alice
+alice PLAYS alice
 ```
 
 L'arbitre répond en lui attribuant le rôle `player` :
@@ -98,7 +98,7 @@ referee1 OFFERS alice c1-f2r3f4-f4-f4r3f2       // la tuile piochée est propos�
 
 L'ordre des joueurs est **déterminé aléatoirement** au lancement.
 
-> **Note :** Tout joueur envoyant `PLAY` après le début de la partie est immédiatement expulsé :
+> **Note :** Tout joueur envoyant `PLAYS` après le début de la partie est immédiatement expulsé :
 > ```
 > referee1 EXPELS latePlayer
 > ```
@@ -426,8 +426,8 @@ referee1 ENDS [alice, bob]
 
 | Cas                                        | Comportement                    |
 |--------------------------------------------|---------------------------------|
-| PLAY envoyé après le début de la partie    | `EXPELS` immédiat               |
-| Même joueur envoie PLAY deux fois          | Ignoré (joueur déjà enregistré) |
+| PLAYS envoyé après le début de la partie    | `EXPELS` immédiat               |
+| Même joueur envoie PLAYS deux fois          | Ignoré (joueur déjà enregistré) |
 
 ### 12.4 Robustesse du plateau
 
