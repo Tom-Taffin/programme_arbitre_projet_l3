@@ -58,15 +58,15 @@ public class RefereeView extends AdminView<AdminClient> {
      * start game when all the players are added
      */
     public void updateOnPlay(String id){
+        if (this.game.playerExists(id)){
+            return;
+        }
         if(!this.isWaitingForPlayCommand){
             try {
                 send("EXPELS", id);
             } catch (InvalidArgumentNumberException e) {
                 throw new RuntimeException(e);
             }
-            return;
-        }
-        if (this.game.playerExists(id)){
             return;
         }
         this.game.addPlayer(new Player(id, NB_MEEPLES_PER_PLAYER));

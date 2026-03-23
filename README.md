@@ -426,7 +426,7 @@ referee1 ENDS [alice, bob]
 
 | Cas                                        | Comportement                    |
 |--------------------------------------------|---------------------------------|
-| PLAYS envoyé après le début de la partie    | `EXPELS` immédiat               |
+| PLAYS envoyé par un nouveau joueur après le début de la partie    | `EXPELS` immédiat               |
 | Même joueur envoie PLAYS deux fois          | Ignoré (joueur déjà enregistré) |
 
 ### 12.4 Robustesse du plateau
