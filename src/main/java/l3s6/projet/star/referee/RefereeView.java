@@ -312,6 +312,9 @@ public class RefereeView extends AdminView<AdminClient> {
                 offerTile();
             } else {
                 this.game.removePlayer(player, this);
+                if (this.game.getPlayers().size() <= 1) {
+                    endsGame();
+                }
             }
         }
     }
