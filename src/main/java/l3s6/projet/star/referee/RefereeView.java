@@ -54,6 +54,18 @@ public class RefereeView extends AdminView<AdminClient> {
     }
 
     /**
+     * if a player leave, he is expel
+     */
+    public void updateOnLeave(String id) {
+        try {
+            Player player = this.game.findPlayerFromId(id);
+            expel(player);
+        } catch (NonExistantPlayerException e) {
+            return;
+        }
+    }
+
+    /**
      * wait player send PLAY command and add player
      * start game when all the players are added
      */
