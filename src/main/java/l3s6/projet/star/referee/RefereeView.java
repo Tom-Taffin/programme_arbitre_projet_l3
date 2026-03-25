@@ -328,6 +328,9 @@ public class RefereeView extends AdminView<AdminClient> {
         int port = Integer.parseInt(args[1]);
         String id = args[2];
         int nbPlayers = Integer.parseInt(args[3]);
+        if(nbPlayers<=1 || nbPlayers>=6){
+            throw new IllegalArgumentException("nbPlayers must be between 2 and 5");
+        }
         try {
             new RefereeView(IPAddress, port, id, nbPlayers);
         } catch (URISyntaxException | InterruptedException | IOException | ParseException e) {
