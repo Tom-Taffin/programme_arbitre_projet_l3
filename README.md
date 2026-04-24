@@ -1,4 +1,4 @@
-# Programme Arbitre Carcassonne
+# Programme Arbitre Carcassonne - Projet l3
 
 ## Table des matières
 
@@ -30,13 +30,13 @@ L'arbitre est le programme central qui orchestre une partie de Carcassonne en r�
 - Faire respecter les règles en blâmant les joueurs en cas d'action non conforme ou ne répondant pas dans le temps imparti
 - Expulser les joueurs atteignant le nombre maximum de blames
 
-L'arbitre gère la logique du jeu en utilisant la librairie [game-elements](https://gitlab-etu.fil.univ-lille.fr/l3s6-projet-g6-star/game-elements) et communique avec tous les participants via un **réflecteur** (serveur de messagerie réseau) en utilisant la librairie [carcassonne_connection_library](https://gitlab-etu.fil.univ-lille.fr/l3s6-projet-g6-star/carcassonne_connection_library). Chaque message est envoyé ou reçu sous la forme :
+L'arbitre gère la logique du jeu en utilisant la librairie [game-elements](https://github.com/Tom-Taffin/game-elements_projet_l3) et communique avec tous les participants via un **réflecteur** (serveur de messagerie réseau) en utilisant la librairie [carcassonne_connection_library](https://github.com/Tom-Taffin/carcassonne_connection_library_projet_l3). Chaque message est envoyé ou reçu sous la forme :
 
 ```
 <expéditeur_id> <COMMANDE> [arguments...]
 ```
   
-Pour en savoir plus sur les messages, il faut se référer à [message_carcassone](https://gitlab-etu.fil.univ-lille.fr/l3s6-projet-g6-star/participant_infos/-/blob/master/messages_carcassonne.md) dans participant_infos.
+Pour en savoir plus sur les messages, il faut se référer à [message_carcassone](https://github.com/Tom-Taffin/participant_infos_projet_l3/blob/master/messages_carcassonne.md) dans participant_infos.
 
 ---
 
@@ -44,7 +44,7 @@ Pour en savoir plus sur les messages, il faut se référer à [message_carcasson
 
 ### Lancement
 
-Se référer au lancement dans [participant_info](https://gitlab-etu.fil.univ-lille.fr/l3s6-projet-g6-star/participant_infos/-/blob/master/participant_info.md).
+Se référer au lancement dans [participant_info](https://github.com/Tom-Taffin/participant_infos_projet_l3/blob/master/participant_info.md).
 
 ---
 
