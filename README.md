@@ -44,7 +44,7 @@ Pour en savoir plus sur les messages, il faut se référer à [message_carcasson
 
 ### Lancement
 
-Se référer au lancement dans [participant_info](https://github.com/Tom-Taffin/participant_infos_projet_l3/blob/master/participant_info.md).
+Se référer au lancement dans [participant_info](https://github.com/Tom-Taffin/participant_infos_projet_l3).
 
 ---
 
