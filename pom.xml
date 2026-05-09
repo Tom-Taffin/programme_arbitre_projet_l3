@@ -33,8 +33,12 @@
 
     <repositories>
         <repository>
-            <id>gitlab-maven</id>
-            <url>https://gitlab-etu.fil.univ-lille.fr/api/v4/groups/46397/-/packages/maven</url>
+            <id>github-game-elements</id>
+            <url>https://maven.pkg.github.com/Tom-Taffin/game-elements_projet_l3</url>
+        </repository>
+        <repository>
+            <id>github-connection-library</id>
+            <url>https://maven.pkg.github.com/Tom-Taffin/carcassonne_connection_library_projet_l3</url>
         </repository>
     </repositories>
 
